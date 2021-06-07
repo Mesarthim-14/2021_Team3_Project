@@ -57,6 +57,7 @@ public:
 	{
 		HIERARCHY_XFILE_NUM_NONE = -1,			// 初期値
 		HIERARCHY_XFILE_NUM_PLAYER,				// プレイヤーモデル
+		HIERARCHY_XFILE_NUM_ENEMY_SHIP,			// 敵船のモデル
 		HIERARCHY_XFILE_NUM_MAX					// 最大数
 	};
 

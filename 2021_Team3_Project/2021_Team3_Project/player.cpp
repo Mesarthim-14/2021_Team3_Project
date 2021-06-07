@@ -35,7 +35,7 @@
 //=============================================================================
 // クリエイト
 //=============================================================================
-CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 初期化処理
 	CPlayer *pPlayer = new CPlayer;
@@ -44,7 +44,7 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	if (pPlayer != nullptr)
 	{
 		// 初期化処理
-		pPlayer->Init(pos, size);
+		pPlayer->Init(pos, rot);
 	}
 
 	return pPlayer;

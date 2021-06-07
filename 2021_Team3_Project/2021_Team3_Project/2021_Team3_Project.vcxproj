@@ -151,6 +151,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_ship.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_ship.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
