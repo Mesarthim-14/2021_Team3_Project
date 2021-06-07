@@ -47,7 +47,7 @@ CXfile::CXfile()
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/Player/motion_Player.txt" }		// プレイヤー
+		{ "data/Text/Player/motion_Player.txt" },		// プレイヤー
 	};
 }
 
