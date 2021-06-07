@@ -47,8 +47,7 @@ CXfile::CXfile()
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/motion_LBX.txt" },		// プレイヤー
-		{ "data/Text/motion_Kobold.txt" },	// エネミー
+		{ "data/Text/Player/motion_Player.txt" }		// プレイヤー
 	};
 }
 

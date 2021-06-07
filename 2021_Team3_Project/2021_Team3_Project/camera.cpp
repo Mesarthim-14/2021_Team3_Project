@@ -22,10 +22,10 @@
 // マクロ定義
 //=============================================================================
 #define CAMERA_DEFAULT_Fθ			(D3DXToRadian(75.0f))			// カメラのθDefault値
-#define DISTANCE					(2400.0f)						// 視点～注視点の距離
+#define DISTANCE					(1500.0f)						// 視点～注視点の距離
 #define DISTANCE_FAR_UP				(35.0f)							// カメラを引く値
 #define FAR_DISTANCE				(3000.0f)						// 遠めのカメラ
-#define PLAYER_HEIGHT				(200.0f)						// 注視点の高さ
+#define PLAYER_HEIGHT				(400.0f)						// 注視点の高さ
 #define CAMERA_MIN_Fφ				(D3DXToRadian(10.0f))			// カメラの最小角
 #define CAMERA_MAX_Fφ				(D3DXToRadian(170.0f))			// カメラの最大角
 #define CAMERA_MIN_HIGHT			(2.0f)							// カメラの最低高度
