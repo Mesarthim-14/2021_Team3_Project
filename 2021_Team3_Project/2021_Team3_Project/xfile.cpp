@@ -47,7 +47,7 @@ CXfile::CXfile()
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/Player/motion_Player.txt" }		// プレイヤー
+		{ "data/Text/Player/motion_Player.txt" },		// プレイヤー
 	};
 }
 
@@ -269,7 +269,7 @@ HRESULT CXfile::HierarchyReadFile(void)
 		else
 		{
 			//失敗した場合メッセージボックスを表示
-			MessageBox(nullptr, "モーションファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
+			MessageBox(nullptr, "ヒエラルキーファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 
 			return	E_FAIL;
 		}
