@@ -187,7 +187,7 @@ HRESULT CMesh3d::ReadFile(void)
 	else
 	{
 		//失敗した場合メッセージボックスを表示
-		MessageBox(nullptr, "モーションファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(nullptr, "メッシュファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 
 		return	E_FAIL;
 	}
