@@ -48,6 +48,7 @@ CXfile::CXfile()
 	m_aHierarchyXfileName =
 	{
 		{ "data/Text/Player/motion_Player.txt" },		// プレイヤー
+		{ "data/Text/Enemy/motion_Enemy_Ship.txt" },	// 敵船
 	};
 }
 

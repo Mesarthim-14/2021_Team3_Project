@@ -165,6 +165,9 @@
     <ClCompile Include="enemy.cpp">
       <Filter>04_Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_ship.cpp">
+      <Filter>04_Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -267,6 +270,9 @@
       <Filter>07_Model</Filter>
     </ClInclude>
     <ClInclude Include="enemy.h">
+      <Filter>04_Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_ship.h">
       <Filter>04_Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

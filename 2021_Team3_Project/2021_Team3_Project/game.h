@@ -43,7 +43,8 @@ public:
 
 	void CreatePlayer(void);		// プレイヤーの生成	
 	void CreateMap(void);			// マップの生成	
-	void CreateGround(void);		// 地面の生成	
+	void CreateGround(void);		// 地面の生成
+	void CreateEnemy(void);			// 敵生成関数
 
 	CCamera *GetCamera(void);	// カメラのポインタ情報
 	CLight *GetLight(void);		// ライトのポインタ情報

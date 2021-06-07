@@ -21,8 +21,14 @@
 #include "sound.h"
 #include "keyboard.h"
 #include "enemy.h"
+#include "enemy_ship.h"
 #include "mesh_3d.h"
 #include "resource_manager.h"
+//=======================================================================================
+// マクロ定義
+//=======================================================================================
+#define ENEMY_POS	(D3DXVECTOR3(0.0f,0.0f,-3000.0f))
+#define ENEMY_ROT	(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -71,6 +77,9 @@ HRESULT CGame::Init(void)
 
 	// プレイヤーの生成
 	CreatePlayer();
+
+	// 敵生成
+	CreateEnemy();
 
 	// マップの生成
 	CreateMap();
@@ -159,7 +168,7 @@ void CGame::CreatePlayer(void)
 	if (m_pPlayer == nullptr)
 	{
 		m_pPlayer = CPlayer::Create(ZeroVector3,
-			MODEL_DEFAULT_SIZE);
+			ZeroVector3);
 	}
 }
 
@@ -179,6 +188,16 @@ void CGame::CreateGround(void)
 {
 	// メッシュフィールド
 	m_pMeshField = CMeshField::Create();
+}
+
+//=======================================================================================
+// 敵生成関数
+// Author : Sugawara Tsukasa
+//=======================================================================================
+void CGame::CreateEnemy(void)
+{
+	// 生成関数
+	CEnemy_Ship::Create(ENEMY_POS, ENEMY_ROT);
 }
 
 //=======================================================================================
