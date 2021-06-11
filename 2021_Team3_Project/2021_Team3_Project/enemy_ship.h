@@ -28,6 +28,6 @@ public:
 	void Draw(void);												// •`‰æˆ—
 
 private:
-	void Move(void);		// ˆÚ“®ˆ—
+	void Move(void);												// ˆÚ“®ˆ—
 };
 #endif

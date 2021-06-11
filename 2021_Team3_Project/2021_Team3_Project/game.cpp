@@ -197,7 +197,8 @@ void CGame::CreateGround(void)
 void CGame::CreateEnemy(void)
 {
 	// ê∂ê¨ä÷êî
-	CEnemy_Ship::Create(ENEMY_POS, ENEMY_ROT);
+	//CEnemy_Ship::Create(ENEMY_POS, ENEMY_ROT);
+
 }
 
 //=======================================================================================

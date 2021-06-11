@@ -37,18 +37,13 @@ CXfile::CXfile()
 	// Xファイルネームを取得
 	m_aXfileName =
 	{
-		{ "data/model/bg_dome001.x" },					// 背景
-		{ "data/model/Effect/Sword__Effect003.x" },		// 背景
-		{ "data/model/Effect/guard_Effect000.x" },		// ガードのエフェクト
-		{ "data/model/Effect/stone000.x" },				// 岩000
-		{ "data/model/Effect/stone001.x" },				// 岩001
-		{ "data/model/Effect/stone002.x" },				// 岩002
+		{ "data/Model/Bullet/bullet.x" },			// 弾
 	};
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/Player/motion_Player.txt" },		// プレイヤー
-		{ "data/Text/Enemy/motion_Enemy_Ship.txt" },	// 敵船
+		{ "data/Text/Player/motion_Player.txt" },					// プレイヤー
+		{ "data/Text/Enemy/motion_Enemy_Ship.txt" },				// 敵船
 	};
 }
 
