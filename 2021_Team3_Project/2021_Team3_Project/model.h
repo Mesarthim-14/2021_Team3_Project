@@ -27,12 +27,12 @@ public:
 	CModel(PRIORITY Priority = PRIORITY_EFFECT);				// コンストラクタ
 	~CModel();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// 初期化処理
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);			// 初期化処理
 	void Uninit(void);											// 終了処理
 	void Update(void);											// 更新処理
 	void Draw(void);											// 描画処理
 
-	static CModel *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// インスタンス生成
+	static CModel *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// インスタンス生成
 	void BindModel(CXfile::MODEL model);						// モデルの設定
 	void BindTexture(LPDIRECT3DTEXTURE9 *pTexture);				// テクスチャの設定
 	void SubAlpha(float fAlpha);								// 透明度の減算

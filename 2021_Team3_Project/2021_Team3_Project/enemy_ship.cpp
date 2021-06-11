@@ -169,6 +169,9 @@ void CEnemy_Ship::Move(void)
 					// 目的の角度
 					rotDest.y = fAngle;
 
+					// 目的の角度
+					rotDest.y += D3DXToRadian(ANGLE_180);
+
 					while (rotDest.y - rot.y > D3DXToRadian(ANGLE_180))
 					{
 						rotDest.y -= D3DXToRadian(ANGLE_360);
@@ -177,9 +180,6 @@ void CEnemy_Ship::Move(void)
 					{
 						rotDest.y += D3DXToRadian(ANGLE_360);
 					}
-
-					// 目的の角度
-					rotDest.y += D3DXToRadian(ANGLE_180);
 
 					// 旋回
 					rot += (rotDest - rot)*ROT_SPEED;

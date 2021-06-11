@@ -61,6 +61,9 @@
     <Filter Include="08_Ui">
       <UniqueIdentifier>{9e210706-b641-435d-8536-766a341c0a97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07_Model\Bullet">
+      <UniqueIdentifier>{862b9246-b930-440f-a6d0-4f6551a1453a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -168,6 +171,9 @@
     <ClCompile Include="enemy_ship.cpp">
       <Filter>04_Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -274,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="enemy_ship.h">
       <Filter>04_Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>07_Model\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

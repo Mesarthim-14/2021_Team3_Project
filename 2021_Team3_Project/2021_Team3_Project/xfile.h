@@ -46,7 +46,7 @@ public:
 	enum XFILE_NUM
 	{
 		XFILE_NUM_NONE = -1,			// ‰Šú’l
-		XFILE_NUM_BG,					// ”wŒi
+		XFILE_NUM_BULLET,				// ’eƒ‚ƒfƒ‹
 		XFILE_NUM_MAX
 	};
 

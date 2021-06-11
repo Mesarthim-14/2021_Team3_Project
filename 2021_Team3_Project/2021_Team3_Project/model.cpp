@@ -32,7 +32,7 @@ CModel::CModel(PRIORITY Priority) : CScene(Priority)
 	m_apTexture = nullptr;
 	m_nTexPattern = 0;
 	m_nLife = 0;
-	m_Color = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	m_Color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_fAlphaNum = 0.0f;
 }
 
@@ -46,7 +46,7 @@ CModel::~CModel()
 //=============================================================================
 // クリエイト処理
 //=============================================================================
-CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	//モデルクラスのポインタ変数
 	CModel *pModel = nullptr;
@@ -58,7 +58,7 @@ CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	if (pModel != nullptr)
 	{
 		//初期化処理呼び出し
-		pModel->Init(pos, size);
+		pModel->Init(pos, rot);
 	}
 	//メモリ確保に失敗したとき
 	else
@@ -72,13 +72,13 @@ CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 //モデルクラスの初期化処理
 //=============================================================================
-HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 位置の初期化
 	m_pos = pos;
 
 	// サイズ初期化
-	m_size = size;
+	m_rot = rot;
 
 	return S_OK;
 }
