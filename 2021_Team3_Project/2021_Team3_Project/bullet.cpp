@@ -13,7 +13,12 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY (0.1f)	//重力
+#define GRAVITY							(0.1f)							// 重力
+#define MOVE_VALUE						(40.0f)							// 移動量
+#define ANGLE_180						(D3DXToRadian(180))				// 180度
+#define ANGLE_90						(D3DXToRadian(90))				// 90度
+#define LENGTH							(-600.0f)						// 距離
+#define BULLET_Y						(500.0f)						// 弾のY軸
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -32,7 +37,7 @@ CBullet::~CBullet()
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// CBulletのポインタ
 	CBullet *pBullet = nullptr;
@@ -48,9 +53,6 @@ CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 		{
 			// 初期化処理
 			pBullet->Init(pos, rot);
-
-			// 移動量代入
-			pBullet->SetMove(move);
 		}
 	}
 	// ポインタを返す
@@ -73,19 +75,31 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 		// モデルの情報を渡す
 		BindModel(model);
-
-		// テクスチャ受け渡し
-		BindTexture(pXfile->GetXfileTexture(CXfile::XFILE_NUM_BULLET));
 	}
 
 	// ライフ設定
 	SetLife(1000);
 
-	// 向き設定
-	SetRot(ZeroVector3);
+	// 発射位置
+	D3DXVECTOR3 bulletpos = ZeroVector3;
+
+	// 移動
+	D3DXVECTOR3 move = ZeroVector3;
+
+	//座標を求める
+	bulletpos.x = pos.x - cosf(rot.y + ANGLE_90) * LENGTH;
+	bulletpos.z = pos.z + sinf(rot.y + ANGLE_90) * LENGTH;
+	bulletpos.y = BULLET_Y;
+
+	// 弾の移動
+	move.x = sinf(rot.y + ANGLE_180) *MOVE_VALUE;
+	move.z = cosf(rot.y + ANGLE_180) *MOVE_VALUE;
+
+	// 移動量設定
+	SetMove(move);
 
 	// 初期化処理
-	CModel::Init(pos, rot);
+	CModel::Init(bulletpos, ZeroVector3);
 
 	return S_OK;
 }
