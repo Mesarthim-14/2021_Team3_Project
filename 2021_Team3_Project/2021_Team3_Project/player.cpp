@@ -30,13 +30,7 @@
 #define PLAYER_SPEED					(20.0f)							// プレイヤーの移動量
 #define STICK_SENSITIVITY				(50.0f)							// スティック感度
 #define PLAYER_ROT_SPEED				(0.1f)							// キャラクターの回転する速度
-#define PLAYER_RADIUS					(50.0f)							// 半径の大きさ
-#define BULLET_MOVE						(40.0f)							// 移動量
 #define SHIP_NUM						(0)								// 船のナンバー
-#define ANGLE_180						(D3DXToRadian(180))				// 180度
-#define ANGLE_90						(D3DXToRadian(90))				// 90度
-#define LENGTH							(-600.0f)						// 距離
-#define BULLET_Y						(500.0f)						// 弾のY軸
 //=============================================================================
 // クリエイト
 //=============================================================================
@@ -52,6 +46,7 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		pPlayer->Init(pos, rot);
 	}
 
+	// ポインタを返す
 	return pPlayer;
 }
 
@@ -87,6 +82,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 
 	CCharacter::Init(pos, rot);												// 座標　角度
+
 	SetSpeed(PLAYER_SPEED);													// 速度の設定
 
 	return S_OK;
@@ -333,19 +329,7 @@ void CPlayer::Attack(void)
 		// 船の位置取得
 		D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
 
-		// 位置
-		D3DXVECTOR3 bulletpos = ZeroVector3;
-
-		//座標を求める
-		bulletpos.x = pos.x - cosf(rot.y + ANGLE_90) * LENGTH;
-		bulletpos.z = pos.z + sinf(rot.y + ANGLE_90) * LENGTH;
-		bulletpos.y = BULLET_Y;
-
-		// 弾の移動
-		bulletmove.x = sinf(rot.y + ANGLE_180) *BULLET_MOVE;
-		bulletmove.z = cosf(rot.y + ANGLE_180) *BULLET_MOVE;
-
 		// 弾生成
-		CBullet::Create(bulletpos, ZeroVector3, bulletmove);
+		CBullet::Create(pos, rot);
 	}
 }

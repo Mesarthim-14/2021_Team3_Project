@@ -132,7 +132,6 @@ void CEnemy_Ship::Move(void)
 	// Œü‚«Žæ“¾
 	D3DXVECTOR3 rot = GetRot();
 
-
 	// CGame‚Ìƒ|ƒCƒ“ƒ^
 	CGame *pGame = nullptr;
 
