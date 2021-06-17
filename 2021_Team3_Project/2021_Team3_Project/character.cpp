@@ -149,32 +149,23 @@ void CCharacter::Draw()
 	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-//	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
-//	{
-//		if (m_apModelAnime.at(nCntModelNum) != nullptr)
-//		{
-//			//ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì•`‰æˆ—
-//			m_apModelAnime.at(nCntModelNum)->Draw(m_rot);
-//		}
-//	}
-//
-//	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
-//	{
-//		if (m_apModelAnime.at(nCntModelNum) != nullptr)
-//		{
-//			// ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰e•`‰æ
-//			m_apModelAnime.at(nCntModelNum)->ShadowDraw(m_rot);
-//		}
-//	}
+	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	{
+		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		{
+			//ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì•`‰æˆ—
+			m_apModelAnime.at(nCntModelNum)->Draw(m_rot);
+		}
+	}
 
-	m_apModelAnime.at(0)->Draw(m_rot);
-	m_apModelAnime.at(1)->Draw(m_rot);
-	m_apModelAnime.at(2)->Draw(m_rot);
-
-	m_apModelAnime.at(0)->ShadowDraw(m_rot);
-	m_apModelAnime.at(1)->ShadowDraw(m_rot);
-	m_apModelAnime.at(2)->ShadowDraw(m_rot);
-
+	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	{
+		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		{
+			// ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰e•`‰æ
+			m_apModelAnime.at(nCntModelNum)->ShadowDraw(m_rot);
+		}
+	}
 }
 
 //=============================================================================
