@@ -85,9 +85,10 @@ HRESULT CCamera::Init(void)
 	m_fHorizontal = D3DXToRadian(0.0f);											// 初期値敵のほう向ける
 	m_posR = D3DXVECTOR3(0.0f, PLAYER_HEIGHT, 0.0f);							// 注視点設定
 	m_posU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);										// 上方向ベクトル
-	m_posV.x = m_posR.x + m_fDistance * sinf(m_fVartical) * sinf(m_fHorizontal);	// カメラ位置X
+	m_posV.x = m_posR.x + m_fDistance * sinf(m_fVartical) * sinf(m_fHorizontal);// カメラ位置X
 	m_posV.y = m_posR.z + m_fDistance * cosf(m_fVartical);						// カメラ位置Y
-	m_posV.z = m_posR.y + m_fDistance * sinf(m_fVartical) * cosf(m_fHorizontal);	// カメラ位置Z
+	m_posV.z = m_posR.y + m_fDistance * sinf(m_fVartical) * cosf(m_fHorizontal);// カメラ位置Z
+
 
 	return S_OK;
 }

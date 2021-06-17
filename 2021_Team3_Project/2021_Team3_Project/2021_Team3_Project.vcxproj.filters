@@ -64,6 +64,9 @@
     <Filter Include="07_Model\Bullet">
       <UniqueIdentifier>{862b9246-b930-440f-a6d0-4f6551a1453a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06_Effect\Shadow">
+      <UniqueIdentifier>{a272f913-76ce-47a3-aaab-485bb7051dbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -174,6 +177,12 @@
     <ClCompile Include="bullet.cpp">
       <Filter>07_Model\Bullet</Filter>
     </ClCompile>
+    <ClCompile Include="shadow_volume.cpp">
+      <Filter>06_Effect\Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow.cpp">
+      <Filter>06_Effect\Shadow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -283,6 +292,12 @@
     </ClInclude>
     <ClInclude Include="bullet.h">
       <Filter>07_Model\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow_volume.h">
+      <Filter>06_Effect\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>06_Effect\Shadow</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

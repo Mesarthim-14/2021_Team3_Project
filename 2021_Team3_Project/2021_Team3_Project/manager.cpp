@@ -27,6 +27,8 @@
 #include "title.h"
 #include "tutorial.h"
 #include "xfile.h"
+#include "polygon.h"
+#include "shadow.h"
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -166,6 +168,9 @@ void CManager::Uninit(void)
 		m_pModeBase.reset();
 		m_pModeBase = nullptr;
 	}
+
+	// シャドウポリゴンのリリース
+	CShadow::PolygonRelese();
 
 	// シーン情報のリリース
 	CScene::ReleaseAll();

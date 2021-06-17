@@ -19,6 +19,11 @@
 #define MODEL_DEFAULT_SIZE	(D3DXVECTOR3(1.0f, 1.0f, 1.0f))		// モデルの通常の大きさ
 
 //=============================================================================
+// 前方宣言
+//=============================================================================
+class CShadow;
+
+//=============================================================================
 // モデルクラス
 //=============================================================================
 class CModel : public CScene
@@ -27,7 +32,7 @@ public:
 	CModel(PRIORITY Priority = PRIORITY_EFFECT);				// コンストラクタ
 	~CModel();
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);			// 初期化処理
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// 初期化処理
 	void Uninit(void);											// 終了処理
 	void Update(void);											// 更新処理
 	void Draw(void);											// 描画処理
@@ -36,7 +41,9 @@ public:
 	void BindModel(CXfile::MODEL model);						// モデルの設定
 	void BindTexture(LPDIRECT3DTEXTURE9 *pTexture);				// テクスチャの設定
 	void SubAlpha(float fAlpha);								// 透明度の減算
-	
+	void ShadowDraw(D3DXVECTOR3 rot);							// 影の描画
+	void HasPtrDelete(void);									// 保持ポインタの開放処理
+
 	// Set関数
 	void SetPos(const D3DXVECTOR3 pos);					// 座標の設定
 	void SetMove(const D3DXVECTOR3 move);				// 移動量の設定
@@ -73,5 +80,8 @@ private:
 	int m_nTexPattern;					// テクスチャのパターン数
 	int m_nLife;						// ライフ
 	float m_fAlphaNum;					// 透明度の値
+
+	// 影の生成用
+	CShadow *m_pShadow;		// 影のポインタ
 };
 #endif 

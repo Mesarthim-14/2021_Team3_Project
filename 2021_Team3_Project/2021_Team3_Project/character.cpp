@@ -149,18 +149,23 @@ void CCharacter::Draw()
 	//ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);					// 裏面を（左回り）をカリング
-
 	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
 	{
 		if (m_apModelAnime.at(nCntModelNum) != nullptr)
 		{
 			//階層モデルクラスの描画処理
-			m_apModelAnime.at(nCntModelNum)->Draw();
+			m_apModelAnime.at(nCntModelNum)->Draw(m_rot);
 		}
 	}
 
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);					// 裏面を（左回り）をカリング
+	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	{
+		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		{
+			// 階層モデルクラスの影描画
+			m_apModelAnime.at(nCntModelNum)->ShadowDraw(m_rot);
+		}
+	}
 }
 
 //=============================================================================
@@ -189,7 +194,7 @@ void CCharacter::ModelCreate(CXfile::HIERARCHY_XFILE_NUM FileNum)
 			if (pModelAnime == nullptr)
 			{
 				// インスタンス生成
-				pModelAnime = CModelAnime::Create(ModelFile.offsetPos, ModelFile.offsetRot);
+				pModelAnime = CModelAnime::Create(ModelFile.offsetPos, ModelFile.offsetRot, model.at(nCntModel));
 
 				// !nullcheck
 				if (pModelAnime != nullptr)
@@ -253,7 +258,6 @@ void CCharacter::Gravity(void)
 			Landing(GROUND_RIMIT);
 		}
 	}
-
 }
 
 //=============================================================================
