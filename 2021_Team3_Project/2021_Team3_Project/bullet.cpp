@@ -78,7 +78,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 
 	// ライフ設定
-	SetLife(1000);
+	SetLife(100);
 
 	// 発射位置
 	D3DXVECTOR3 bulletpos = ZeroVector3;
@@ -129,6 +129,12 @@ void CBullet::Update(void)
 
 	// 更新処理
 	CModel::Update();
+	
+	if (GetLife() <= 0)
+	{
+		// 終了処理
+		Uninit();
+	}
 }
 //=============================================================================
 // 描画処理関数

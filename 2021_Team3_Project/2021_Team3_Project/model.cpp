@@ -14,6 +14,7 @@
 #include "player.h"
 #include "game.h"
 #include "xfile.h"
+#include "shadow.h"
 
 //=============================================================================
 // É}ÉNÉçíËã`
@@ -34,6 +35,7 @@ CModel::CModel(PRIORITY Priority) : CScene(Priority)
 	m_nLife = 0;
 	m_Color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_fAlphaNum = 0.0f;
+	m_pShadow = nullptr;
 }
 
 //=============================================================================
@@ -90,6 +92,9 @@ void CModel::Uninit(void)
 {
 	//ÉIÉuÉWÉFÉNÉgÇÃîjä¸
 	Release();
+
+	// âeÇÃèIóπèàóù
+	HasPtrDelete();
 }
 
 //=============================================================================
@@ -173,6 +178,38 @@ void CModel::Draw(void)
 
 	//ï€éùÇµÇƒÇ¢ÇΩÉ}ÉeÉäÉAÉãÇñﬂÇ∑
 	pDevice->SetMaterial(&matDef);
+
+	// âeÇÃï`âÊ
+	ShadowDraw(m_rot);
+}
+
+//=============================================================================
+// âeÇÃï`âÊ
+//=============================================================================
+void CModel::ShadowDraw(D3DXVECTOR3 rot)
+{
+	if (m_pShadow)
+	{
+		// âeÇÃê∂ê¨
+		m_pShadow->CreateShadow(m_rot, m_mtxWorld);
+
+		// âeÇÃï`âÊèàóù
+		m_pShadow->VolumeDraw();
+	}
+}
+
+//=============================================================================
+// ÉÇÉfÉãèÓïÒÇÃê›íË
+//=============================================================================
+void CModel::HasPtrDelete(void)
+{
+	if (m_pShadow)
+	{
+		// âeÇÃèIóπèàóù
+		m_pShadow->Uninit();
+		delete m_pShadow;
+		m_pShadow = nullptr;
+	}
 }
 
 //=============================================================================
@@ -184,6 +221,13 @@ void CModel::BindModel(CXfile::MODEL model)
 	m_Model.pBuffMat = model.pBuffMat;
 	m_Model.dwNumMat = model.dwNumMat;
 	m_Model.apTexture = model.apTexture;
+
+	// nullcheck
+	if (!m_pShadow)
+	{
+		// âeÇÃê∂ê¨
+		m_pShadow = CShadow::Create(model.pMesh);
+	}
 }
 
 //=============================================================================
