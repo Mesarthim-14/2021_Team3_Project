@@ -12,7 +12,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "resource_manager.h"
-#include "xfile.h"
+#include "shadow.h"
 
 //=============================================================================
 // コンストラクタ
@@ -28,6 +28,7 @@ CModelAnime::CModelAnime()
 	m_pParent = nullptr;
 	ZeroMemory(m_OldMtxWorld, sizeof(m_OldMtxWorld));
 	ZeroMemory(m_mtxWorld, sizeof(m_mtxWorld));
+	m_pShadow = nullptr;
 }
 
 //=============================================================================
@@ -35,12 +36,14 @@ CModelAnime::CModelAnime()
 //=============================================================================
 CModelAnime::~CModelAnime()
 {
+	// ポインタの開放
+	HasPtrDelete();
 }
 
 //=============================================================================
 // クリエイト処理
 //=============================================================================
-CModelAnime * CModelAnime::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CModelAnime * CModelAnime::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CXfile::MODEL model)
 {
 	//階層モデルクラスのポインタ変数
 	CModelAnime *pModelAnime = nullptr;
@@ -52,7 +55,7 @@ CModelAnime * CModelAnime::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pModelAnime != nullptr)
 	{
 		//初期化処理呼び出し
-		pModelAnime->Init(pos, rot);
+		pModelAnime->Init(pos, rot, model);
 	}
 	//失敗していた場合
 	else
@@ -66,7 +69,7 @@ CModelAnime * CModelAnime::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CModelAnime::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CModelAnime::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CXfile::MODEL model)
 {
 	//位置の設定
 	m_pos = pos;
@@ -74,13 +77,23 @@ HRESULT CModelAnime::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	//向きの設定
 	m_rot = rot;
 
+	// モデル情報設定
+	SetModel(model);
+
+	// nullcheck
+	if (!m_pShadow)
+	{
+		// 影の生成
+		m_pShadow = CShadow::Create(model.pMesh);
+	}
+
 	return S_OK;
 }
 
 //=============================================================================
 // 描画処理
 //=============================================================================
-void CModelAnime::Draw(void)
+void CModelAnime::Draw(D3DXVECTOR3 rot)
 {
 	//デバイス情報の取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
@@ -101,11 +114,11 @@ void CModelAnime::Draw(void)
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	//アニメーションの向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotAnime.y, m_rotAnime.x, m_rotAnime.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotAnime.x, m_rotAnime.y, m_rotAnime.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	//向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.x, m_rot.y, m_rot.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	//アニメーションの位置を反映
@@ -169,6 +182,38 @@ void CModelAnime::Draw(void)
 
 	//保持していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
+
+	if (m_pShadow)
+	{
+		// 影の生成
+		m_pShadow->CreateShadow(m_rot + rot, m_mtxWorld);
+	}
+}
+
+//=============================================================================
+// 影の描画
+//=============================================================================
+void CModelAnime::ShadowDraw(D3DXVECTOR3 rot)
+{
+	if (m_pShadow)
+	{
+		// 影の描画処理
+		m_pShadow->VolumeDraw();
+	}
+}
+
+//=============================================================================
+// 保持ポインタの開放処理
+//=============================================================================
+void CModelAnime::HasPtrDelete(void)
+{
+	if (m_pShadow)
+	{
+		// 影の終了処理
+		m_pShadow->Uninit();
+		delete m_pShadow;
+		m_pShadow = nullptr;
+	}
 }
 
 //=============================================================================
