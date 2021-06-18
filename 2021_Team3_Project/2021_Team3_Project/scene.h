@@ -31,6 +31,7 @@ public:
 		PRIORITY_0 = 0,
 		PRIORITY_1,
 		PRIORITY_CHARACTER,	// キャラクター
+		PRIORITY_ENEMY,		// 敵
 		PRIORITY_EFFECT,	// エフェクト
 		PRIORITY_PARTICLE,	// エフェクト
 		PRIORITY_UI,		// UI

@@ -39,6 +39,7 @@ CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 	 m_posOld = ZeroVector3;
 	 m_move = ZeroVector3;
 	 m_rot = ZeroVector3;
+	 m_size = ZeroVector3;
 	 m_nLife = 0;
 	 m_fSpeed = 0.0f;
 	 m_bArmor = false;

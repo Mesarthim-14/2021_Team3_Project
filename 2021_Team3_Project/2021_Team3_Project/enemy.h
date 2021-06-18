@@ -29,7 +29,7 @@ public:
 		ENEMY_MOTION_MAX,			// モーション最大数
 	};
 
-	CEnemy(PRIORITY Priority = PRIORITY_CHARACTER);				// コンストラクタ
+	CEnemy(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
 	~CEnemy();													// デストラクタ
 
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// 初期化処理

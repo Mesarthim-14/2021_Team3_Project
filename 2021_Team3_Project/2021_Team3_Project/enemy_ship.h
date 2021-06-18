@@ -19,7 +19,7 @@ class CEnemy_Ship : public CEnemy
 {
 public:
 
-	CEnemy_Ship(PRIORITY Priority = PRIORITY_CHARACTER);			// コンストラクタ
+	CEnemy_Ship(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
 	~CEnemy_Ship();													// デストラクタ
 	static CEnemy_Ship *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);					// 初期化処理

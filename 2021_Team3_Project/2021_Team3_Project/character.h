@@ -60,6 +60,7 @@ public:
 	void SetPosOld(D3DXVECTOR3 &posOld)		{ m_posOld = posOld; }	// 座標の設定
 	void SetMove(D3DXVECTOR3 &move)			{ m_move = move; }		// 移動量の設定
 	void SetRot(D3DXVECTOR3 &rot)			{ m_rot = rot; }		// 角度の設定
+	void SetSize(D3DXVECTOR3 &size)			{ m_size = size; }		// サイズ設定
 	void SetLife(int nLife)					{ m_nLife = nLife; }	// ライフの設定
 	void SetSpeed(float fSpeed)				{ m_fSpeed = fSpeed; }	// 速度の設定
 	void SetMotion(int nMotionState);								// モーションの設定
@@ -69,6 +70,7 @@ public:
 	D3DXVECTOR3 &GetOldPos(void)			{ return m_posOld; }					// 古い座標情報
 	D3DXVECTOR3 &GetRot(void)				{ return m_rot; }						// 角度情報
 	D3DXVECTOR3 &GetMove(void)				{ return m_move; }						// 移動量の情報
+	D3DXVECTOR3 &GetSize(void)				{ return m_size; }						// サイズ取得
 	CModelAnime *GetModelAnime(int nCount)	{ return m_apModelAnime.at(nCount); }	// モーションのカウント情報
 	CMotion *GetMotion(void)				{ return m_pMotion; }					// モーションのポインタ情報
 	int GetLife(void)						{ return m_nLife; }						// ライフの情報
@@ -83,6 +85,7 @@ private:
 	D3DXVECTOR3 m_posOld;					// 古い座標
 	D3DXVECTOR3 m_move;						// 移動量
 	D3DXVECTOR3 m_rot;						// 現在の回転
+	D3DXVECTOR3 m_size;						// サイズ
 	D3DXMATRIX m_mtxWorld;					// ワールドマトリックス
 	int m_nLife;							// 体力
 	int m_nStateCounter;					// 状態のカウンター
