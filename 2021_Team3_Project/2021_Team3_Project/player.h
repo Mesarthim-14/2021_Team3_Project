@@ -66,7 +66,7 @@ public:
 	void Death(void);											// 死亡関数
 	void Move(void);											// 移動処理
 	void Attack(void);											// 攻撃の関数
-
+	void Collision(void);										// 当たり判定
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	bool m_bMove;									// 歩いているフラグ

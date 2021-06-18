@@ -16,16 +16,17 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE	(100)	// 体力
-#define MOVE_VALUE	(10.0f)	// 移動量
-#define ROT_SPEED	(0.01f)	// 旋回速度
-#define ANGLE_180	(180)	// 180度
-#define ANGLE_360	(360)	// 360度
+#define MAX_LIFE	(100)									// 体力
+#define MOVE_VALUE	(10.0f)									// 移動量
+#define ROT_SPEED	(0.01f)									// 旋回速度
+#define ANGLE_180	(180)									// 180度
+#define ANGLE_360	(360)									// 360度
+#define SIZE		(D3DXVECTOR3 (500.0f,700.0f,1500.0f))	// サイズ
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Ship::CEnemy_Ship(PRIORITY Priority)
+CEnemy_Ship::CEnemy_Ship(PRIORITY Priority) : CEnemy(Priority)
 {
 }
 //=============================================================================
@@ -79,9 +80,11 @@ HRESULT CEnemy_Ship::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 体力設定
 	SetLife(MAX_LIFE);
 
+	// サイズ設定
+	SetSize(SIZE);
+
 	// 初期化関数
 	CEnemy::Init(pos, rot);
-
 	return S_OK;
 }
 //=============================================================================
@@ -99,6 +102,9 @@ void CEnemy_Ship::Uninit(void)
 //=============================================================================
 void CEnemy_Ship::Update(void)
 {
+	// 更新処理
+	CEnemy::Update();
+
 	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
 
@@ -107,9 +113,6 @@ void CEnemy_Ship::Update(void)
 
 	// 移動処理
 	Move();
-
-	// 更新処理
-	CEnemy::Update();
 }
 //=============================================================================
 // 描画関数
@@ -190,16 +193,13 @@ void CEnemy_Ship::Move(void)
 					move.x = sinf(fAngle)*MOVE_VALUE;
 					move.z = cosf(fAngle)*MOVE_VALUE;
 
-					// 移動処理w
-					pos.x += move.x;
-					pos.z += move.z;
+					// 位置設定
+					SetMove(move);
+
+					// 向き設定
+					SetRot(rot);
 				}
 			}
 		}
 	}
-	// 位置設定
-	SetPos(pos);
-
-	// 向き設定
-	SetRot(rot);
 }

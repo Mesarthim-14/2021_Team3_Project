@@ -27,10 +27,13 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define PLAYER_SPEED					(20.0f)							// プレイヤーの移動量
-#define STICK_SENSITIVITY				(50.0f)							// スティック感度
-#define PLAYER_ROT_SPEED				(0.1f)							// キャラクターの回転する速度
-#define SHIP_NUM						(0)								// 船のナンバー
+#define PLAYER_SPEED					(20.0f)									// プレイヤーの移動量
+#define STICK_SENSITIVITY				(50.0f)									// スティック感度
+#define PLAYER_ROT_SPEED				(0.1f)									// キャラクターの回転する速度
+#define SHIP_NUM						(0)										// 船のナンバー
+#define MIN_MOVE						(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小値
+#define SIZE							(D3DXVECTOR3 (500.0f,500.0f,1500.0f))	// サイズ
+#define PARENT_NUM						(0)										// 親のナンバー
 //=============================================================================
 // クリエイト
 //=============================================================================
@@ -85,6 +88,8 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	SetSpeed(PLAYER_SPEED);													// 速度の設定
 
+	// サイズ設定
+	SetSize(SIZE);
 	return S_OK;
 }
 
@@ -173,6 +178,9 @@ void CPlayer::PlayerControl()
 
 	// 攻撃処理
 	Attack();
+
+	// 当たり判定処理
+	Collision();
 }
 
 //=============================================================================
@@ -220,6 +228,7 @@ void CPlayer::Move(void)
 	float fAngle = GET_CAMERA_PTR->GetHorizontal();							// カメラの角度
 	D3DXVECTOR3 pos = GetPos();												// 座標
 	D3DXVECTOR3 rot = GetRot();												// 角度
+	D3DXVECTOR3 move = GetMove();											// 移動
 	float fSpeed = GetSpeed();												// スピード
 	MOTION_STATE MotionState = (MOTION_STATE)GetMotion()->GetMotionState();	// モーションの状態
 
@@ -230,8 +239,8 @@ void CPlayer::Move(void)
 		float fAngle2 = atan2f(-(float)js.lX, (float)js.lY);	// コントローラの角度
 
 		// 移動量設定
-		pos.x += sinf(fAngle + (fAngle2))* fSpeed;
-		pos.z += cosf(fAngle + (fAngle2))* fSpeed;
+		move.x = sinf(fAngle + (fAngle2))* fSpeed;
+		move.z = cosf(fAngle + (fAngle2))* fSpeed;
 
 		// 角度の設定
 		m_rotDest.y = fAngle + (fAngle3);
@@ -248,8 +257,8 @@ void CPlayer::Move(void)
 	//	SetMotion(MOTION_WALK);
 
 		// 移動量・角度の設定
-		pos.x -= sinf(fAngle)*fSpeed;
-		pos.z -= cosf(fAngle)*fSpeed;
+		move.x = -sinf(fAngle)*fSpeed;
+		move.z = -cosf(fAngle)*fSpeed;
 		m_rotDest.y = fAngle;
 		SetRot(D3DXVECTOR3(rot.x, fAngle, rot.z));
 	}
@@ -260,11 +269,10 @@ void CPlayer::Move(void)
 	//	SetMotion(MOTION_WALK);
 
 		// 移動量・角度の設定
-		pos.x += sinf((fAngle))*fSpeed;
-		pos.z += cosf((fAngle))*fSpeed;
+		move.x = sinf((fAngle))*fSpeed;
+		move.z = cosf((fAngle))*fSpeed;
 		m_rotDest.y = fAngle;
 		SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(-180.0f), rot.z));
-
 	}
 	// 左に移動
 	if (pKeyboard->GetPress(DIK_A))
@@ -273,11 +281,10 @@ void CPlayer::Move(void)
 	//	SetMotion(MOTION_WALK);
 
 		// 移動量・角度の設定
-		pos.x += sinf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
-		pos.z += cosf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
+		move.x = sinf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
+		move.z = cosf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
 		m_rotDest.y = fAngle;
 		SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(-90.0f), rot.z));
-
 	}
 	// 右に移動
 	if (pKeyboard->GetPress(DIK_D))
@@ -286,14 +293,22 @@ void CPlayer::Move(void)
 	//	SetMotion(MOTION_WALK);
 
 		// 移動量・角度の設定
-		pos.x += sinf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
-		pos.z += cosf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
+		move.x = sinf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
+		move.z = cosf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
 		m_rotDest.y = fAngle;
 		SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(90.0f), rot.z));
 	}
 
-	// 座標設定
-	SetPos(pos);
+	// 移動量設定
+	SetMove(move);
+
+	// 入力されていない場合
+	if (!pKeyboard->GetPress(DIK_W) && !pKeyboard->GetPress(DIK_S) &&
+		!pKeyboard->GetPress(DIK_A) && !pKeyboard->GetPress(DIK_D))
+	{
+		// 移動量設定
+		SetMove(MIN_MOVE);
+	}
 
 	// 古い座標取得
 	D3DXVECTOR3 OldPos = GetOldPos();
@@ -308,6 +323,7 @@ void CPlayer::Move(void)
 
 //=============================================================================
 // 攻撃処理
+// Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Attack(void)
 {
@@ -331,5 +347,206 @@ void CPlayer::Attack(void)
 
 		// 弾生成
 		CBullet::Create(pos, rot);
+	}
+}
+//=============================================================================
+// 当たり判定処理
+// Author : SugawaraTsukasa
+//=============================================================================
+void CPlayer::Collision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// モデルの情報取得
+	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
+
+	// 位置取得
+	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
+
+	// 位置取得
+	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
+
+	// サイズ取得
+	D3DXVECTOR3 size = GetSize();
+
+	// 移動量取得
+	D3DXVECTOR3 move = GetMove();
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_ENEMY);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 CharacterPos = ZeroVector3;
+
+				// 位置取得
+				CharacterPos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+				CharacterPos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+				CharacterPos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
+				// サイズ取得
+				D3DXVECTOR3 CharacterSize = ((CCharacter*)pScene)->GetSize();
+
+				//どこの面に当たったか取得
+				//下
+				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_DOWN)
+				{
+					// 移動量0
+					move.y = MIN_MOVE.y;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.y = MIN_MOVE.y;
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 位置
+					pos.y = (size.y / DIVIDE_2) - (CharacterPos.y + CharacterSize.y / DIVIDE_2);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 上
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_UP)
+				{
+					// 移動量0
+					move.y = MIN_MOVE.y;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.y = MIN_MOVE.y;
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 位置
+					pos.y = (-size.y / DIVIDE_2) + (CharacterPos.y + CharacterSize.y / DIVIDE_2);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 左
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_LEFT)
+				{
+					// 移動量0
+					move.x = MIN_MOVE.x;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.x = MIN_MOVE.x;
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 位置
+					pos.x = (-size.x / DIVIDE_2) + (CharacterPos.x - CharacterSize.x / DIVIDE_2);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 右
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_RIGHT)
+				{
+					// 移動量0
+					move.x = MIN_MOVE.x;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.x = MIN_MOVE.x;
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 位置
+					pos.x = (size.x / DIVIDE_2) + (CharacterPos.x + CharacterSize.x / DIVIDE_2);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 手前
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_BACK)
+				{
+					// 移動量0
+					move.z = MIN_MOVE.z;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.z = MIN_MOVE.z;
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 位置
+					pos.z = (size.z / DIVIDE_2) + (CharacterPos.z + CharacterSize.z / DIVIDE_2);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 奥
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_PREVIOUS)
+				{
+					// 移動量0
+					move.z = MIN_MOVE.z;
+
+					// 移動量取得
+					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
+
+					// 移動量0
+					CharacterMove.z = MIN_MOVE.z;
+
+					// 位置
+					pos.z = (-size.z / DIVIDE_2) + (CharacterPos.z + CharacterSize.z / DIVIDE_2);
+
+					// 移動量設定
+					((CCharacter*)pScene)->SetMove(CharacterMove);
+
+					// 移動量設定
+					SetMove(move);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 次のポインタ取得
+				pScene= pSceneCur;
+			} 
+		}
 	}
 }

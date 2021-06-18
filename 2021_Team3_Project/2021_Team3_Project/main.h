@@ -68,7 +68,10 @@
 #define ZeroVector3		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
 #define WhiteColor		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
 #define BlackColor		(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f))
+#define INIT_INT		(0)			
+#define INIT_FLOAT		(0.0f)
 
+#define DIVIDE_2		(2)
 // ñºëOÇÃè»ó™
 using namespace std;
 
