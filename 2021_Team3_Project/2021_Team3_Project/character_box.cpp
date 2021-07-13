@@ -10,58 +10,69 @@
 #include "resource_manager.h"
 #include "character.h"
 #include "collision.h"
-#include "bullet.h"
+#include "modelanime.h"
+#include "character_box.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define PARENT_NUM	(0)		// 親のナンバー
+
+// キャラクターの位置
+#define POS			(D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43))
+//=============================================================================
+// マクロ定義
+// Author : Sugawara Tsukasa
+//=============================================================================
+
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CCharacter_Box::CCharacter_Box(PRIORITY Priority)
+{
+	m_pCharacter = nullptr;
+}
+//=============================================================================
+// インクルードファイル
+// Author : Sugawara Tsukasa
+//=============================================================================
+CCharacter_Box::~CCharacter_Box()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CCharacter_Box * CCharacter_Box::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CCharacter *pCharacter)
 {
-}
-//=============================================================================
-// インクルードファイル
-// Author : Sugawara Tsukasa
-//=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CCharacter_Boxのポインタ
+	CCharacter_Box *pBox = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pBox == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pBox = new CCharacter_Box;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pBox != nullptr)
 		{
+			// ポインタ代入
+			pBox->m_pCharacter = pCharacter;
+
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pBox->Init(pos, ZeroVector3);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pBox;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CCharacter_Box::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -70,17 +81,20 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
+		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BOX);
 
 		// モデルの情報を渡す
 		BindModel(model);
 	}
 
-	// サイズ設定
-	SetSize(SIZE);
+	// サイズ取得
+	D3DXVECTOR3 size = m_pCharacter->GetSize();
+
+	// 拡大率の設定
+	SetScale(size);
 
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }
@@ -88,7 +102,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CCharacter_Box::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
@@ -97,25 +111,19 @@ void CBullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CCharacter_Box::Update(void)
 {
 	// 更新処理
 	CModel::Update();
 
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
+	// ポインタ取得
+	CModelAnime *pAnime = m_pCharacter->GetModelAnime(PARENT_NUM);
 
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
+	// 位置設定
+	SetPos(POS);
 
-	// 移動
-	move.y -= GRAVITY;
-
-	// 移動量設定
-	SetMove(move);
-
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
+	// 死亡状態の場合
+	if (m_pCharacter->GetState() == CCharacter::STATE_DEAD)
 	{
 		// 終了
 		Uninit();
@@ -127,7 +135,7 @@ void CBullet::Update(void)
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CCharacter_Box::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();

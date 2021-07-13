@@ -18,7 +18,12 @@
 class CEnemy_Ship : public CEnemy
 {
 public:
-
+	enum PARTS
+	{
+		PARTS_SHIP = 0,
+		PARTS_BATTERY,		// 砲台
+		PARTS_MAX
+	};
 	CEnemy_Ship(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
 	~CEnemy_Ship();													// デストラクタ
 	static CEnemy_Ship *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
@@ -29,5 +34,8 @@ public:
 
 private:
 	void Move(void);												// 移動処理
+	void Attack(void);												// 攻撃処理
+
+	int m_nAttackCount;												// 攻撃カウント
 };
 #endif

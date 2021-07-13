@@ -21,12 +21,13 @@ public:
 	// “–‚½‚Á‚½–Ê
 	enum SURFACE
 	{
-		SURFACE_DOWN = 0,
+		SURFACE_DOWN = 1,
 		SURFACE_UP,
 		SURFACE_LEFT,
 		SURFACE_RIGHT,
-		SURFACE_BACK,
-		SURFACE_PREVIOUS
+		SURFACE_PREVIOUS,
+		SURFACE_BACK
+		
 	};
 	static bool CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2);
 	static bool CollisionCircularAndCircular(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, float radius1, float radius2);

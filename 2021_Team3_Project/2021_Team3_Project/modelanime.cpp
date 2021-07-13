@@ -114,11 +114,11 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	//アニメーションの向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotAnime.x, m_rotAnime.y, m_rotAnime.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotAnime.y, m_rotAnime.x, m_rotAnime.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	//向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.x, m_rot.y, m_rot.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	//アニメーションの位置を反映
@@ -222,6 +222,14 @@ void CModelAnime::HasPtrDelete(void)
 void CModelAnime::SetParent(CModelAnime * pParent)
 {
 	m_pParent = pParent;
+}
+
+//=============================================================================
+// 階層モデルクラスの向きの設定処理
+//=============================================================================
+void CModelAnime::SetRot(const D3DXVECTOR3 rot)
+{
+	m_rot = rot;
 }
 
 //=============================================================================

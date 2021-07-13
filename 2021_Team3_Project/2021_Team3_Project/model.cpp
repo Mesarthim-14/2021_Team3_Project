@@ -29,13 +29,15 @@ CModel::CModel(PRIORITY Priority) : CScene(Priority)
 	m_pos = ZeroVector3;
 	m_rot = ZeroVector3;
 	m_move = ZeroVector3;
-	m_size = MODEL_DEFAULT_SIZE;
+	m_size = ZeroVector3;
+	m_scale = MODEL_DEFAULT_SIZE;
 	m_apTexture = nullptr;
 	m_nTexPattern = 0;
 	m_nLife = 0;
 	m_Color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_fAlphaNum = 0.0f;
 	m_pShadow = nullptr;
+	m_State = STATE_NORMAL;
 }
 
 //=============================================================================
@@ -122,6 +124,10 @@ void CModel::Draw(void)
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 拡大率を反映
+	D3DXMatrixScaling(&mtxScale, m_scale.x, m_scale.y, m_scale.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
@@ -375,6 +381,14 @@ void CModel::SetColor(D3DXCOLOR color)
 void CModel::SetAlphaNum(float fAlphaNum)
 {
 	m_fAlphaNum = fAlphaNum;
+}
+
+//=============================================================================
+// 拡大率の設定
+//=============================================================================
+void CModel::SetScale(D3DXVECTOR3 scale)
+{
+	m_scale = scale;
 }
 
 //=============================================================================

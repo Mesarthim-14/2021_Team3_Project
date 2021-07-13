@@ -10,58 +10,66 @@
 #include "resource_manager.h"
 #include "character.h"
 #include "collision.h"
-#include "bullet.h"
+#include "modelanime.h"
+#include "model_box.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+
+//=============================================================================
+// マクロ定義
+// Author : Sugawara Tsukasa
+//=============================================================================
+
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CModel_Box::CModel_Box(PRIORITY Priority)
+{
+	m_pModel = nullptr;
+}
+//=============================================================================
+// インクルードファイル
+// Author : Sugawara Tsukasa
+//=============================================================================
+CModel_Box::~CModel_Box()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CModel_Box * CModel_Box::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel *pModel)
 {
-}
-//=============================================================================
-// インクルードファイル
-// Author : Sugawara Tsukasa
-//=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CModel_Boxのポインタ
+	CModel_Box *pBox = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pBox == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pBox = new CModel_Box;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pBox != nullptr)
 		{
+			// ポインタ代入
+			pBox->m_pModel = pModel;
+
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pBox->Init(pos, ZeroVector3);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pBox;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CModel_Box::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -70,17 +78,20 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
+		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BOX);
 
 		// モデルの情報を渡す
 		BindModel(model);
 	}
 
-	// サイズ設定
-	SetSize(SIZE);
+	// サイズ取得
+	D3DXVECTOR3 size = m_pModel->GetSize();
+
+	// 拡大率の設定
+	SetScale(size);
 
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }
@@ -88,7 +99,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CModel_Box::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
@@ -97,25 +108,22 @@ void CBullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CModel_Box::Update(void)
 {
 	// 更新処理
 	CModel::Update();
 
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
-
 	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
+	D3DXVECTOR3 pos = m_pModel->GetPos();
 
-	// 移動
-	move.y -= GRAVITY;
+	// モデルの状態取得
+	int nState = m_pModel->GetState();
 
-	// 移動量設定
-	SetMove(move);
+	// 位置設定
+	SetPos(pos);
 
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
+	// 死亡状態の場合
+	if (nState == CModel::STATE_DEAD)
 	{
 		// 終了
 		Uninit();
@@ -127,7 +135,7 @@ void CBullet::Update(void)
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CModel_Box::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();

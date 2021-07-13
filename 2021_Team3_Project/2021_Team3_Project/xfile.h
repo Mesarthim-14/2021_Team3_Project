@@ -47,6 +47,8 @@ public:
 	{
 		XFILE_NUM_NONE = -1,			// 初期値
 		XFILE_NUM_BULLET,				// 弾モデル
+		XFILE_NUM_BOX,					// 箱モデル
+		XFILE_NUM_MAP,					// マップ
 		XFILE_NUM_MAX
 	};
 

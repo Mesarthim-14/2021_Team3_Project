@@ -147,11 +147,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="character_box.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_bullet.cpp" />
     <ClCompile Include="enemy_ship.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
@@ -162,13 +164,16 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="map.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="mesh_3d.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelanime.cpp" />
+    <ClCompile Include="model_box.cpp" />
     <ClCompile Include="mode_base.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="player_bullet.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
@@ -187,11 +192,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="billboard.h" />
+    <ClInclude Include="character_box.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_bullet.h" />
     <ClInclude Include="enemy_ship.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
@@ -202,13 +209,16 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="mesh_3d.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="modelanime.h" />
+    <ClInclude Include="model_box.h" />
     <ClInclude Include="mode_base.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="player_bullet.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />

@@ -22,16 +22,16 @@
 // マクロ定義
 //=============================================================================
 #define CAMERA_DEFAULT_Fθ			(D3DXToRadian(75.0f))			// カメラのθDefault値
-#define DISTANCE					(1500.0f)						// 視点～注視点の距離
+#define DISTANCE					(2000.0f)						// 視点～注視点の距離
 #define DISTANCE_FAR_UP				(35.0f)							// カメラを引く値
 #define FAR_DISTANCE				(3000.0f)						// 遠めのカメラ
-#define PLAYER_HEIGHT				(400.0f)						// 注視点の高さ
+#define PLAYER_HEIGHT				(600.0f)						// 注視点の高さ
 #define CAMERA_MIN_Fφ				(D3DXToRadian(10.0f))			// カメラの最小角
 #define CAMERA_MAX_Fφ				(D3DXToRadian(170.0f))			// カメラの最大角
 #define CAMERA_MIN_HIGHT			(2.0f)							// カメラの最低高度
 #define STICK_SENSITIVITY			(100.0f)						// スティック感度
 #define STICK_INPUT_CONVERSION		(D3DXToRadian(2.0f))			// スティック入力変化量
-
+#define PLAYER_DEPTH				(-100.0f)						// Zの注視点
 //=============================================================================
 // インスタンス生成
 //=============================================================================
@@ -144,31 +144,31 @@ void CCamera::NomalUpdate(D3DXVECTOR3 PlayerPos, D3DXVECTOR3 PlayerRot)
 	// メモリ確保
 	CScene *pScene = nullptr;
 
-	//視点（カメラ座標）の左旋回
-	if (pKeyInput->GetPress(DIK_LEFT) || js.lZ > STICK_SENSITIVITY)
-	{
-		m_fHorizontal += STICK_INPUT_CONVERSION;
-	}
-	//視点（カメラ座標）の右旋回
-	if (pKeyInput->GetPress(DIK_RIGHT) || js.lZ < -STICK_SENSITIVITY)
-	{
-		m_fHorizontal -= STICK_INPUT_CONVERSION;
-	}
-	//視点（カメラ座標）の上旋回
-	if (pKeyInput->GetPress(DIK_UP) || js.lRz > STICK_SENSITIVITY && m_fVartical >= CAMERA_MIN_Fφ)
-	{
-		m_fVartical -= STICK_INPUT_CONVERSION;
-	}
-	//視点（カメラ座標）の下旋回
-	if (pKeyInput->GetPress(DIK_DOWN) || js.lRz < -STICK_SENSITIVITY && m_fVartical <= CAMERA_MAX_Fφ)
-	{
-		m_fVartical += STICK_INPUT_CONVERSION;
-	}
+	////視点（カメラ座標）の左旋回
+	//if (pKeyInput->GetPress(DIK_LEFT) || js.lZ > STICK_SENSITIVITY)
+	//{
+	//	m_fHorizontal += STICK_INPUT_CONVERSION;
+	//}
+	////視点（カメラ座標）の右旋回
+	//if (pKeyInput->GetPress(DIK_RIGHT) || js.lZ < -STICK_SENSITIVITY)
+	//{
+	//	m_fHorizontal -= STICK_INPUT_CONVERSION;
+	//}
+	////視点（カメラ座標）の上旋回
+	//if (pKeyInput->GetPress(DIK_UP) || js.lRz > STICK_SENSITIVITY && m_fVartical >= CAMERA_MIN_Fφ)
+	//{
+	//	m_fVartical -= STICK_INPUT_CONVERSION;
+	//}
+	////視点（カメラ座標）の下旋回
+	//if (pKeyInput->GetPress(DIK_DOWN) || js.lRz < -STICK_SENSITIVITY && m_fVartical <= CAMERA_MAX_Fφ)
+	//{
+	//	m_fVartical += STICK_INPUT_CONVERSION;
+	//}
 
 	// カメラの位置設定
-	m_posVDest.x = PlayerPos.x + m_fDistance * sinf(m_fVartical) * sinf(m_fHorizontal);	// カメラ位置X設定
-	m_posVDest.y = PlayerPos.y + PLAYER_HEIGHT + m_fDistance * cosf(m_fVartical);	// カメラ位置Y設定
-	m_posVDest.z = PlayerPos.z + m_fDistance * sinf(m_fVartical) * cosf(m_fHorizontal);	// カメラ位置Z設定
+	m_posVDest.x = PlayerPos.x + m_fDistance * sinf(m_fVartical) * sinf(PlayerRot.y);	// カメラ位置X設定
+	m_posVDest.y = PlayerPos.y + PLAYER_HEIGHT + m_fDistance * cosf(m_fVartical);		// カメラ位置Y設定
+	m_posVDest.z = PlayerPos.z + m_fDistance * sinf(m_fVartical) * cosf(PlayerRot.y);	// カメラ位置Z設定
 
 	m_posRDest = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + PLAYER_HEIGHT, PlayerPos.z);	//注視点設定
 

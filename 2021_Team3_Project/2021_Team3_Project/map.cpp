@@ -1,5 +1,5 @@
 //=============================================================================
-// 弾 [bullet.cpp]
+// マップ [bullet.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -10,58 +10,57 @@
 #include "resource_manager.h"
 #include "character.h"
 #include "collision.h"
-#include "bullet.h"
+#include "map.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
 #define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
 #define POS_Y_MIN	(0.0f)								// Y座標最小値
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CMap::CMap(PRIORITY Priority) : CModel(Priority)
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CMap::~CMap()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CMap * CMap::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	CMap *pMap = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pMap == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pMap = new CMap;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pMap != nullptr)
 		{
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pMap->Init(pos, rot);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pMap;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CMap::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -70,14 +69,11 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
+		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_MAP);
 
 		// モデルの情報を渡す
 		BindModel(model);
 	}
-
-	// サイズ設定
-	SetSize(SIZE);
 
 	// 初期化処理
 	CModel::Init(pos, ZeroVector3);
@@ -88,7 +84,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CMap::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
@@ -97,37 +93,16 @@ void CBullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CMap::Update(void)
 {
 	// 更新処理
 	CModel::Update();
-
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
-
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
-
-	// 移動
-	move.y -= GRAVITY;
-
-	// 移動量設定
-	SetMove(move);
-
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
-	{
-		// 終了
-		Uninit();
-
-		return;
-	}
 }
 //=============================================================================
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CMap::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();

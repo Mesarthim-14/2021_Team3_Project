@@ -67,6 +67,12 @@
     <Filter Include="06_Effect\Shadow">
       <UniqueIdentifier>{a272f913-76ce-47a3-aaab-485bb7051dbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07_Model\box">
+      <UniqueIdentifier>{7ffba507-c99e-4d54-8a63-9f1cc9027451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07_Model\Map">
+      <UniqueIdentifier>{79e4b572-7e9a-4cf2-b0f5-46178d37e7c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -183,6 +189,21 @@
     <ClCompile Include="shadow.cpp">
       <Filter>06_Effect\Shadow</Filter>
     </ClCompile>
+    <ClCompile Include="player_bullet.cpp">
+      <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_bullet.cpp">
+      <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="character_box.cpp">
+      <Filter>07_Model\box</Filter>
+    </ClCompile>
+    <ClCompile Include="model_box.cpp">
+      <Filter>07_Model\box</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>07_Model\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -298,6 +319,21 @@
     </ClInclude>
     <ClInclude Include="shadow.h">
       <Filter>06_Effect\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="player_bullet.h">
+      <Filter>07_Model\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_bullet.h">
+      <Filter>07_Model\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="character_box.h">
+      <Filter>07_Model\box</Filter>
+    </ClInclude>
+    <ClInclude Include="model_box.h">
+      <Filter>07_Model\box</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>07_Model\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

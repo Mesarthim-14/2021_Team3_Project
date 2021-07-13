@@ -30,6 +30,7 @@ public:
 	{
 		PRIORITY_0 = 0,
 		PRIORITY_1,
+		PRIORITY_MAP,		// マップ
 		PRIORITY_CHARACTER,	// キャラクター
 		PRIORITY_ENEMY,		// 敵
 		PRIORITY_EFFECT,	// エフェクト

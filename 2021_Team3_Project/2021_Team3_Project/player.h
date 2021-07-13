@@ -3,7 +3,7 @@
 //=============================================================================
 //
 // プレイヤークラスヘッダー [player.h]
-// Author : Konishi Yuuto
+// Author : Sugawara Tsukasa
 //
 //=============================================================================
 
@@ -20,7 +20,7 @@ enum PARTS_NUM
 {
 	PARTS_NUM_NONE = -1,
 	PARTS_NUM_WAIST,			// [0]腰
-	PARTS_NUM_MAX,				// モーション最大数
+	PARTS_NUM_MAX				// モーション最大数
 };
 
 //=============================================================================
@@ -36,6 +36,7 @@ public:
 	{
 		PLAYER_STATE_NONE = 0,		// 初期置
 		PLAYER_STATE_NORMAL,		// 通常状態
+		PLAYER_STATE_DEAD,			// 死亡状態
 		PLAYER_STATE_MAX			// 最大数
 	};
 
@@ -46,7 +47,7 @@ public:
 	{
 		MOTION_NONE = -1,
 		MOTION_IDOL,				// アイドルモーション
-		MOTION_MAX,					// モーション最大数
+		MOTION_MAX					// モーション最大数
 	};
 
 	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// コンストラクタ
@@ -59,7 +60,6 @@ public:
 	void Update(void);											// 更新処理
 	void Draw(void);											// 描画処理
 	void UpdateState(void);										// プレイヤーの状態
-	void UpdateMotionState(void);								// モーション状態
 	void PlayerControl(void);									// プレイヤーの制御
 	void UpdateRot(void);										// 角度の更新処理
 
@@ -67,8 +67,12 @@ public:
 	void Move(void);											// 移動処理
 	void Attack(void);											// 攻撃の関数
 	void Collision(void);										// 当たり判定
+	void CrossCollision(void);									// 外積当たり判定
+	void RayCollision(void);									// レイの当たり判定
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	bool m_bMove;									// 歩いているフラグ
+	int m_nAttackCount_R;							// 右攻撃カウント
+	int m_nAttackCount_L;							// 左攻撃カウント
 };
 #endif
