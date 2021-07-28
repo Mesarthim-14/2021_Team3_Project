@@ -1,67 +1,85 @@
 //=============================================================================
-// 弾 [bullet.cpp]
+// 敵の櫓 [enemy_ship.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
+
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
 #include "manager.h"
 #include "resource_manager.h"
-#include "character.h"
-#include "collision.h"
-#include "bullet.h"
+#include "game.h"
+#include "player.h"
+#include "enemy_bullet.h"
+#include "character_box.h"
+#include "enemy_life.h"
+#include "enemy_scaffolding.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define MAX_LIFE		(100)									// 体力
+#define MOVE_VALUE		(10.0f)									// 移動量
+#define ROT_SPEED		(0.01f)									// 旋回速度
+#define ANGLE_180		(180)									// 180度
+#define ANGLE_360		(360)									// 360度
+#define SIZE			(D3DXVECTOR3 (700.0f,1200.0f,700.0f))	// サイズ
+#define ATTACK_COUNT	(300)									// 攻撃間隔
+
+// 砲台の位置
+#define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CEnemy_Scaffolding::CEnemy_Scaffolding(PRIORITY Priority) : CEnemy(Priority)
+{
+	m_nAttackCount = ZERO_INT;
+}
+//=============================================================================
+// デストラクタ
+// Author : Sugawara Tsukasa
+//=============================================================================
+CEnemy_Scaffolding::~CEnemy_Scaffolding()
 {
 }
 //=============================================================================
-// インクルードファイル
+// 生成関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CEnemy_Scaffolding * CEnemy_Scaffolding::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-}
-//=============================================================================
-// インクルードファイル
-// Author : Sugawara Tsukasa
-//=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CEnemy_Shipポインタ
+	CEnemy_Scaffolding *pEnemy_Scaffolding = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pEnemy_Scaffolding == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pEnemy_Scaffolding = new CEnemy_Scaffolding;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pEnemy_Scaffolding != nullptr)
 		{
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pEnemy_Scaffolding->Init(pos, rot);
+
+			// ボックス生成
+			CCharacter_Box::Create(pos, rot, pEnemy_Scaffolding);
+
+			// ライフゲージ生成
+			CEnemy_Life::Create(pos, rot, pEnemy_Scaffolding);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pEnemy_Scaffolding;
 }
 //=============================================================================
-// 初期化処理関数
+// 初期化関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemy_Scaffolding::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -69,80 +87,75 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
-
 		// モデルの情報を渡す
-		BindModel(model);
+		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_ENEMY_SCAFFOLDING);
 	}
+
+	// 体力設定
+	SetLife(MAX_LIFE);
 
 	// サイズ設定
 	SetSize(SIZE);
 
-	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
-
+	// 初期化関数
+	CEnemy::Init(pos, rot);
 	return S_OK;
 }
 //=============================================================================
-// 終了処理関数
+// 終了関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CEnemy_Scaffolding::Uninit(void)
 {
 	// 終了処理
-	CModel::Uninit();
+	CEnemy::Uninit();
 }
 //=============================================================================
-// 更新処理関数
+// 更新関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CEnemy_Scaffolding::Update(void)
 {
 	// 更新処理
-	CModel::Update();
-
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
+	CEnemy::Update();
 
 	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
 
-	// 移動
-	move.y -= GRAVITY;
+	// 古い座標保存
+	SetPosOld(pos);
 
-	// 移動量設定
-	SetMove(move);
-
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
-	{
-		// 死亡状態に
-		SetState(STATE_DEAD);
-	}
-	// 死亡状態の場合
-	if (GetState() == STATE_DEAD)
-	{
-		Death();
-	}
+	// 攻撃処理
+	Attack();
 }
 //=============================================================================
-// 描画処理関数
+// 描画関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CEnemy_Scaffolding::Draw(void)
 {
-	// 描画処理
-	CModel::Draw();
+	// 描画関数
+	CEnemy::Draw();
 }
 //=============================================================================
-// 死亡処理関数
+// 攻撃処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Death(void)
+void CEnemy_Scaffolding::Attack(void)
 {
-	// 終了処理
-	Uninit();
+	// インクリメント
+	m_nAttackCount++;
 
-	return;
+	// カウントが60以上になった場合
+	if (m_nAttackCount >= ATTACK_COUNT)
+	{
+		// 砲台のポインタ取得
+		CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
+
+		// 弾生成
+		CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
+
+		// 0に
+		m_nAttackCount = ZERO_INT;
+	}
 }

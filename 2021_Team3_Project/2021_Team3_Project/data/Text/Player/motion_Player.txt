@@ -14,51 +14,50 @@ NUM_MODEL = 5
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Player/00_ship.x	# [0]船
-MODEL_FILENAME = data/MODEL/Player/01_gear.x	# [1]左の水かき
-MODEL_FILENAME = data/MODEL/Player/02_gear.x	# [2]右の水かき
-MODEL_FILENAME = data/MODEL/Player/03_battery.x	# [3]砲台
-MODEL_FILENAME = data/MODEL/Player/04_battery.x	# [4]砲台
+MODEL_FILENAME = data/Model/Player/00_ship.x	# [0]船
+MODEL_FILENAME = data/Model/Player/01_gear.x	# [1]左の水かき
+MODEL_FILENAME = data/Model/Player/02_gear.x	# [2]右の水かき
+MODEL_FILENAME = data/Model/Player/03_battery.x	# [3]砲台
+MODEL_FILENAME = data/Model/Player/04_battery.x	# [4]砲台
 
 #------------------------------------------------------------------------------
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
 	PARTSSET
-		INDEX = 0					# 腹
+		INDEX = 0					# 船
 		PARENT = -1					# (親)NULL
 		POS = 0.0 0.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
-		INDEX = 1					# 胸
-		PARENT = 0					# (親)NULL
+		INDEX = 1					# 左の水かき
+		PARENT = 0					# (親)船
 		POS = -350.0 282.0 -5.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
-		INDEX = 2					# 頭
-		PARENT = 0					# (親)体
+		INDEX = 2					# 右の水かき
+		PARENT = 0					# (親)船
 		POS = 350.0 282.0 -5.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
-		INDEX = 3					# 胸
-		PARENT = 0					# (親)NULL
+		INDEX = 3					# 砲台
+		PARENT = 0					# (親)船
 		POS = -50.0 550.0 -560.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
-		INDEX = 4					# 頭
-		PARENT = 0					# (親)体
+		INDEX = 4					# 砲台
+		PARENT = 0					# (親)船
 		POS = 50.0 550.0 -560.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
-	
 END_CHARACTERSET
 #------------------------------------------------------------------------------
 # モーション情報

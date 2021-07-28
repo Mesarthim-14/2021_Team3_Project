@@ -24,6 +24,9 @@
 #include "enemy_ship.h"
 #include "mesh_3d.h"
 #include "resource_manager.h"
+#include "enemy_scaffolding.h"
+#include "torpedo.h"
+#include "rock.h"
 #include "map.h"
 //=======================================================================================
 // マクロ定義
@@ -32,6 +35,7 @@
 #define ENEMY_POS_2	(D3DXVECTOR3(5000.0f,0.0f,-3000.0f))
 #define ENEMY_ROT	(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))
 #define PLAYER_POS	(D3DXVECTOR3(0.0f,0.0f,-500.0f))
+
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -171,8 +175,7 @@ void CGame::CreatePlayer(void)
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
 	{
-		m_pPlayer = CPlayer::Create(PLAYER_POS,
-			ZeroVector3);
+		m_pPlayer = CPlayer::Create(PLAYER_POS, ZeroVector3);
 	}
 }
 
@@ -182,10 +185,12 @@ void CGame::CreatePlayer(void)
 void CGame::CreateMap(void)
 {
 	// 地面の生成
-	CreateGround();
+	//CreateGround();
 
 	// マップ生成
 	//m_pMap = CMap::Create(ZeroVector3, ZeroVector3);
+
+	//CRock::Create(ENEMY_POS,ENEMY_ROT);
 }
 
 //=======================================================================================
@@ -204,7 +209,13 @@ void CGame::CreateGround(void)
 void CGame::CreateEnemy(void)
 {
 	// 生成関数
-	CEnemy_Ship::Create(ENEMY_POS, ENEMY_ROT);
+	//CEnemy_Ship::Create(ENEMY_POS, ENEMY_ROT);
+
+	// 櫓生成
+	//CEnemy_Scaffolding::Create(ENEMY_POS, ENEMY_ROT);
+
+	// 魚雷生成
+	CTorpedo::Create(ENEMY_POS, ENEMY_ROT);
 }
 
 //=======================================================================================

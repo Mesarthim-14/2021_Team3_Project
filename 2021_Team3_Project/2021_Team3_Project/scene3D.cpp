@@ -220,6 +220,9 @@ void CScene3D::Draw(void)
 
 	//テクスチャの設定
 	pDevice->SetTexture(0, nullptr);
+
+	// アルファテストを有力化
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //=============================================================================

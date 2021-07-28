@@ -68,10 +68,10 @@ HRESULT CBillboard::Init(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標設定の設定
-	pVtx[0].pos = D3DXVECTOR3(- size.x / 2, + size.y / 2, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+ size.x / 2, + size.y / 2, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(- size.x / 2, - size.y / 2, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+ size.x / 2, - size.y / 2, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(- size.x / 2, + size.y / 2, +size.z / 2);
+	pVtx[1].pos = D3DXVECTOR3(+ size.x / 2, + size.y / 2, +size.z / 2);
+	pVtx[2].pos = D3DXVECTOR3(- size.x / 2, - size.y / 2, -size.z / 2);
+	pVtx[3].pos = D3DXVECTOR3(+ size.x / 2, - size.y / 2, -size.z / 2);
 
 	//各頂点の法線の設定（※ベクトルの大きさは１にする必要がある）
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -122,15 +122,6 @@ void CBillboard::Update(void)
 	{
 		// アニメーションを更新する
 		UpdateAnimation();
-	}
-
-	// 体力を減らしていく
-	m_nLife--;
-
-	if (m_nLife <= 0)
-	{
-		// 終了処理
-		Uninit();
 	}
 }
 
@@ -192,7 +183,7 @@ void CBillboard::Draw(void)
 	D3DXMatrixScaling(&mtxScale,
 		size.x / m_sizeBase.x,
 		size.y / m_sizeBase.y,
-		0.0f);
+		size.z / m_sizeBase.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	// 回転の逆行列の生成
@@ -210,6 +201,13 @@ void CBillboard::Draw(void)
 	// 位置を反映、ワールドマトリクス設定、ポリゴン描画
 	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// 向き取得
+	D3DXVECTOR3 rot = GetRot();
+
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	// ワールドマトリクスの設定 初期化、向き、位置
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
@@ -245,6 +243,9 @@ void CBillboard::Draw(void)
 	pDevice->SetRenderState(D3DRS_AMBIENT, ambient);	// アンビエントを戻す
 
 	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
+
+	// アルファテスト無効化
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	pDevice->LightEnable(0, TRUE);
 }

@@ -15,15 +15,17 @@
 //=============================================================================
 bool CCollision::CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2)
 {
+	bool bCollision = false;
+
 	if (pos2.x - (size2.x / 2) < pos1.x + (size1.x / 2) &&
 		pos2.x + (size2.x / 2) > pos1.x - (size1.x / 2) &&
 		pos2.y - (size2.y / 2) < pos1.y + (size1.y / 2) &&
 		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
 	{
-		return true;
+		bCollision = true;
 	}
 
-	return false;
+	return bCollision;
 }
 
 //=============================================================================

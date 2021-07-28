@@ -48,6 +48,8 @@ public:
 		XFILE_NUM_NONE = -1,			// 初期値
 		XFILE_NUM_BULLET,				// 弾モデル
 		XFILE_NUM_BOX,					// 箱モデル
+		XFILE_NUM_ROCK,					// 岩モデル
+		XFILE_NUM_TORPEDO,				// 魚雷モデル
 		XFILE_NUM_MAP,					// マップ
 		XFILE_NUM_MAX
 	};
@@ -60,6 +62,7 @@ public:
 		HIERARCHY_XFILE_NUM_NONE = -1,			// 初期値
 		HIERARCHY_XFILE_NUM_PLAYER,				// プレイヤーモデル
 		HIERARCHY_XFILE_NUM_ENEMY_SHIP,			// 敵船のモデル
+		HIERARCHY_XFILE_NUM_ENEMY_SCAFFOLDING,	// 櫓
 		HIERARCHY_XFILE_NUM_MAX					// 最大数
 	};
 

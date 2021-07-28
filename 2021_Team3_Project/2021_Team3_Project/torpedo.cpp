@@ -1,5 +1,5 @@
 //=============================================================================
-// 弾 [bullet.cpp]
+// 魚雷 [torpedo.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -9,59 +9,62 @@
 #include "manager.h"
 #include "resource_manager.h"
 #include "character.h"
+#include "game.h"
+#include "player.h"
 #include "collision.h"
-#include "bullet.h"
+#include "torpedo.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define SIZE			(D3DXVECTOR3(150.0f,150.0f,150.0f))			// サイズ
+#define ROT				(D3DXVECTOR3(rot.x,rot.y + m_fAngle,rot.z))	// 向き
+#define MOVE_VALUE		(10.0f)										// 移動量
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CTorpedo::CTorpedo(PRIORITY Priority)
+{
+	m_fAngle = ZERO_FLOAT;
+}
+//=============================================================================
+// インクルードファイル
+// Author : Sugawara Tsukasa
+//=============================================================================
+CTorpedo::~CTorpedo()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CTorpedo * CTorpedo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-}
-//=============================================================================
-// インクルードファイル
-// Author : Sugawara Tsukasa
-//=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CTorpedoのポインタ
+	CTorpedo *pTorpedo = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pTorpedo == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pTorpedo = new CTorpedo;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pTorpedo != nullptr)
 		{
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pTorpedo->Init(pos, rot);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pTorpedo;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CTorpedo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -70,8 +73,8 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
-
+		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_TORPEDO);
+		 
 		// モデルの情報を渡す
 		BindModel(model);
 	}
@@ -82,13 +85,25 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 初期化処理
 	CModel::Init(pos, ZeroVector3);
 
+	// プレイヤーのポインタ取得
+	CPlayer *pPlayer = GET_PLAYER_PTR;
+
+	// 位置座標取得
+	D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
+
+	// 角度
+	m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
+
+	// 向き
+	SetRot(ROT);
+
 	return S_OK;
 }
 //=============================================================================
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CTorpedo::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
@@ -97,52 +112,43 @@ void CBullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CTorpedo::Update(void)
 {
 	// 更新処理
 	CModel::Update();
 
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
+	// 移動処理
+	//Move();
 
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
-
-	// 移動
-	move.y -= GRAVITY;
-
-	// 移動量設定
-	SetMove(move);
-
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
-	{
-		// 死亡状態に
-		SetState(STATE_DEAD);
-	}
-	// 死亡状態の場合
-	if (GetState() == STATE_DEAD)
-	{
-		Death();
-	}
+	// 当たり判定
+	Collision();
 }
 //=============================================================================
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CTorpedo::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
 }
 //=============================================================================
-// 死亡処理関数
+// 移動処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Death(void)
+void CTorpedo::Move(void)
 {
-	// 終了処理
-	Uninit();
+	// 移動量取得
+	D3DXVECTOR3 move = GetMove();
 
-	return;
+	// 弾の移動
+	move.x = -sinf(m_fAngle) *MOVE_VALUE;
+	move.z = -cosf(m_fAngle) *MOVE_VALUE;
+}
+//=============================================================================
+// 当たり判定処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CTorpedo::Collision(void)
+{
 }

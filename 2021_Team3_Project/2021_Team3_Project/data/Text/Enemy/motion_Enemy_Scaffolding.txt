@@ -1,6 +1,6 @@
 #==============================================================================
 #
-# 「階層構造ファイル」
+# 『モーションビューワ』スクリプトファイル [motion_runningman.txt]
 # Author :Tsukasa Sugawara
 #
 #==============================================================================
@@ -14,13 +14,18 @@ NUM_MODEL = 2
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/Model/Enemy/Enemy_Ship/00_Enemy_Ship.x		# [0]船
-MODEL_FILENAME = data/Model/Enemy/Enemy_Ship/01_Enemy_Battery.x		# [1]砲台
+MODEL_FILENAME = data/MODEL/Enemy/Enemy_Scaffolding/00_Scaffolding.x		# [0]櫓
+MODEL_FILENAME = data/MODEL/Enemy/Enemy_Scaffolding/01_Enemy_Battery.x		# [1]砲台
 
 #------------------------------------------------------------------------------
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
+	MOVE = 3.0						# 移動量
+	JUMP = 10.25					# ジャンプ量
+	RADIUS = 20.0					# 半径
+	NUM_PARTS = 2					# パーツ数
+	
 	PARTSSET
 		INDEX = 0					# 腹
 		PARENT = -1					# (親)NULL
@@ -31,7 +36,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 胸
 		PARENT = 0					# (親)NULL
-		POS = 0.0 725.0 170.00
+		POS = 0.0 1020.0 -170.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET
@@ -50,35 +55,35 @@ MOTIONSET
 		FRAME = 40
 		KEY	# ----- [ 0 ] -----
 			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			ROT = 0.0 0.00 0.0
 		END_KEY
 
 		KEY	# ----- [ 1 ] -----
-			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			POS = 0.00 0.00 0.0
+			ROT = 0.0 0.00 0.00
 		END_KEY
 
 		KEY	# ----- [ 2 ] -----
 			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			ROT = 0.0 0.0 0.00
 		END_KEY
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 1 / 2 >> ---
 		FRAME = 40
 		KEY	# ----- [ 0 ] -----
-			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			POS = 0.0 0.00 0.0
+			ROT = 0.0 0.00 0.00
 		END_KEY
 
 		KEY	# ----- [ 1 ] -----
-			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			POS = 0.00 0.00 0.00
+			ROT = 0.0 0.00 0.00
 		END_KEY
 
 		KEY	# ----- [ 2 ] -----
-			POS = 0.0 0.0 0.0
-			ROT = 0.0 0.0 0.0
+			POS = 0.0 0.00 0.00
+			ROT = 0.0 0.00 0.00
 		END_KEY
 	END_KEYSET
 END_MOTIONSET

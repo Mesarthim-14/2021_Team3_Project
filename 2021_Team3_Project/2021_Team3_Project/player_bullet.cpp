@@ -167,11 +167,6 @@ void CPlayer_Bullet::Collision(void)
 
 					// ƒ‰ƒCƒtİ’è
 					((CCharacter*)pScene)->SetLife(nLife);
-
-					// I—¹
-					Uninit();
-
-					return;
 				}
 
 				// Ÿ‚É‘ã“ü

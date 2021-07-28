@@ -1,86 +1,89 @@
 //=============================================================================
-// 弾 [bullet.cpp]
+// 敵ライフゲージ [enemy_life.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-#include "manager.h"
-#include "resource_manager.h"
-#include "character.h"
-#include "collision.h"
-#include "bullet.h"
+#include "enemy_life.h"
+#include "gage_3d_back.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define POS			(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
+#define SIZE		(D3DXVECTOR3(500.0f,30.0f,0.0f))				// サイズ
+#define COL			(D3DXCOLOR(1.0f,0.0f,0.0f,1.0f))				// 色
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CEnemy_Life::CEnemy_Life(PRIORITY nPriority) : CGage_3D(nPriority)
+{
+	m_pEnemy		= nullptr;
+}
+//=============================================================================
+// デストラクタ
+// Author : Sugawara Tsukasa
+//=============================================================================
+CEnemy_Life::~CEnemy_Life()
 {
 }
 //=============================================================================
-// インクルードファイル
+// 生成処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CEnemy_Life * CEnemy_Life::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy * pEnemy)
 {
-}
-//=============================================================================
-// インクルードファイル
-// Author : Sugawara Tsukasa
-//=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CEnemy_Lifeのポインタ
+	CEnemy_Life * pEnemy_Life = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pEnemy_Life == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pEnemy_Life = new CEnemy_Life;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pEnemy_Life != nullptr)
 		{
+			// 代入
+			pEnemy_Life->m_pEnemy = pEnemy;
+
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pEnemy_Life->Init(pos, SIZE);
+
+			// 背景生成
+			CGage_3D_Back::Create(pos, size, pEnemy);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pEnemy_Life;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemy_Life::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// モデル情報取得
-	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
+	// ライフ取得
+	int nLife = m_pEnemy->GetLife();
 
-	// !nullcheck
-	if (pXfile != nullptr)
-	{
-		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
-
-		// モデルの情報を渡す
-		BindModel(model);
-	}
-
-	// サイズ設定
-	SetSize(SIZE);
+	// ライフの最大値設定
+	SetMaxGageNum(nLife);
 
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CGage_3D::Init(pos, size);
+
+	// ライフの値設定
+	SetGageNum(nLife);
+
+	// 色設定
+	SetColor(COL);
+
+	// アルファブレンド
+	SetAlpha(true);
 
 	return S_OK;
 }
@@ -88,61 +91,44 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CEnemy_Life::Uninit(void)
 {
 	// 終了処理
-	CModel::Uninit();
+	CGage_3D::Uninit();
 }
 //=============================================================================
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CEnemy_Life::Update(void)
 {
 	// 更新処理
-	CModel::Update();
-
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
+	CGage_3D::Update();
 
 	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
+	D3DXVECTOR3 pos = m_pEnemy->GetPos();
 
-	// 移動
-	move.y -= GRAVITY;
+	// サイズ取得
+	D3DXVECTOR3 size = m_pEnemy->GetSize();
 
-	// 移動量設定
-	SetMove(move);
+	// 位置設定
+	SetPosition(POS);
 
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
-	{
-		// 死亡状態に
-		SetState(STATE_DEAD);
-	}
 	// 死亡状態の場合
-	if (GetState() == STATE_DEAD)
+	if (m_pEnemy->GetState() == CEnemy::STATE_DEAD)
 	{
-		Death();
+		// 終了
+		Uninit();
+
+		return;
 	}
 }
 //=============================================================================
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CEnemy_Life::Draw(void)
 {
-	// 描画処理
-	CModel::Draw();
-}
-//=============================================================================
-// 死亡処理関数
-// Author : Sugawara Tsukasa
-//=============================================================================
-void CBullet::Death(void)
-{
-	// 終了処理
-	Uninit();
-
-	return;
+	// 更新処理
+	CGage_3D::Draw();
 }

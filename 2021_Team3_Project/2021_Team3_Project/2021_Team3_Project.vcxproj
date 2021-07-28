@@ -153,9 +153,15 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_attack_arrow_polygon.cpp" />
+    <ClCompile Include="enemy_attack_point_polygon.cpp" />
     <ClCompile Include="enemy_bullet.cpp" />
+    <ClCompile Include="enemy_life.cpp" />
+    <ClCompile Include="enemy_scaffolding.cpp" />
     <ClCompile Include="enemy_ship.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="gage_3d.cpp" />
+    <ClCompile Include="gage_3d_back.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="joypad.cpp" />
@@ -178,6 +184,7 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="rock.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3D.cpp" />
@@ -187,6 +194,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="torpedo.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="xfile.cpp" />
   </ItemGroup>
@@ -198,9 +206,15 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_attack_arrow_polygon.h" />
+    <ClInclude Include="enemy_attack_point_polygon.h" />
     <ClInclude Include="enemy_bullet.h" />
+    <ClInclude Include="enemy_life.h" />
+    <ClInclude Include="enemy_scaffolding.h" />
     <ClInclude Include="enemy_ship.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="gage_3d.h" />
+    <ClInclude Include="gage_3d_back.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="joypad.h" />
@@ -223,6 +237,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="rock.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3D.h" />
@@ -232,6 +247,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="torpedo.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="xfile.h" />
   </ItemGroup>

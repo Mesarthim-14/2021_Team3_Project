@@ -1,5 +1,5 @@
 //=============================================================================
-// 弾 [bullet.cpp]
+// 岩 [rock.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -10,58 +10,65 @@
 #include "resource_manager.h"
 #include "character.h"
 #include "collision.h"
-#include "bullet.h"
+#include "model_box.h"
+#include "game.h"
+#include "player.h"
+#include "rock.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define GRAVITY		(0.1f)								// 重力
-#define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
-#define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define GRAVITY		(0.1f)									// 重力
+#define SIZE		(D3DXVECTOR3 (1400.0f,1400.0f,1400.0f))	// サイズ
+#define POS_Y_MIN	(0.0f)									// Y座標最小値
+#define MIN_MOVE	(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CRock::CRock(PRIORITY Priority) : CModel(Priority)
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::~CBullet()
+CRock::~CRock()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet * CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CRock * CRock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CBulletのポインタ
-	CBullet *pBullet = nullptr;
+	// CRockのポインタ
+	CRock *pRock = nullptr;
 
 	// nullcheck
-	if (pBullet == nullptr)
+	if (pRock == nullptr)
 	{
 		// メモリ確保
-		pBullet = new CBullet;
+		pRock = new CRock;
 
 		// !nullcheck
-		if (pBullet != nullptr)
+		if (pRock != nullptr)
 		{
 			// 初期化処理
-			pBullet->Init(pos, rot);
+			pRock->Init(pos, rot);
+
+			// 箱生成
+			CModel_Box::Create(pos, rot, pRock);
 		}
 	}
 	// ポインタを返す
-	return pBullet;
+	return pRock;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CRock::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル情報取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
@@ -70,7 +77,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
+		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_ROCK);
 
 		// モデルの情報を渡す
 		BindModel(model);
@@ -88,7 +95,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Uninit(void)
+void CRock::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
@@ -97,52 +104,17 @@ void CBullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Update(void)
+void CRock::Update(void)
 {
 	// 更新処理
 	CModel::Update();
-
-	// 移動量取得
-	D3DXVECTOR3 move = GetMove();
-
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
-
-	// 移動
-	move.y -= GRAVITY;
-
-	// 移動量設定
-	SetMove(move);
-
-	// yが0以下の場合
-	if (pos.y <= POS_Y_MIN)
-	{
-		// 死亡状態に
-		SetState(STATE_DEAD);
-	}
-	// 死亡状態の場合
-	if (GetState() == STATE_DEAD)
-	{
-		Death();
-	}
 }
 //=============================================================================
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CBullet::Draw(void)
+void CRock::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
-}
-//=============================================================================
-// 死亡処理関数
-// Author : Sugawara Tsukasa
-//=============================================================================
-void CBullet::Death(void)
-{
-	// 終了処理
-	Uninit();
-
-	return;
 }

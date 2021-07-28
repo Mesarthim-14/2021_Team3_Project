@@ -13,25 +13,30 @@
 #include "game.h"
 #include "player.h"
 #include "model_box.h"
+#include "enemy_attack_arrow_polygon.h"
+#include "enemy_attack_point_polygon.h"
 #include "enemy_bullet.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE_X	(40.0f)								// 移動量
+#define MOVE_VALUE		(40.0f)								// 移動量
 #define MOVE_VALUE_Y	(60.0f)								// 移動量
 #define POS_Y_MAX		(4000.0f)							// Y最大値
 #define PARENT_NUM		(0)									// 親のナンバー
 #define DAMAGE			(100)								// ダメージ
 #define ANGLE_90		(D3DXToRadian(90))					// 90度
+#define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
+#define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CEnemy_Bullet::CEnemy_Bullet(PRIORITY Priority)
 {
-	m_PlayerPos = ZeroVector3;
-	m_State		= STATE_UP;
+	m_PlayerPos		= ZeroVector3;
+	m_State			= STATE_UP;
+	m_pEnemy_Bullet = nullptr;
 }
 //=============================================================================
 // インクルードファイル
@@ -47,26 +52,29 @@ CEnemy_Bullet::~CEnemy_Bullet()
 CEnemy_Bullet * CEnemy_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// CEnemy_Bulletのポインタ
-	CEnemy_Bullet *pPlayer_Bullet = nullptr;
+	CEnemy_Bullet *pEnemy_Bullet = nullptr;
 
 	// nullcheck
-	if (pPlayer_Bullet == nullptr)
+	if (pEnemy_Bullet == nullptr)
 	{
 		// メモリ確保
-		pPlayer_Bullet = new CEnemy_Bullet;
+		pEnemy_Bullet = new CEnemy_Bullet;
 
 		// !nullcheck
-		if (pPlayer_Bullet != nullptr)
+		if (pEnemy_Bullet != nullptr)
 		{
+			// 代入
+			pEnemy_Bullet->m_pEnemy_Bullet = pEnemy_Bullet;
+
 			// 初期化処理
-			pPlayer_Bullet->Init(pos, rot);
+			pEnemy_Bullet->Init(pos, rot);
 
 			// 箱生成
-			CModel_Box::Create(pos, rot, pPlayer_Bullet);
+			CModel_Box::Create(pos, rot, pEnemy_Bullet);
 		}
 	}
 	// ポインタを返す
-	return pPlayer_Bullet;
+	return pEnemy_Bullet;
 }
 //=============================================================================
 // 初期化処理関数
@@ -83,6 +91,8 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 位置座標取得
 	m_PlayerPos = pPlayer->GetPos();
 
+	// 攻撃地点生成
+	AttackPoint_Crate();
 	return S_OK;
 }
 //=============================================================================
@@ -134,11 +144,11 @@ void CEnemy_Bullet::Move(void)
 	float fAngle = atan2f((pos.x - m_PlayerPos.x), (pos.z - m_PlayerPos.z));
 
 	// 0以上の場合
-	if ((int)fAngle != ZERO_FLOAT)
+	if ((int)fAngle != ZERO_INT)
 	{
 		// 弾の移動
-		move.x = -sinf(fAngle) *MOVE_VALUE_X;
-		move.z = -cosf(fAngle) *MOVE_VALUE_X;
+		move.x = -sinf(fAngle) *MOVE_VALUE;
+		move.z = -cosf(fAngle) *MOVE_VALUE;
 	}
 	// UPの場合
 	if (m_State == STATE_UP)
@@ -197,11 +207,18 @@ void CEnemy_Bullet::Collision(void)
 	if (CCollision::CollisionRectangleAndRectangle(pos, PlayerPos, size, PlayerSize) == true)
 	{
 		// 状態設定
-		SetState(CModel::STATE_DEAD);
-
-		// 終了
-		Uninit();
-
-		return;
+		SetState(STATE_DEAD);
 	}
+}
+//=============================================================================
+// 攻撃地点生成
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CEnemy_Bullet::AttackPoint_Crate(void)
+{
+	// 矢印生成
+	CEnemy_Attack_Arrow_Polygon::Create(m_PlayerPos, ARROW_SIZE, m_pEnemy_Bullet);
+
+	// 攻撃地点生成
+	CEnemy_Attack_Point_Polygon::Create(m_PlayerPos, POINT_SIZE, m_pEnemy_Bullet);
 }

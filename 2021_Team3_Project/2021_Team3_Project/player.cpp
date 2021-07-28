@@ -39,7 +39,7 @@
 #define BATTERY_R_NUM					(3)										// 砲台右のナンバー
 #define BATTERY_L_NUM					(4)										// 砲台左のナンバー
 #define MIN_MOVE						(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小値
-#define SIZE							(D3DXVECTOR3 (800.0f,900.0f,800.0f))	// サイズ
+#define SIZE							(D3DXVECTOR3 (800.0f,1000.0f,800.0f))	// サイズ
 #define PARENT_NUM						(0)										// 親のナンバー
 #define GEAR_SPIN_ANGLE					(D3DXToRadian(2.0f))					// 歯車の回転角度
 #define SPIN_ANGLE						(D3DXToRadian(1.0f))					// 旋回角度
@@ -56,6 +56,13 @@
 #define RAY_HIT_RANGE					(500.0f)								// 範囲
 #define RAY_HIT_RANGE_UNDER				(0.0f)									// 範囲
 #define MIN_LIFE						(0)										// ライフの最小
+#define LIFE							(100)									// ライフ
+#define ANGLE_MAX						(D3DXToRadian(360.0f))					// 角度の最大
+#define ANGLE_MIN						(D3DXToRadian(-360.0f))					// 角度の最小
+#define ANGLE_45						(D3DXToRadian(45.0f))					// 角度45
+#define ANGLE_135						(D3DXToRadian(135.0f))					// 角度135
+#define GEAR_DEF_ROT					(D3DXToRadian(0.0f))					// デフォルトの角度
+#define DEAD_ZONE						(0.0f)									// コントローラーの反応しない範囲
 // 船体の位置
 #define SHIP_POS						(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42 + 2.0f, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -123,6 +130,12 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// サイズ設定
 	SetSize(SIZE);
 
+	// ライフ
+	SetLife(LIFE);
+
+	// 速度設定
+	SetSpeed(PLAYER_SPEED);
+
 	return S_OK;
 }
 
@@ -184,7 +197,7 @@ void CPlayer::UpdateState(void)
 	int nState = GetState();
 
 	// DEADの場合
-	if (nState = CCharacter::STATE_DEAD)
+	if (nState == CCharacter::STATE_DEAD)
 	{
 		// 死亡処理
 		Death();
@@ -257,7 +270,8 @@ void CPlayer::Move(void)
 	D3DXVECTOR3 pos = GetPos();												// 座標
 	D3DXVECTOR3 rot = GetRot();												// 角度
 	float fSpeed = GetSpeed();												// スピード
-	MOTION_STATE MotionState = (MOTION_STATE)GetMotion()->GetMotionState();	// モーションの状態
+	float fAngle_R = ZERO_FLOAT;											// 右角度
+	float fAngle_L = ZERO_FLOAT;											// 左角度
 
 	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
@@ -268,7 +282,7 @@ void CPlayer::Move(void)
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
 	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-
+	
 	////入力が存在する
 	//if ((js.lX != 0.0f || js.lY != 0.0f))
 	//{
@@ -319,174 +333,184 @@ void CPlayer::Move(void)
 	//	m_rotDest.y = fAngle;
 	//	SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(90.0f), rot.z));
 	//}
-
 //===========================================
 // 右歯車
 //===========================================
-	// 前に移動
-	if (pKeyboard->GetPress(DIK_UP) || js.lRz < -STICK_INPUT_ZONE && js.lZ == STICK_INPUT_ZERO ||
-		js.lRz < -STICK_INPUT_ZONE && js.lZ < -STICK_INPUT_ZONE && js.lZ > -STICK_INPUT_ZONE_2 ||
-		js.lRz < -STICK_INPUT_ZONE && js.lZ > STICK_INPUT_ZONE && js.lZ < STICK_INPUT_ZONE_2)
-		
+	// 右スティックが入力されている場合
+	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// 向き加算
-		Gear_R_rot.x -= GEAR_SPIN_ANGLE;
+		// コントローラーの角度
+		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		// 向き設定
-		pGear_R->SetRot(Gear_R_rot);
+		// 前に移動
+		if (pKeyboard->GetPress(DIK_UP) || fAngle_R < -ANGLE_45 && fAngle_R > -ANGLE_135)
+		{
+			// 向き加算
+			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
+			// 向き設定
+			pGear_R->SetRot(Gear_R_rot);
 
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
-	// 後ろに移動
-	if (pKeyboard->GetPress(DIK_DOWN) || js.lRz > STICK_INPUT_ZONE && js.lZ == STICK_INPUT_ZERO ||
-		js.lRz > STICK_INPUT_ZONE && js.lZ > STICK_INPUT_ZONE && js.lZ < STICK_INPUT_ZONE_2 ||
-		js.lRz > STICK_INPUT_ZONE && js.lZ < -STICK_INPUT_ZONE && js.lZ > -STICK_INPUT_ZONE_2)
-	{
-		// 向き加算
-		Gear_R_rot.x += GEAR_SPIN_ANGLE;
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
 
-		// 向き設定
-		pGear_R->SetRot(Gear_R_rot);
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+		// 後ろに移動
+		if (pKeyboard->GetPress(DIK_DOWN) || fAngle_R > ANGLE_45 && fAngle_R < ANGLE_135)
+		{
+			// 向き加算
+			Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-		// 移動
-		pos.x += -sinf(rot.y)*-fSpeed;
-		pos.z += -cosf(rot.y)*-fSpeed;
+			// 向き設定
+			pGear_R->SetRot(Gear_R_rot);
 
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
+			// 移動
+			pos.x += -sinf(rot.y)*-fSpeed;
+			pos.z += -cosf(rot.y)*-fSpeed;
 
-	// 左に移動
-	if (pKeyboard->GetPress(DIK_LEFT) || js.lZ < -STICK_INPUT_ZONE && js.lRz == STICK_INPUT_ZERO ||
-		js.lZ < -STICK_INPUT_ZONE && js.lRz < -STICK_INPUT_ZONE && js.lRz > -STICK_INPUT_ZONE_2 ||
-		js.lZ < -STICK_INPUT_ZONE && js.lRz > STICK_INPUT_ZONE && js.lRz < STICK_INPUT_ZONE_2)
-		
-	{
-		// 向き加算
-		Gear_R_rot.x -= GEAR_SPIN_ANGLE;
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+		// 左に移動
+		if (pKeyboard->GetPress(DIK_LEFT) || fAngle_R < -ANGLE_135 || fAngle_R > ANGLE_135)
+		{
+			// 向き加算
+			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-		// 向き設定
-		pGear_R->SetRot(Gear_R_rot);
+			// 向き設定
+			pGear_R->SetRot(Gear_R_rot);
 
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
 
-		// 向き
-		rot.y = rot.y - SPIN_ANGLE;
+			// 向き
+			rot.y = rot.y - SPIN_ANGLE;
 
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
-	// 右に移動
-	if (pKeyboard->GetPress(DIK_RIGHT) || js.lZ > STICK_INPUT_ZONE && js.lRz == STICK_INPUT_ZERO ||
-		js.lZ > STICK_INPUT_ZONE && js.lRz > STICK_INPUT_ZONE && js.lRz < STICK_INPUT_ZONE_2 ||
-		js.lZ > STICK_INPUT_ZONE && js.lRz < -STICK_INPUT_ZONE && js.lRz > -STICK_INPUT_ZONE_2)
-		
-	{
-		// 向き加算
-		Gear_R_rot.x += GEAR_SPIN_ANGLE;
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+		// 右に移動
+		if (pKeyboard->GetPress(DIK_RIGHT) || fAngle_R > -ANGLE_45 && fAngle_R < ANGLE_45)
+		{
+			// 向き加算
+			Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-		// 向き設定
-		pGear_R->SetRot(Gear_R_rot);
+			// 向き設定
+			pGear_R->SetRot(Gear_R_rot);
 
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
 
-		// 向き
-		rot.y = rot.y + SPIN_ANGLE;
+			// 向き
+			rot.y = rot.y + SPIN_ANGLE;
 
-		// 目的の向き
-		m_rotDest.y = rot.y;
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
 	}
 //===========================================
 // 左歯車
 //===========================================
-	// 前に移動
-	if (pKeyboard->GetPress(DIK_W) || js.lY < -STICK_INPUT_ZONE && js.lX == STICK_INPUT_ZERO ||
-		js.lY < -STICK_INPUT_ZONE && js.lX < -STICK_INPUT_ZONE && js.lX > -STICK_INPUT_ZONE_2||
-		js.lY < -STICK_INPUT_ZONE && js.lX > STICK_INPUT_ZONE && js.lX < STICK_INPUT_ZONE_2)
+// 左スティックが入力されている場合
+	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 	{
-		// 向き加算
-		Gear_L_rot.x -= GEAR_SPIN_ANGLE;
+		// コントローラーの角度
+		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
-		// 向き設定
-		pGear_L->SetRot(Gear_L_rot);
+		// 前に移動
+		if (pKeyboard->GetPress(DIK_W) || fAngle_L < -ANGLE_45 && fAngle_L > -ANGLE_135)
+		{
+			// 向き加算
+			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
+			// 向き設定
+			pGear_L->SetRot(Gear_L_rot);
 
-		// 目的の向き
-		m_rotDest.y= rot.y;
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
+
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+		// 後ろに移動
+		if (pKeyboard->GetPress(DIK_S) || fAngle_L > ANGLE_45 && fAngle_L < ANGLE_135)
+		{
+			// 向き加算
+			Gear_L_rot.x += GEAR_SPIN_ANGLE;
+
+			// 向き設定
+			pGear_L->SetRot(Gear_L_rot);
+
+			// 移動
+			pos.x += -sinf(rot.y)*-fSpeed;
+			pos.z += -cosf(rot.y)*-fSpeed;
+
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+
+		// 左に移動
+		if (pKeyboard->GetPress(DIK_A) || fAngle_L < -ANGLE_135 || fAngle_L > ANGLE_135)
+		{
+			// 向き加算
+			Gear_L_rot.x += GEAR_SPIN_ANGLE;
+
+			// 向き設定
+			pGear_L->SetRot(Gear_L_rot);
+
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
+
+			// 向き
+			rot.y = rot.y - SPIN_ANGLE;
+
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
+		// 右に移動
+		if (pKeyboard->GetPress(DIK_D) || fAngle_L > -ANGLE_45 && fAngle_L < ANGLE_45)
+		{
+			// 向き加算
+			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
+
+			// 向き設定
+			pGear_L->SetRot(Gear_L_rot);
+
+			// 移動
+			pos.x += -sinf(rot.y)*fSpeed;
+			pos.z += -cosf(rot.y)*fSpeed;
+
+			// 向き
+			rot.y = rot.y + SPIN_ANGLE;
+
+			// 目的の向き
+			m_rotDest.y = rot.y;
+		}
 	}
-	// 後ろに移動
-	if (pKeyboard->GetPress(DIK_S) || js.lY > STICK_INPUT_ZONE && js.lX == STICK_INPUT_ZERO ||
-		js.lY > STICK_INPUT_ZONE && js.lX > STICK_INPUT_ZONE && js.lX < STICK_INPUT_ZONE_2 ||
-		js.lY > STICK_INPUT_ZONE && js.lX < -STICK_INPUT_ZONE && js.lX > -STICK_INPUT_ZONE_2)
-	{
-		// 向き加算
-		Gear_L_rot.x += GEAR_SPIN_ANGLE;
+		// 角度が最大になった場合
+		if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
+		{
+			// 0に戻す
+			Gear_L_rot.x = GEAR_DEF_ROT;
+			// 向き設定
+			pGear_L->SetRot(Gear_L_rot);
+		}
 
-		// 向き設定
-		pGear_L->SetRot(Gear_L_rot);
-
-		// 移動
-		pos.x += -sinf(rot.y)*-fSpeed;
-		pos.z += -cosf(rot.y)*-fSpeed;
-
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
-
-	// 左に移動
-	if (pKeyboard->GetPress(DIK_A) || js.lX < -STICK_INPUT_ZONE && js.lY == STICK_INPUT_ZERO ||
-		js.lX < -STICK_INPUT_ZONE && js.lY < -STICK_INPUT_ZONE && js.lY > -STICK_INPUT_ZONE_2 ||
-		js.lX < -STICK_INPUT_ZONE && js.lY > STICK_INPUT_ZONE && js.lY < STICK_INPUT_ZONE_2)
-	{
-		// 向き加算
-		Gear_L_rot.x += GEAR_SPIN_ANGLE;
-
-		// 向き設定
-		pGear_L->SetRot(Gear_L_rot);
-
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
-
-		// 向き
-		rot.y = rot.y - SPIN_ANGLE;
-
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
-	// 右に移動
-	if (pKeyboard->GetPress(DIK_D) || js.lX > STICK_INPUT_ZONE && js.lY == STICK_INPUT_ZERO ||
-		js.lX > STICK_INPUT_ZONE && js.lY > STICK_INPUT_ZONE && js.lY < STICK_INPUT_ZONE_2 ||
-		js.lX > STICK_INPUT_ZONE && js.lY < -STICK_INPUT_ZONE && js.lY > -STICK_INPUT_ZONE_2)
-	{
-		// 向き加算
-		Gear_L_rot.x -= GEAR_SPIN_ANGLE;
-
-		// 向き設定
-		pGear_L->SetRot(Gear_L_rot);
-
-		// 移動
-		pos.x += -sinf(rot.y)*fSpeed;
-		pos.z += -cosf(rot.y)*fSpeed;
-
-		// 向き
-		rot.y = rot.y + SPIN_ANGLE;
-
-		// 目的の向き
-		m_rotDest.y = rot.y;
-	}
+		// 角度が最大になった場合
+		if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
+		{
+			// 0に戻す
+			Gear_R_rot.x = GEAR_DEF_ROT;
+			// 向き設定
+			pGear_R->SetRot(Gear_R_rot);
+		}
 	// 向き
 	SetRot(rot);
 
@@ -741,6 +765,66 @@ void CPlayer::Collision(void)
 				// 次のポインタ取得
 				pScene= pSceneCur;
 			} 
+		}
+
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_OBSTACLE);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 ObstaclePos = ((CModel*)pScene)->GetPos();
+
+				// サイズ取得
+				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
+
+				//どこの面に当たったか取得
+				// 左
+				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_LEFT)
+				{
+					// 位置
+					pos.x = (-ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) - (size.x / DIVIDE_2);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 右
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_RIGHT)
+				{
+					// 位置
+					pos.x = (ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) + (size.x / DIVIDE_2);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 手前
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_PREVIOUS)
+				{
+					// 位置
+					pos.z = (-ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) - (size.z / DIVIDE_2);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 奥
+				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_BACK)
+				{
+					// 位置
+					pos.z = (ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) + (size.z / DIVIDE_2);
+
+					// 位置設定
+					SetPos(pos);
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
 		}
 	}
 }

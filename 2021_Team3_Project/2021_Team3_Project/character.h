@@ -104,7 +104,5 @@ private:
 	bool m_bArmor;							// 無敵フラグ
 	bool m_bLanding;						// 着地フラグ
 	STATE m_State;							// 状態
-	// 静的メンバ変数
-	static int m_nAllNum;			// キャラクターの総数
 };
 #endif

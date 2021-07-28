@@ -23,6 +23,8 @@ CTexture::CTexture()
 	m_aTexFileName =
 	{
 		{ "data/Texture/floor.jpg" },
+		{ "data/Texture/target.png" },
+		{ "data/Texture/arrow.png" },
 	};
 
 	// 分割テクスチャの名前の設定
