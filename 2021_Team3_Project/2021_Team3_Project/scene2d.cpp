@@ -181,7 +181,7 @@ void CScene2D::Draw(void)
 void CScene2D::SetCol(D3DXCOLOR col)
 {
 	VERTEX_2D *pVtx = nullptr;	//頂点情報へのポインタ
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();		// バッファ
 
 	// 色の設定
 	SetColor(col);
@@ -210,7 +210,7 @@ void CScene2D::InitAnimation(int nCounterAnim, int nPatternAnim, int nLoop)
 
 	// 頂点情報を設定
 	VERTEX_2D *pVtx = nullptr;
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ取得
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();		// バッファ取得
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -256,7 +256,7 @@ void CScene2D::UpdateAnimation(void)
 	{
 		// 頂点情報を設定
 		VERTEX_2D *pVtx = nullptr;
-		LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ取得
+		LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();		// バッファ取得
 
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -288,7 +288,7 @@ void CScene2D::UpdateScroll(void)
 {
 	// 頂点情報を設定
 	VERTEX_2D *pVtx = nullptr;
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ取得
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();		// バッファ取得
 
 	// カウンターを進める
 	m_nCounterAnim++;

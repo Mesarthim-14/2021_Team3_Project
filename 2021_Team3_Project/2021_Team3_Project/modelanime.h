@@ -41,6 +41,7 @@ public:
 
 	// Set関数
 	void SetParent(CModelAnime *pParent);									// 親の設定
+	void SetRot(const D3DXVECTOR3 rot);										// 向き設定
 	void SetPosAnime(const D3DXVECTOR3 posAnime);							// アニメーションパーツの座標
 	void SetRotAnime(const D3DXVECTOR3 rotAnime);
 	void SetModel(CXfile::MODEL model);										// モデル情報の設定
@@ -52,7 +53,7 @@ public:
 	D3DXVECTOR3 GetRotAnime(void)const;										// アニメーション角度情報
 	D3DXMATRIX GetMtxWorld(void);											// ワールドマトリクス情報
 	D3DXMATRIX GetOldMtxWorld(void);										// 古いワールドマトリクスの情報
-
+	LPD3DXMESH GetMesh(void) { return m_model.pMesh; }						// モデル情報取得
 private:
 	D3DXVECTOR3 m_pos;								// 位置
 	D3DXVECTOR3 m_rot;								// 向き

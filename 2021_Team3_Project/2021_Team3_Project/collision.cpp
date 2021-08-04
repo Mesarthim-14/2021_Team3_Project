@@ -15,15 +15,17 @@
 //=============================================================================
 bool CCollision::CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2)
 {
+	bool bCollision = false;
+
 	if (pos2.x - (size2.x / 2) < pos1.x + (size1.x / 2) &&
 		pos2.x + (size2.x / 2) > pos1.x - (size1.x / 2) &&
 		pos2.y - (size2.y / 2) < pos1.y + (size1.y / 2) &&
 		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
 	{
-		return true;
+		bCollision = true;
 	}
 
-	return false;
+	return bCollision;
 }
 
 //=============================================================================
@@ -103,7 +105,7 @@ bool CCollision::CollisionRectangleAndCircular(D3DXVECTOR3 RectanglePos, D3DXVEC
 //=============================================================================
 int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 posOld, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2)
 {
-	int nSurFace = INIT_INT;
+	int nSurFace = ZERO_INT;
 
 	D3DXVECTOR3 box1Max = D3DXVECTOR3(size1.x / DIVIDE_2, size1.y / DIVIDE_2, size1.z / DIVIDE_2) + pos1;
 	D3DXVECTOR3 box1Min = D3DXVECTOR3(-size1.x / DIVIDE_2, -size1.y / DIVIDE_2, -size1.z / DIVIDE_2) + pos1;
@@ -112,8 +114,8 @@ int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTO
 
 	if (box1Max.y > box2Min.y &&	// 下
 		box1Min.y < box2Max.y &&	// 上
-		box1Max.x > box2Min.x &&	// 右から
-		box1Min.x < box2Max.x &&	// 左から
+		box1Max.x > box2Min.x &&	// 左から
+		box1Min.x < box2Max.x &&	// 右から
 		box1Max.z > box2Min.z &&	// 奥から
 		box1Min.z < box2Max.z)		// 手前
 	{
@@ -125,34 +127,34 @@ int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTO
 			nSurFace = SURFACE_DOWN;
 		}
 		// 上
-		if (box1Min.y < box2Max.y && posOld.y >= box2Max.y)
+		else if (box1Min.y < box2Max.y && posOld.y >= box2Max.y)
 		{
 			// 上
 			nSurFace = SURFACE_UP;
 		}
 		// 左
-		if (box1Max.x > box2Min.x && posOld.x <= box2Min.x)
+		else if (box1Max.x > box2Min.x && posOld.x <= box2Min.x)
 		{
 			// 左
 			nSurFace = SURFACE_LEFT;
 		}
 		// 右
-		if (box1Min.x < box2Max.x && posOld.x >= box2Max.x)
+		else if (box1Min.x < box2Max.x && posOld.x >= box2Max.x)
 		{
 			// 右
 			nSurFace = SURFACE_RIGHT;
 		}
-		// 奥
-		if (box1Min.z < box2Max.z && posOld.z >= box2Max.z)
-		{
-			// 奥
-			nSurFace = SURFACE_BACK;
-		}
 		// 手前
-		if (box1Max.z > box2Min.z && posOld.z <= box2Min.z)
+		else if (box1Max.z > box2Min.z && posOld.z <= box2Min.z)
 		{
 			// 手前
 			nSurFace = SURFACE_PREVIOUS;
+		}
+		// 奥
+		else if (box1Min.z < box2Max.z && posOld.z >= box2Max.z)
+		{
+			// 奥
+			nSurFace = SURFACE_BACK;
 		}
 	}
 	// 当たった面を返す

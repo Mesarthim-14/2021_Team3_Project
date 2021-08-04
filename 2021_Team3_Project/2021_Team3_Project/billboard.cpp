@@ -68,10 +68,10 @@ HRESULT CBillboard::Init(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標設定の設定
-	pVtx[0].pos = D3DXVECTOR3(- size.x / 2, + size.y / 2, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+ size.x / 2, + size.y / 2, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(- size.x / 2, - size.y / 2, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+ size.x / 2, - size.y / 2, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(- size.x / 2, + size.y / 2, +size.z / 2);
+	pVtx[1].pos = D3DXVECTOR3(+ size.x / 2, + size.y / 2, +size.z / 2);
+	pVtx[2].pos = D3DXVECTOR3(- size.x / 2, - size.y / 2, -size.z / 2);
+	pVtx[3].pos = D3DXVECTOR3(+ size.x / 2, - size.y / 2, -size.z / 2);
 
 	//各頂点の法線の設定（※ベクトルの大きさは１にする必要がある）
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -123,15 +123,6 @@ void CBillboard::Update(void)
 		// アニメーションを更新する
 		UpdateAnimation();
 	}
-
-	// 体力を減らしていく
-	m_nLife--;
-
-	if (m_nLife <= 0)
-	{
-		// 終了処理
-		Uninit();
-	}
 }
 
 //=====================================================
@@ -142,20 +133,21 @@ void CBillboard::Draw(void)
 	// デバイス情報取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// 色の設定
-	D3DMATERIAL9 material, OldMaterial;
-	D3DXCOLOR color = GetColor();
-	ZeroMemory(&material, sizeof(D3DMATERIAL9));
-	material.Ambient = color;
-	material.Diffuse = color;
-	pDevice->GetMaterial(&OldMaterial);
-	pDevice->SetMaterial(&material);
+	//// 色の設定
+	//D3DMATERIAL9 material, OldMaterial;
+	//D3DXCOLOR color = GetColor();
+	//ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	//material.Ambient = color;
+	//material.Diffuse = color;
+	//pDevice->GetMaterial(&OldMaterial);
+	//pDevice->SetMaterial(&material);
 
-	// 光の影響を無くす
-	DWORD ambient;
-	pDevice->GetRenderState(D3DRS_AMBIENT, &ambient);
-	pDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
-	pDevice->LightEnable(0, FALSE);
+	//// 光の影響を無くす
+	//DWORD ambient;
+	//pDevice->GetRenderState(D3DRS_AMBIENT, &ambient);
+	//pDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
+	// ライト有効
+//	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// アルファテストを有力化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -170,8 +162,8 @@ void CBillboard::Draw(void)
 	// アルファテストが有効なら
 	if (m_bAlpha == true)
 	{
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 0xC0);
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+	//	pDevice->SetRenderState(D3DRS_ALPHAREF, 0xC0);
+	//	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 	}
 	else
 	{
@@ -192,7 +184,7 @@ void CBillboard::Draw(void)
 	D3DXMatrixScaling(&mtxScale,
 		size.x / m_sizeBase.x,
 		size.y / m_sizeBase.y,
-		0.0f);
+		size.z / m_sizeBase.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	// 回転の逆行列の生成
@@ -210,6 +202,13 @@ void CBillboard::Draw(void)
 	// 位置を反映、ワールドマトリクス設定、ポリゴン描画
 	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// 向き取得
+	D3DXVECTOR3 rot = GetRot();
+
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	// ワールドマトリクスの設定 初期化、向き、位置
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
@@ -242,11 +241,15 @@ void CBillboard::Draw(void)
 		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// aデスティネーションカラー
 	}
 
-	pDevice->SetRenderState(D3DRS_AMBIENT, ambient);	// アンビエントを戻す
+//	pDevice->SetRenderState(D3DRS_AMBIENT, ambient);	// アンビエントを戻す
 
-	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
+//	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
 
-	pDevice->LightEnable(0, TRUE);
+	// アルファテスト無効化
+//	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	// ライト有効
+//	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================

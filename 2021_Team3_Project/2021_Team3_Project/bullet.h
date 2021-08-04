@@ -26,6 +26,6 @@ public:
 	void Update(void);											// XVˆ—
 	void Draw(void);											// •`‰æˆ—
 private:
-	void Collision(void);										// “–‚½‚è”»’è
+	void Death(void);											// €–Sˆ—ŠÖ”
 };
 #endif

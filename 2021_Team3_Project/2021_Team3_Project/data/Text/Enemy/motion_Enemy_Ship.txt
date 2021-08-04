@@ -14,8 +14,8 @@ NUM_MODEL = 2
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Enemy/Enemy_Ship/00_Enemy_Ship.x		# [0]船
-MODEL_FILENAME = data/MODEL/Enemy/Enemy_Ship/01_Enemy_Battery.x		# [1]砲台
+MODEL_FILENAME = data/Model/Enemy/Enemy_Ship/00_Enemy_Ship.x		# [0]船
+MODEL_FILENAME = data/Model/Enemy/Enemy_Ship/01_Enemy_Battery.x		# [1]砲台
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -31,7 +31,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 胸
 		PARENT = 0					# (親)NULL
-		POS = 0.0 565.0 270.00
+		POS = 0.0 725.0 170.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET

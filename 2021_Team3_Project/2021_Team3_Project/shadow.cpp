@@ -109,20 +109,23 @@ void CShadow::VolumeDraw(void)
 	//ワールドマトリクスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_ModelMtxWorld);
 
-	// ステンシル設定
-	pRenderer->SetStateStencil();
 
 	// シャドウの描画
 	if (m_pShadowVolume)
 	{
+		// ステンシル設定
+		pRenderer->SetStateStencil();
+
 		m_pShadowVolume->Draw();
+
+		// 状態を元に戻す
+		pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xf);
+
 	}
 
-	// 状態を元に戻す
-	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xf);
 }
 
 //=============================================================================
@@ -159,18 +162,20 @@ void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
 //=============================================================================
 void CShadow::Draw(void)
 {
-	// レンダラーポインタ取得
-	CRenderer *pRenderer = CManager::GetRenderer();
-
-	// ステンシルテスト
-	pRenderer->SetStencilTest();
 
 	if (m_pPolygon)
 	{
+		// レンダラーポインタ取得
+		CRenderer *pRenderer = CManager::GetRenderer();
+
+		// ステンシルテスト
+		pRenderer->SetStencilTest();
+
 		// ポリゴンの描画
 		m_pPolygon->Draw();
+
+		// ステンシルリセット
+		pRenderer->ReSetStateStencil();
 	}
 
-	// ステンシルリセット
-	pRenderer->ReSetStateStencil();
 }

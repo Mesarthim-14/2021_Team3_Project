@@ -18,7 +18,7 @@
 class CScene2D : public CSceneBase
 {
 public:
-	CScene2D(PRIORITY Priority = PRIORITY_0);							// コンストラクタ
+	CScene2D(PRIORITY Priority = PRIORITY_UI);							// コンストラクタ
 	~CScene2D();														// デストラクタ
 
 	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// インスタンス生成

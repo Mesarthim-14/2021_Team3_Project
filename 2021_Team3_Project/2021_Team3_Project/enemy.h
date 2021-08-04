@@ -3,7 +3,7 @@
 //=============================================================================
 //
 // エネミークラスヘッダー [enemy.h]
-// Author : Konishi Yuuto
+// Author : Sugawara Tsukasa
 //
 //=============================================================================
 
@@ -26,7 +26,7 @@ public:
 	{
 		ENEMY_MOTION_NONE = -1,
 		ENEMY_MOTION_IDOL,			// アイドルモーション
-		ENEMY_MOTION_MAX,			// モーション最大数
+		ENEMY_MOTION_MAX			// モーション最大数
 	};
 
 	CEnemy(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
@@ -40,7 +40,6 @@ public:
 	void UpdateState(void);										// プレイヤーの状態
 	static CEnemy*Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// クリエイト
 
-	virtual void UpdateMotionState(void);						// モーション状態
 	virtual void Death(void);									// 死んだときの処理
 	virtual void Attack(void);									// 攻撃の処理
 	virtual void Move(void);									// 移動の処理

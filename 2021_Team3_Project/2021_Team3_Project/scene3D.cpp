@@ -127,18 +127,6 @@ void CScene3D::Draw(void)
 	D3DXMATRIX mtxRot, mtxTrans;	//計算用のマトリクス
 	D3DXCOLOR col = GetColor();
 
-	// 色の設定
-	D3DMATERIAL9 material, OldMaterial;
-	ZeroMemory(&material, sizeof(D3DMATERIAL9));
-	material.Ambient = col;
-	material.Diffuse = col;
-	material.Ambient.a =  col.a - m_fAlphaNum;
-	material.Diffuse.a =  col.a - m_fAlphaNum;
-
-	pDevice->GetMaterial(&OldMaterial);
-	pDevice->SetMaterial(&material);
-	pDevice->SetRenderState(D3DRS_AMBIENT, 0x44444444);
-
 	// アルファテストを有力化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 
@@ -220,6 +208,9 @@ void CScene3D::Draw(void)
 
 	//テクスチャの設定
 	pDevice->SetTexture(0, nullptr);
+
+	// アルファテストを有力化
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //=============================================================================

@@ -28,6 +28,8 @@ public:
 	{
 		TEXTURE_NUM_NONE = -1,		// 初期値
 		TEXTURE_NUM_FLOOR,			// 地面
+		TEXTURE_NUM_ATTACK_POINT,	// 攻撃地点
+		TEXTURE_NUM_ATTACK_ARROW,	// 攻撃地点の矢印
 		TEXTURE_NUM_MAX
 	};
 

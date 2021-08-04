@@ -25,7 +25,7 @@ class CLight;
 class CMeshField;
 class CBg;
 class CPlayer;
-
+class CMap;
 //=======================================================================================
 // ゲームクラス
 //=======================================================================================
@@ -49,13 +49,14 @@ public:
 	CCamera *GetCamera(void);	// カメラのポインタ情報
 	CLight *GetLight(void);		// ライトのポインタ情報
 	CPlayer *GetPlayer(void);	// プレイヤーのポインタ情報
-
+	CMap *GetMap(void) { return m_pMap; }	// マップのポインタ取得
 private:	
 	CCamera *m_pCamera;			// カメラのポインタ	
 	CLight *m_pLight;			// ライトのポインタ
 	CMeshField *m_pMeshField;	// メッシュフィールドのポインタ
 	CBg *m_pBg;					// 背景のポインタ
 	CPlayer *m_pPlayer;			// プレイヤーのポインタ
+	CMap * m_pMap;				// マップのポインタ
 	LPD3DXFONT m_pFont;			// デバック用フォント
 	int m_nTimeCounter;			// ゲームのカウンター
 	bool m_bGameEnd;			// ゲームのエンドフラグ

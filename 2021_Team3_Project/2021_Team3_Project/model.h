@@ -29,6 +29,12 @@ class CShadow;
 class CModel : public CScene
 {
 public:
+	enum STATE
+	{
+		STATE_NORMAL = 0,
+		STATE_DEAD,
+		STATE_MAX
+	};
 	CModel(PRIORITY Priority = PRIORITY_EFFECT);				// コンストラクタ
 	~CModel();
 
@@ -53,7 +59,8 @@ public:
 	void SetLife(int nLife);							// ライフの設定
 	void SetColor(D3DXCOLOR color);						// 色の設定
 	void SetAlphaNum(float fAlphaNum);					// 透明度の設定
-
+	void SetScale(D3DXVECTOR3 scale);					// 拡大率
+	void SetState(STATE state) { m_State = state; }		// 状態設定
 	// Get関数
 	D3DXVECTOR3 GetPos(void)const;						// 座標の情報
 	D3DXVECTOR3 GetMove(void);							// 移動量の情報
@@ -67,19 +74,21 @@ public:
 	int GetTexPattern(void);							// テクスチャ
 	int GetLife(void);									// ライフの設定
 	float GetAlphaNum(void) { return m_fAlphaNum; }		// 透明度の値
-
+	STATE GetState(void) { return m_State; }			// 状態取得
 private:
 	LPDIRECT3DTEXTURE9 *m_apTexture;	// テクスチャのポインタ
 	D3DXVECTOR3 m_pos;					// 位置
 	D3DXVECTOR3 m_move;					// 移動量
 	D3DXVECTOR3 m_rot;					// 向き
 	D3DXVECTOR3 m_size;					// サイズ
+	D3DXVECTOR3 m_scale;				// 拡大率
 	D3DXMATRIX m_mtxWorld;				// ワールドマトリックス
 	D3DXCOLOR m_Color;					// 色
 	CXfile::MODEL m_Model;				// モデルの構造体
 	int m_nTexPattern;					// テクスチャのパターン数
 	int m_nLife;						// ライフ
 	float m_fAlphaNum;					// 透明度の値
+	STATE m_State;						// 状態
 
 	// 影の生成用
 	CShadow *m_pShadow;		// 影のポインタ

@@ -37,13 +37,19 @@ CXfile::CXfile()
 	// Xファイルネームを取得
 	m_aXfileName =
 	{
-		{ "data/Model/Bullet/bullet.x" },			// 弾
+		{ "data/Model/Bullet/bullet.x" },		// 弾
+		{ "data/Model/box/box.x" },				// 箱
+		{ "data/Model/Obstacle/Rock.x"},		// 岩
+		{ "data/Model/Enemy/Torpedo/Torpedo.x" },		// 魚雷
+		{ "data/Model/Map/Map.x"},				// マップ
 	};
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/Player/motion_Player.txt" },					// プレイヤー
-		{ "data/Text/Enemy/motion_Enemy_Ship.txt" },				// 敵船
+		{ "data/Text/Player/motion_Player.txt"},			// プレイヤー
+		{ "data/Text/Enemy/motion_Enemy_Ship.txt"},			// 敵船
+		{ "data/Text/Enemy/motion_Enemy_scaffolding.txt" },	// 櫓
+		{ "data/Text/Enemy/motion_Boss_Shark.txt" },	// ボスサメ
 	};
 }
 
@@ -93,22 +99,25 @@ HRESULT CXfile::ModelLoad(void)
 	{
 		//マテリアル情報の解析
 		D3DXMATERIAL *materials = (D3DXMATERIAL*)m_aXfile[nCount].pBuffMat->GetBufferPointer();
-		LPDIRECT3DTEXTURE9 pTexture = nullptr;
 
 		for (int nCntMat = 0; nCntMat < (int)m_aXfile[nCount].dwNumMat; nCntMat++)
 		{
-			// ファイルネームの取得
-			char cData[128] = {};
+			LPDIRECT3DTEXTURE9 pTexture = nullptr;
 
-			sprintf(cData, "data/model/Texture/%s", materials[nCntMat].pTextureFilename);
+			// ファイルネームの取得
+			char cData[256] = {};
+
+			sprintf(cData, "data/Texture/%s", materials[nCntMat].pTextureFilename);
 
 			// テクスチャの読み込み
 			D3DXCreateTextureFromFile(pDevice, cData, &pTexture);
 
-		}
+			// テクスチャ情報取得
+			m_aXfile[nCount].apTexture.push_back(pTexture);
 
-		// テクスチャ情報取得
-		m_aXfile[nCount].apTexture.push_back(pTexture);
+
+
+		}
 
 	}
 
@@ -310,7 +319,7 @@ HRESULT CXfile::HierarchyModelLoad(void)
 					// ファイルネームの取得
 					char cData[256] = {};
 
-					sprintf(cData, "data/model/Texture/%s", materials[nCntMat].pTextureFilename);
+					sprintf(cData, "data/Texture/%s", materials[nCntMat].pTextureFilename);
 
 					// テクスチャの読み込み
 					D3DXCreateTextureFromFile(pDevice, cData, &pTexture);
