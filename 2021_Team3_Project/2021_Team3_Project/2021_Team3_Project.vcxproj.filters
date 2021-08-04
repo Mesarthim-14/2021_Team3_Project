@@ -79,11 +79,20 @@
     <Filter Include="07_Model\Obstacle">
       <UniqueIdentifier>{91e01b79-8762-4250-889d-c90633310e67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05_Scene\3DPolygon\Gage">
-      <UniqueIdentifier>{26da4ef6-9cab-478c-acd2-b8f0c423aa3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07_Model\Enemy">
       <UniqueIdentifier>{ba508e6e-c093-415c-bbff-2a6cafa4efb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08_Ui\2D">
+      <UniqueIdentifier>{dceb10cf-cf7d-4ec4-a90a-dac40df6cd2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08_Ui\3D">
+      <UniqueIdentifier>{8baacbc5-35ce-4bb9-bbd2-f41c4e10eff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08_Ui\3D\Gage">
+      <UniqueIdentifier>{26da4ef6-9cab-478c-acd2-b8f0c423aa3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06_Effect\Byte_Effect">
+      <UniqueIdentifier>{af5e9746-c22c-435c-8d01-1ffc8e4b1e90}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,16 +238,25 @@
       <Filter>07_Model\Obstacle</Filter>
     </ClCompile>
     <ClCompile Include="gage_3d.cpp">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClCompile>
     <ClCompile Include="enemy_life.cpp">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClCompile>
     <ClCompile Include="gage_3d_back.cpp">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClCompile>
     <ClCompile Include="torpedo.cpp">
       <Filter>07_Model\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="player_life.cpp">
+      <Filter>08_Ui\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_shark.cpp">
+      <Filter>04_Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="byte_effect.cpp">
+      <Filter>06_Effect\Byte_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -384,16 +402,25 @@
       <Filter>07_Model\Obstacle</Filter>
     </ClInclude>
     <ClInclude Include="gage_3d.h">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClInclude>
     <ClInclude Include="enemy_life.h">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClInclude>
     <ClInclude Include="gage_3d_back.h">
-      <Filter>05_Scene\3DPolygon\Gage</Filter>
+      <Filter>08_Ui\3D\Gage</Filter>
     </ClInclude>
     <ClInclude Include="torpedo.h">
       <Filter>07_Model\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="player_life.h">
+      <Filter>08_Ui\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_shark.h">
+      <Filter>04_Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="byte_effect.h">
+      <Filter>06_Effect\Byte_Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

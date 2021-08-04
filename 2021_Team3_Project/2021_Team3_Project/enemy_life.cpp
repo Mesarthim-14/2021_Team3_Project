@@ -93,6 +93,13 @@ HRESULT CEnemy_Life::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CEnemy_Life::Uninit(void)
 {
+	// !nullcheck
+	if (m_pEnemy != nullptr)
+	{
+		// nullptrÇ…
+		m_pEnemy = nullptr;
+	}
+
 	// èIóπèàóù
 	CGage_3D::Uninit();
 }

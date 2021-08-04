@@ -147,6 +147,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="boss_shark.cpp" />
+    <ClCompile Include="byte_effect.cpp" />
     <ClCompile Include="character_box.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_bullet.cpp" />
+    <ClCompile Include="player_life.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
@@ -200,6 +203,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="billboard.h" />
+    <ClInclude Include="boss_shark.h" />
+    <ClInclude Include="byte_effect.h" />
     <ClInclude Include="character_box.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
@@ -233,6 +238,7 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_bullet.h" />
+    <ClInclude Include="player_life.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />

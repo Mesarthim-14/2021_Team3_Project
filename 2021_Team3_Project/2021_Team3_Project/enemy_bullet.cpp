@@ -88,11 +88,14 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// プレイヤーのポインタ取得
 	CPlayer *pPlayer = GET_PLAYER_PTR;
 
-	// 位置座標取得
-	m_PlayerPos = pPlayer->GetPos();
-
-	// 攻撃地点生成
-	AttackPoint_Crate();
+	// !nullcheck
+	if (pPlayer != nullptr)
+	{
+		// 位置座標取得
+		m_PlayerPos = pPlayer->GetPos();
+		// 攻撃地点生成
+		AttackPoint_Crate();
+	}
 	return S_OK;
 }
 //=============================================================================

@@ -27,48 +27,49 @@
 #include "character_box.h"
 #include "player_bullet.h"
 #include "map.h"
+#include "player_life.h"
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define PLAYER_SPEED					(10.0f)									// プレイヤーの移動量
-#define STICK_SENSITIVITY				(50.0f)									// スティック感度
-#define PLAYER_ROT_SPEED				(0.1f)									// キャラクターの回転する速度
-#define SHIP_NUM						(0)										// 船のナンバー
-#define GEAR_R_NUM						(1)										// 水かきの右ナンバー
-#define GEAR_L_NUM						(2)										// 水かきの左ナンバー
-#define BATTERY_R_NUM					(3)										// 砲台右のナンバー
-#define BATTERY_L_NUM					(4)										// 砲台左のナンバー
-#define MIN_MOVE						(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小値
-#define SIZE							(D3DXVECTOR3 (800.0f,1000.0f,800.0f))	// サイズ
-#define PARENT_NUM						(0)										// 親のナンバー
-#define GEAR_SPIN_ANGLE					(D3DXToRadian(2.0f))					// 歯車の回転角度
-#define SPIN_ANGLE						(D3DXToRadian(1.0f))					// 旋回角度
-#define STICK_INPUT_ZONE				(100)									// スティックの入力範囲
-#define STICK_INPUT_ZONE_2				(1000)									// スティックの入力範囲
-#define STICK_INPUT_ZERO				(0)										// スティックの入力値0
-#define MUT_SPEED						(1.5f)									// スピード
-#define PAD_1							(0)										// 1番目のパッド
-#define PAD_2							(1)										// 2番目のパッド
-#define ATTACK_COOLTIME					(90)									// 攻撃のクールタイム
-#define RAY_NUM							(4)										// レイの数
-#define RAY_RADIUS						(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
-#define RAY_RADIUS_UNDER				(D3DXToRadian(-180.0f))					// レイを出す方向
-#define RAY_HIT_RANGE					(500.0f)								// 範囲
-#define RAY_HIT_RANGE_UNDER				(0.0f)									// 範囲
-#define MIN_LIFE						(0)										// ライフの最小
-#define LIFE							(100)									// ライフ
-#define ANGLE_MAX						(D3DXToRadian(360.0f))					// 角度の最大
-#define ANGLE_MIN						(D3DXToRadian(-360.0f))					// 角度の最小
-#define ANGLE_45						(D3DXToRadian(45.0f))					// 角度45
-#define ANGLE_135						(D3DXToRadian(135.0f))					// 角度135
-#define GEAR_DEF_ROT					(D3DXToRadian(0.0f))					// デフォルトの角度
-#define DEAD_ZONE						(0.0f)									// コントローラーの反応しない範囲
+#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
+#define STICK_SENSITIVITY		(50.0f)									// スティック感度
+#define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
+#define SHIP_NUM				(0)										// 船のナンバー
+#define GEAR_R_NUM				(1)										// 水かきの右ナンバー
+#define GEAR_L_NUM				(2)										// 水かきの左ナンバー
+#define BATTERY_R_NUM			(3)										// 砲台右のナンバー
+#define BATTERY_L_NUM			(4)										// 砲台左のナンバー
+#define MIN_MOVE				(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小値
+#define SIZE					(D3DXVECTOR3 (800.0f,1000.0f,800.0f))	// サイズ
+#define PARENT_NUM				(0)										// 親のナンバー
+#define GEAR_SPIN_ANGLE			(D3DXToRadian(2.0f))					// 歯車の回転角度
+#define SPIN_ANGLE				(D3DXToRadian(1.0f))					// 旋回角度
+#define STICK_INPUT_ZONE		(100)									// スティックの入力範囲
+#define STICK_INPUT_ZONE_2		(1000)									// スティックの入力範囲
+#define STICK_INPUT_ZERO		(0)										// スティックの入力値0
+#define MUT_SPEED				(1.5f)									// スピード
+#define PAD_1					(0)										// 1番目のパッド
+#define PAD_2					(1)										// 2番目のパッド
+#define ATTACK_COOLTIME			(90)									// 攻撃のクールタイム
+#define RAY_NUM					(4)										// レイの数
+#define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
+#define RAY_RADIUS_UNDER		(D3DXToRadian(-180.0f))					// レイを出す方向
+#define RAY_HIT_RANGE			(500.0f)								// 範囲
+#define RAY_HIT_RANGE_UNDER		(0.0f)									// 範囲
+#define MIN_LIFE				(0)										// ライフの最小
+#define LIFE					(70)									// ライフ
+#define ANGLE_MAX				(D3DXToRadian(360.0f))					// 角度の最大
+#define ANGLE_MIN				(D3DXToRadian(-360.0f))					// 角度の最小
+#define ANGLE_45				(D3DXToRadian(45.0f))					// 角度45
+#define ANGLE_135				(D3DXToRadian(135.0f))					// 角度135
+#define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// デフォルトの角度
+#define DEAD_ZONE				(0.0f)									// コントローラーの反応しない範囲
 // 船体の位置
-#define SHIP_POS						(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42 + 2.0f, pShip->GetMtxWorld()._43))
+#define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42 + 2.0f, pShip->GetMtxWorld()._43))
 // 砲台の位置
-#define BATTERY_R_POS					(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
-#define BATTERY_L_POS					(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
-
+#define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
+#define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
+#define LIFE_POS				(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
 //=============================================================================
 // クリエイト
 //=============================================================================
@@ -136,6 +137,8 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 速度設定
 	SetSpeed(PLAYER_SPEED);
 
+	// ライフ生成
+	CPlayer_Life::Create(LIFE_POS, ZeroVector3);
 	return S_OK;
 }
 
@@ -919,61 +922,65 @@ void CPlayer::RayCollision(void)
 	// マップのポインタ取得
 	CMap *pMap = GET_MAP_PTR;
 
-	// 始める座標
-	vecStart = pos;
-
-	// レイを出す角度
-	vecDirection = D3DXVECTOR3(RAY_RADIUS_UNDER, ZERO_FLOAT, ZERO_FLOAT);
-
-	// レイがヒットしたか
-	D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT),
-		&bUnderHit, NULL, NULL, NULL, &fUnderDistance, NULL, NULL);
-
-	// trueの場合
-	if (bUnderHit == TRUE)
+	// !nullcheck
+	if (pMap != nullptr)
 	{
-		// 範囲より小さかったら
-		if (fUnderDistance < RAY_HIT_RANGE_UNDER)
-		{
-			// 戻す
-			pos -= (D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT));
+		// 始める座標
+		vecStart = pos;
 
-			// 位置設定
-			SetPos(pos);
-
-			// trueに
-			bLanding = true;
-
-			return;
-		}
-	}
-	// 4回繰り返す
-	for (int nCount = ZERO_INT; nCount < RAY_NUM; nCount++)
-	{
 		// レイを出す角度
-		vecDirection = D3DXVECTOR3(ZERO_FLOAT, fRadius * nCount, ZERO_FLOAT);
+		vecDirection = D3DXVECTOR3(RAY_RADIUS_UNDER, ZERO_FLOAT, ZERO_FLOAT);
 
 		// レイがヒットしたか
-		D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
-			&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
+		D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT),
+			&bUnderHit, NULL, NULL, NULL, &fUnderDistance, NULL, NULL);
 
 		// trueの場合
-		if (bHit == TRUE)
+		if (bUnderHit == TRUE)
 		{
 			// 範囲より小さかったら
-			if (fDistancePlayer < RAY_HIT_RANGE)
+			if (fUnderDistance < RAY_HIT_RANGE_UNDER)
 			{
 				// 戻す
-				pos -= (D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)));
+				pos -= (D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT));
 
 				// 位置設定
 				SetPos(pos);
 
+				// trueに
+				bLanding = true;
+
 				return;
 			}
 		}
-	}
+		// 4回繰り返す
+		for (int nCount = ZERO_INT; nCount < RAY_NUM; nCount++)
+		{
+			// レイを出す角度
+			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fRadius * nCount, ZERO_FLOAT);
 
-	// 着地状態設定
-	SetLanding(bLanding);
+			// レイがヒットしたか
+			D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
+				&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
+
+			// trueの場合
+			if (bHit == TRUE)
+			{
+				// 範囲より小さかったら
+				if (fDistancePlayer < RAY_HIT_RANGE)
+				{
+					// 戻す
+					pos -= (D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)));
+
+					// 位置設定
+					SetPos(pos);
+
+					return;
+				}
+			}
+		}
+
+		// 着地状態設定
+		SetLanding(bLanding);
+	}
 }

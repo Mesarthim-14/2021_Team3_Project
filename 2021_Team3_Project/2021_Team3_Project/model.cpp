@@ -150,12 +150,13 @@ void CModel::Draw(void)
 
 	for (int nCntMat = 0; nCntMat < (int)m_Model.dwNumMat; nCntMat++)
 	{
-		// 色の設定
-		pMat[nCntMat].MatD3D.Diffuse = D3DXCOLOR(m_Color.r, m_Color.g, m_Color.b, m_Color.a - m_fAlphaNum);
+		//// 色の設定
+		//pMat[nCntMat].MatD3D.Diffuse = D3DXCOLOR(m_Color.r, m_Color.g, m_Color.b, m_Color.a - m_fAlphaNum);
 
 		//マテリアルのアンビエントにディフューズカラーを設定
 		pMat[nCntMat].MatD3D.Ambient = pMat[nCntMat].MatD3D.Diffuse;
 
+	//	pMat[nCntMat].MatD3D.Emissive = pMat[nCntMat].MatD3D.Diffuse;
 		//マテリアルの設定
 		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -180,6 +181,8 @@ void CModel::Draw(void)
 
 	//保持していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
+
+	pDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 
 	// 影の描画
 	ShadowDraw(m_rot);

@@ -104,6 +104,12 @@ HRESULT CEnemy_Attack_Point_Polygon::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CEnemy_Attack_Point_Polygon::Uninit(void)
 {
+	// !nullcheck
+	if (m_pEnemy_Bullet != nullptr)
+	{
+		m_pEnemy_Bullet = nullptr;
+	}
+
 	// èIóπèàóù
 	CScene3D::Uninit();
 }

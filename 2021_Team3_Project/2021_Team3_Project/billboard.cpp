@@ -133,20 +133,21 @@ void CBillboard::Draw(void)
 	// デバイス情報取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// 色の設定
-	D3DMATERIAL9 material, OldMaterial;
-	D3DXCOLOR color = GetColor();
-	ZeroMemory(&material, sizeof(D3DMATERIAL9));
-	material.Ambient = color;
-	material.Diffuse = color;
-	pDevice->GetMaterial(&OldMaterial);
-	pDevice->SetMaterial(&material);
+	//// 色の設定
+	//D3DMATERIAL9 material, OldMaterial;
+	//D3DXCOLOR color = GetColor();
+	//ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	//material.Ambient = color;
+	//material.Diffuse = color;
+	//pDevice->GetMaterial(&OldMaterial);
+	//pDevice->SetMaterial(&material);
 
-	// 光の影響を無くす
-	DWORD ambient;
-	pDevice->GetRenderState(D3DRS_AMBIENT, &ambient);
-	pDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
-	pDevice->LightEnable(0, FALSE);
+	//// 光の影響を無くす
+	//DWORD ambient;
+	//pDevice->GetRenderState(D3DRS_AMBIENT, &ambient);
+	//pDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
+	// ライト有効
+//	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// アルファテストを有力化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -161,8 +162,8 @@ void CBillboard::Draw(void)
 	// アルファテストが有効なら
 	if (m_bAlpha == true)
 	{
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 0xC0);
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+	//	pDevice->SetRenderState(D3DRS_ALPHAREF, 0xC0);
+	//	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 	}
 	else
 	{
@@ -240,14 +241,15 @@ void CBillboard::Draw(void)
 		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// aデスティネーションカラー
 	}
 
-	pDevice->SetRenderState(D3DRS_AMBIENT, ambient);	// アンビエントを戻す
+//	pDevice->SetRenderState(D3DRS_AMBIENT, ambient);	// アンビエントを戻す
 
-	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
+//	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
 
 	// アルファテスト無効化
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+//	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
-	pDevice->LightEnable(0, TRUE);
+	// ライト有効
+//	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================

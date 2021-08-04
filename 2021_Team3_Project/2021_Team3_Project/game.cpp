@@ -28,11 +28,12 @@
 #include "torpedo.h"
 #include "rock.h"
 #include "map.h"
+#include "boss_shark.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
 #define ENEMY_POS	(D3DXVECTOR3(0.0f,500.0f,-3000.0f))
-#define ENEMY_POS_2	(D3DXVECTOR3(5000.0f,0.0f,-3000.0f))
+#define ENEMY_POS_2	(D3DXVECTOR3(5000.0f,500.0f,0.0f))
 #define ENEMY_ROT	(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))
 #define PLAYER_POS	(D3DXVECTOR3(0.0f,0.0f,-500.0f))
 
@@ -185,7 +186,7 @@ void CGame::CreatePlayer(void)
 void CGame::CreateMap(void)
 {
 	// 地面の生成
-	//CreateGround();
+	CreateGround();
 
 	// マップ生成
 	//m_pMap = CMap::Create(ZeroVector3, ZeroVector3);
@@ -215,7 +216,10 @@ void CGame::CreateEnemy(void)
 	//CEnemy_Scaffolding::Create(ENEMY_POS, ENEMY_ROT);
 
 	// 魚雷生成
-	CTorpedo::Create(ENEMY_POS, ENEMY_ROT);
+	//CTorpedo::Create(ENEMY_POS, ZeroVector3);
+
+	// ボスサメ生成
+	CBoss_Shark::Create(ENEMY_POS, ENEMY_ROT);
 }
 
 //=======================================================================================

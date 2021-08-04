@@ -49,6 +49,7 @@ CXfile::CXfile()
 		{ "data/Text/Player/motion_Player.txt"},			// プレイヤー
 		{ "data/Text/Enemy/motion_Enemy_Ship.txt"},			// 敵船
 		{ "data/Text/Enemy/motion_Enemy_scaffolding.txt" },	// 櫓
+		{ "data/Text/Enemy/motion_Boss_Shark.txt" },	// ボスサメ
 	};
 }
 
@@ -98,10 +99,11 @@ HRESULT CXfile::ModelLoad(void)
 	{
 		//マテリアル情報の解析
 		D3DXMATERIAL *materials = (D3DXMATERIAL*)m_aXfile[nCount].pBuffMat->GetBufferPointer();
-		LPDIRECT3DTEXTURE9 pTexture = nullptr;
 
 		for (int nCntMat = 0; nCntMat < (int)m_aXfile[nCount].dwNumMat; nCntMat++)
 		{
+			LPDIRECT3DTEXTURE9 pTexture = nullptr;
+
 			// ファイルネームの取得
 			char cData[256] = {};
 
@@ -110,10 +112,12 @@ HRESULT CXfile::ModelLoad(void)
 			// テクスチャの読み込み
 			D3DXCreateTextureFromFile(pDevice, cData, &pTexture);
 
-		}
+			// テクスチャ情報取得
+			m_aXfile[nCount].apTexture.push_back(pTexture);
 
-		// テクスチャ情報取得
-		m_aXfile[nCount].apTexture.push_back(pTexture);
+
+
+		}
 
 	}
 

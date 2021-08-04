@@ -1,135 +1,141 @@
 //=============================================================================
-// ライフゲージの背景 [gage_3d_back.cpp]
+// 敵の船 [enemy_ship.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
+
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
 #include "manager.h"
-#include "renderer.h"
-#include "texture.h"
 #include "resource_manager.h"
-#include "gage_3d_back.h"
+#include "game.h"
+#include "player.h"
+#include "character_box.h"
+#include "boss_shark.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define POS		(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
-#define COL		(D3DXCOLOR(0.0f,0.0f,0.0f,1.0f))				// 色
-#define SIZE	(D3DXVECTOR3(510.0f,40.0f,0.0f))				// 背景サイズ
+#define MAX_LIFE		(100)									// 体力
+#define MOVE_VALUE		(10.0f)									// 移動量
+#define ROT_SPEED		(0.01f)									// 旋回速度
+#define ANGLE_180		(180)									// 180度
+#define ANGLE_360		(360)									// 360度
+#define SIZE			(D3DXVECTOR3 (700.0f,900.0f,700.0f))	// サイズ
+#define ATTACK_COUNT	(300)									// 攻撃間隔
+
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back::CGage_3D_Back(PRIORITY Priority) : CBillboard(Priority)
+CBoss_Shark::CBoss_Shark(PRIORITY Priority) : CEnemy(Priority)
 {
-	m_pEnemy = nullptr;
+	m_nAttackCount = ZERO_INT;
 }
 //=============================================================================
-// インクルードファイル
+// デストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back::~CGage_3D_Back()
+CBoss_Shark::~CBoss_Shark()
 {
 }
 //=============================================================================
-// インクルードファイル
+// 生成関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back * CGage_3D_Back::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy *pEnemy)
+CBoss_Shark * CBoss_Shark::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CGage_3D_Backのポインタ
-	CGage_3D_Back *pGage_3D_Back = nullptr;
+	// CBoss_Sharkポインタ
+	CBoss_Shark *pBoss_Shark = nullptr;
 
 	// nullcheck
-	if (pGage_3D_Back == nullptr)
+	if (pBoss_Shark == nullptr)
 	{
 		// メモリ確保
-		pGage_3D_Back = new CGage_3D_Back;
+		pBoss_Shark = new CBoss_Shark;
 
 		// !nullcheck
-		if (pGage_3D_Back != nullptr)
+		if (pBoss_Shark != nullptr)
 		{
-			// 代入
-			pGage_3D_Back->m_pEnemy = pEnemy;
-
 			// 初期化処理
-			pGage_3D_Back->Init(pos, SIZE);
+			pBoss_Shark->Init(pos, rot);
+
+			// ボックス生成
+			CCharacter_Box::Create(pos, rot, pBoss_Shark);
 		}
 	}
 	// ポインタを返す
-	return pGage_3D_Back;
+	return pBoss_Shark;
 }
 //=============================================================================
-// 初期化処理関数
+// 初期化関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CGage_3D_Back::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CBoss_Shark::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// 初期化処理
-	CBillboard::Init(pos, size);
+	// モデル情報取得
+	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
 
-	// 向き設定
-	SetRot(ZeroVector3);
+	// !nullcheck
+	if (pXfile != nullptr)
+	{
+		// モデルの情報を渡す
+		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_BOSS_SHARK);
+	}
 
-	// 色設定
-	SetColor(COL);
+	// 体力設定
+	SetLife(MAX_LIFE);
 
-	// 透過値設定
-	SetAlpha(true);
+	// サイズ設定
+	SetSize(SIZE);
 
+	// 初期化関数
+	CEnemy::Init(pos, rot);
 	return S_OK;
 }
 //=============================================================================
-// 終了処理関数
+// 終了関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Uninit(void)
+void CBoss_Shark::Uninit(void)
 {
-	// !nullcheck
-	if (m_pEnemy != nullptr)
-	{
-		// nullptrに
-		m_pEnemy = nullptr;
-	}
-
 	// 終了処理
-	CBillboard::Uninit();
+	CEnemy::Uninit();
 }
 //=============================================================================
-// 更新処理関数
+// 更新関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Update(void)
+void CBoss_Shark::Update(void)
 {
 	// 更新処理
-	CBillboard::Update();
+	CEnemy::Update();
 
 	// 位置取得
-	D3DXVECTOR3 pos = m_pEnemy->GetPos();
+	D3DXVECTOR3 pos = GetPos();
 
-	// サイズ取得
-	D3DXVECTOR3 size = m_pEnemy->GetSize();
+	// 古い座標保存
+	SetPosOld(pos);
 
-	// 位置設定
-	SetPos(POS);
-
-	// 死亡状態の場合
-	if (m_pEnemy->GetState() == CEnemy::STATE_DEAD)
-	{
-		// 終了
-		Uninit();
-
-		return;
-	}
+	// 攻撃処理
+	Attack();
 }
 //=============================================================================
-// 描画処理関数
+// 描画関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Draw(void)
+void CBoss_Shark::Draw(void)
 {
-	// 描画処理
-	CBillboard::Draw();
+	// 描画関数
+	CEnemy::Draw();
+}
+//=============================================================================
+// 攻撃処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CBoss_Shark::Attack(void)
+{
+	// インクリメント
+	m_nAttackCount++;
 }

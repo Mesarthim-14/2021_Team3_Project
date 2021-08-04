@@ -131,6 +131,15 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);		// 最初のアルファ引数（初期値）
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);		// 2番目のアルファ引数（初期値）
 
+																				//環境光
+	D3DMATERIAL9 material;
+	ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	material.Ambient.r = 1.0f;
+	material.Ambient.g = 1.0f;
+	material.Ambient.b = 1.0f;
+	material.Ambient.a = 1.0f;
+	m_pD3DDevice->SetMaterial(&material);
+	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x44444444);
 	return S_OK;
 }
 
@@ -224,6 +233,7 @@ void CRenderer::Draw(void)
 
 		//オブジェクトクラスの全描画処理呼び出し
 		CScene::DrawAll();
+
 
 		// 影の生成
 		CShadow::Draw();

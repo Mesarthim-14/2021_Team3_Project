@@ -104,6 +104,12 @@ HRESULT CEnemy_Attack_Arrow_Polygon::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CEnemy_Attack_Arrow_Polygon::Uninit(void)
 {
+	// !nullcheck
+	if (m_pEnemy_Bullet != nullptr)
+	{
+		m_pEnemy_Bullet = nullptr;
+	}
+
 	// èIóπèàóù
 	CBillboard::Uninit();
 }

@@ -1,5 +1,5 @@
 //=============================================================================
-// ライフゲージの背景 [gage_3d_back.cpp]
+// 噛みつきエフェクト [byte_effect.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -10,52 +10,47 @@
 #include "renderer.h"
 #include "texture.h"
 #include "resource_manager.h"
-#include "gage_3d_back.h"
+#include "byte_effect.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define POS		(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
-#define COL		(D3DXCOLOR(0.0f,0.0f,0.0f,1.0f))				// 色
-#define SIZE	(D3DXVECTOR3(510.0f,40.0f,0.0f))				// 背景サイズ
+#define COL	(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back::CGage_3D_Back(PRIORITY Priority) : CBillboard(Priority)
+CByte_Effect::CByte_Effect(PRIORITY Priority) : CBillboard(Priority)
 {
-	m_pEnemy = nullptr;
+
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back::~CGage_3D_Back()
+CByte_Effect::~CByte_Effect()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CGage_3D_Back * CGage_3D_Back::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy *pEnemy)
+CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// CGage_3D_Backのポインタ
-	CGage_3D_Back *pGage_3D_Back = nullptr;
+	CByte_Effect *pGage_3D_Back = nullptr;
 
 	// nullcheck
 	if (pGage_3D_Back == nullptr)
 	{
 		// メモリ確保
-		pGage_3D_Back = new CGage_3D_Back;
+		pGage_3D_Back = new CByte_Effect;
 
 		// !nullcheck
 		if (pGage_3D_Back != nullptr)
 		{
-			// 代入
-			pGage_3D_Back->m_pEnemy = pEnemy;
-
 			// 初期化処理
-			pGage_3D_Back->Init(pos, SIZE);
+			pGage_3D_Back->Init(pos, size);
 		}
 	}
 	// ポインタを返す
@@ -65,7 +60,7 @@ CGage_3D_Back * CGage_3D_Back::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy 
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CGage_3D_Back::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CByte_Effect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 初期化処理
 	CBillboard::Init(pos, size);
@@ -85,14 +80,8 @@ HRESULT CGage_3D_Back::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Uninit(void)
+void CByte_Effect::Uninit(void)
 {
-	// !nullcheck
-	if (m_pEnemy != nullptr)
-	{
-		// nullptrに
-		m_pEnemy = nullptr;
-	}
 
 	// 終了処理
 	CBillboard::Uninit();
@@ -101,34 +90,16 @@ void CGage_3D_Back::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Update(void)
+void CByte_Effect::Update(void)
 {
 	// 更新処理
 	CBillboard::Update();
-
-	// 位置取得
-	D3DXVECTOR3 pos = m_pEnemy->GetPos();
-
-	// サイズ取得
-	D3DXVECTOR3 size = m_pEnemy->GetSize();
-
-	// 位置設定
-	SetPos(POS);
-
-	// 死亡状態の場合
-	if (m_pEnemy->GetState() == CEnemy::STATE_DEAD)
-	{
-		// 終了
-		Uninit();
-
-		return;
-	}
 }
 //=============================================================================
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CGage_3D_Back::Draw(void)
+void CByte_Effect::Draw(void)
 {
 	// 描画処理
 	CBillboard::Draw();
