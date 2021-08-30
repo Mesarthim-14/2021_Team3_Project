@@ -25,7 +25,7 @@
 #define DISTANCE					(2200.0f)						// 視点～注視点の距離
 #define DISTANCE_FAR_UP				(35.0f)							// カメラを引く値
 #define FAR_DISTANCE				(3000.0f)						// 遠めのカメラ
-#define PLAYER_HEIGHT				(800.0f)						// 注視点の高さ
+#define PLAYER_HEIGHT				(600.0f)						// 注視点の高さ
 #define CAMERA_MIN_Fφ				(D3DXToRadian(10.0f))			// カメラの最小角
 #define CAMERA_MAX_Fφ				(D3DXToRadian(170.0f))			// カメラの最大角
 #define CAMERA_MIN_HIGHT			(2.0f)							// カメラの最低高度
@@ -170,7 +170,7 @@ void CCamera::NomalUpdate(D3DXVECTOR3 PlayerPos, D3DXVECTOR3 PlayerRot)
 	m_posVDest.y = PlayerPos.y + PLAYER_HEIGHT + m_fDistance * cosf(m_fVartical);		// カメラ位置Y設定
 	m_posVDest.z = PlayerPos.z + m_fDistance * sinf(m_fVartical) * cosf(PlayerRot.y);	// カメラ位置Z設定
 
-	m_posRDest = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + PLAYER_HEIGHT / HEIGHT_DIVIDE, PlayerPos.z);	//注視点設定
+	m_posRDest = D3DXVECTOR3(PlayerPos.x, PlayerPos.y + PLAYER_HEIGHT, PlayerPos.z);	//注視点設定
 
 	//カメラPOSYの下限
 	if (m_posVDest.y <= CAMERA_MIN_HIGHT)

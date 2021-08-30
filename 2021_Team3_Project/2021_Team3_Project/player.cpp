@@ -54,7 +54,7 @@
 #define RAY_NUM					(4)										// レイの数
 #define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
 #define RAY_RADIUS_UNDER		(D3DXToRadian(-180.0f))					// レイを出す方向
-#define RAY_HIT_RANGE			(500.0f)								// 範囲
+#define RAY_HIT_RANGE			(600.0f)								// 範囲
 #define RAY_HIT_RANGE_UNDER		(0.0f)									// 範囲
 #define MIN_LIFE				(0)										// ライフの最小
 #define LIFE					(70)									// ライフ
@@ -65,7 +65,7 @@
 #define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// デフォルトの角度
 #define DEAD_ZONE				(0.0f)									// コントローラーの反応しない範囲
 // 船体の位置
-#define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42 + 2.0f, pShip->GetMtxWorld()._43))
+#define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
@@ -222,7 +222,7 @@ void CPlayer::PlayerControl()
 	Collision();
 
 	// マップとの当たり判定
-	//RayCollision();
+	RayCollision();
 }
 
 //=============================================================================
@@ -896,19 +896,12 @@ void CPlayer::RayCollision(void)
 {
 	// レイがヒットしたか
 	BOOL bHit = false;
-	// レイがヒットしたか
-	BOOL bUnderHit = false;
-
-	// 着地
-	bool bLanding = false;
 
 	// 距離
 	float fDistancePlayer = ZERO_FLOAT;
-	// 距離
-	float fUnderDistance = ZERO_FLOAT;
 
 	// 位置
-	D3DXVECTOR3 vecStart, vecDirection, vecUnderDirection;
+	D3DXVECTOR3 vecStart, vecDirection;
 
 	// 角度
 	float fRadius = RAY_RADIUS;
@@ -928,31 +921,6 @@ void CPlayer::RayCollision(void)
 		// 始める座標
 		vecStart = pos;
 
-		// レイを出す角度
-		vecDirection = D3DXVECTOR3(RAY_RADIUS_UNDER, ZERO_FLOAT, ZERO_FLOAT);
-
-		// レイがヒットしたか
-		D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT),
-			&bUnderHit, NULL, NULL, NULL, &fUnderDistance, NULL, NULL);
-
-		// trueの場合
-		if (bUnderHit == TRUE)
-		{
-			// 範囲より小さかったら
-			if (fUnderDistance < RAY_HIT_RANGE_UNDER)
-			{
-				// 戻す
-				pos -= (D3DXVECTOR3(cosf(vecUnderDirection.x), sinf(vecUnderDirection.x), ZERO_FLOAT));
-
-				// 位置設定
-				SetPos(pos);
-
-				// trueに
-				bLanding = true;
-
-				return;
-			}
-		}
 		// 4回繰り返す
 		for (int nCount = ZERO_INT; nCount < RAY_NUM; nCount++)
 		{
@@ -979,8 +947,5 @@ void CPlayer::RayCollision(void)
 				}
 			}
 		}
-
-		// 着地状態設定
-		SetLanding(bLanding);
 	}
 }

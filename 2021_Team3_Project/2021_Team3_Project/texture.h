@@ -30,6 +30,7 @@ public:
 		TEXTURE_NUM_FLOOR,			// 地面
 		TEXTURE_NUM_ATTACK_POINT,	// 攻撃地点
 		TEXTURE_NUM_ATTACK_ARROW,	// 攻撃地点の矢印
+		TEXTURE_NUM_BYTE,			// 噛みつき
 		TEXTURE_NUM_MAX
 	};
 

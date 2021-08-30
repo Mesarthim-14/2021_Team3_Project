@@ -93,6 +93,9 @@ HRESULT CEnemy_Ship::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// サイズ設定
 	SetSize(SIZE);
 
+	// 攻撃判定設定
+	SetAttackDecision(ATTACK_DECISION_CIRCLE);
+
 	// 初期化関数
 	CEnemy::Init(pos, rot);
 	return S_OK;
@@ -121,10 +124,17 @@ void CEnemy_Ship::Update(void)
 	// 古い座標保存
 	SetPosOld(pos);	
 
-	// 攻撃処理
-	Attack();
-	// 移動処理
-	//Move();
+	// 攻撃判定取得
+	bool bAttack = Get_bAttackDecision();
+
+	// 攻撃判定がtrueの場合
+	if (bAttack == true)
+	{
+		// 攻撃処理
+		Attack();
+		// 移動処理
+		//Move();
+	}
 }
 //=============================================================================
 // 描画関数
@@ -227,13 +237,13 @@ void CEnemy_Ship::Attack(void)
 	// カウントが60以上になった場合
 	if (m_nAttackCount >= ATTACK_COUNT)
 	{
-		// 砲台のポインタ取得
-		CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
+			// 砲台のポインタ取得
+			CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
 
-		// 弾生成
-		CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
+			// 弾生成
+			CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
 
-		// 0に
-		m_nAttackCount = ZERO_INT;
+			// 0に
+			m_nAttackCount = ZERO_INT;
 	}
 }

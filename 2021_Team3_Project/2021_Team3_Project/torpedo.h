@@ -28,7 +28,11 @@ public:
 private:
 	void Move(void);											// 移動
 	void Collision(void);										// 当たり判定
+	void FanDecision(void);										// 扇の判定
+	void RayCollision(void);									// レイの当たり判定
 
-	float m_fAngle;		// 角度
+	float m_fAngle;			// 角度
+	bool m_bAttackDecision;	// 攻撃判定用
+	bool m_bMove;			// 移動判定
 };
 #endif

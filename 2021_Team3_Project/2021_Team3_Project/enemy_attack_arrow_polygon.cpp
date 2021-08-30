@@ -93,9 +93,6 @@ HRESULT CEnemy_Attack_Arrow_Polygon::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// êFê›íË
 	SetColor(COLOR);
 
-	// ìßâﬂílê›íË
-	SetAlpha(true);
-
 	return S_OK;
 }
 //=============================================================================

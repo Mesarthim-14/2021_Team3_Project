@@ -50,7 +50,7 @@ CPlayer_Life * CPlayer_Life::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	if (pPlayer_Life == nullptr)
 	{
 		// ÉÅÉÇÉäämï€
-		pPlayer_Life = new CPlayer_Life;
+		pPlayer_Life = new CPlayer_Life(PRIORITY_UI);
 
 		// !nullcheck
 		if (pPlayer_Life != nullptr)

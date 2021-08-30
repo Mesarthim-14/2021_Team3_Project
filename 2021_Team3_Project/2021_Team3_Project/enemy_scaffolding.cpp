@@ -25,7 +25,7 @@
 #define ANGLE_180		(180)									// 180度
 #define ANGLE_360		(360)									// 360度
 #define SIZE			(D3DXVECTOR3 (700.0f,1200.0f,700.0f))	// サイズ
-#define ATTACK_COUNT	(300)									// 攻撃間隔
+#define ATTACK_COUNT	(120)									// 攻撃間隔
 
 // 砲台の位置
 #define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
@@ -146,16 +146,23 @@ void CEnemy_Scaffolding::Attack(void)
 	// インクリメント
 	m_nAttackCount++;
 
-	// カウントが60以上になった場合
-	if (m_nAttackCount >= ATTACK_COUNT)
+	// 攻撃判定取得
+	bool bAttack = Get_bAttackDecision();
+
+	// 攻撃判定がtrueの場合
+	if (bAttack == true)
 	{
-		// 砲台のポインタ取得
-		CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
+		// カウントが60以上になった場合
+		if (m_nAttackCount >= ATTACK_COUNT)
+		{
+			// 砲台のポインタ取得
+			CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
 
-		// 弾生成
-		CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
+			// 弾生成
+			CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
 
-		// 0に
-		m_nAttackCount = ZERO_INT;
+			// 0に
+			m_nAttackCount = ZERO_INT;
+		}
 	}
 }

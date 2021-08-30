@@ -15,14 +15,21 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define COL	(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))
+#define MOVE_VALUE	(D3DXVECTOR3(0.0f,30.0f,0.0f))					// 移動量
+#define COL			(D3DXCOLOR(1.0f,0.3f,0.0f,1.0f))				// 色
+#define UP_POS		(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
+#define DOWN_POS	(D3DXVECTOR3(pos.x,pos.y - size.y,pos.z))		// 位置
+#define UP_ROT		(D3DXVECTOR3(0.0f,0.0f,D3DXToRadian(0.0f)))		// 向き
+#define DOWN_ROT	(D3DXVECTOR3(0.0f, 0.0f, D3DXToRadian(180.0f)))	// 向き
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CByte_Effect::CByte_Effect(PRIORITY Priority) : CBillboard(Priority)
 {
-
+	m_SavePos	= ZeroVector3;
+	m_Type		= TYPE_NONE;
+	bEndByte	= false;
 }
 //=============================================================================
 // インクルードファイル
@@ -35,26 +42,29 @@ CByte_Effect::~CByte_Effect()
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type)
 {
-	// CGage_3D_Backのポインタ
-	CByte_Effect *pGage_3D_Back = nullptr;
+	// CByte_Effectのポインタ
+	CByte_Effect *pByte_Effect = nullptr;
 
 	// nullcheck
-	if (pGage_3D_Back == nullptr)
+	if (pByte_Effect == nullptr)
 	{
 		// メモリ確保
-		pGage_3D_Back = new CByte_Effect;
+		pByte_Effect = new CByte_Effect;
 
 		// !nullcheck
-		if (pGage_3D_Back != nullptr)
+		if (pByte_Effect != nullptr)
 		{
+			// 代入
+			pByte_Effect->m_Type = type;
+
 			// 初期化処理
-			pGage_3D_Back->Init(pos, size);
+			pByte_Effect->Init(pos, size);
 		}
 	}
 	// ポインタを返す
-	return pGage_3D_Back;
+	return pByte_Effect;
 }
 //=============================================================================
 // 初期化処理関数
@@ -62,18 +72,59 @@ CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 HRESULT CByte_Effect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// 位置
+	D3DXVECTOR3 Pos = ZeroVector3;
+
+	// UPの場合
+	if (m_Type == TYPE_UP)
+	{
+		// 代入
+		Pos = UP_POS;
+	}
+	// DOWNの場合
+	if (m_Type == TYPE_DOWN)
+	{
+		// 代入
+		Pos = DOWN_POS;
+	}
+
 	// 初期化処理
-	CBillboard::Init(pos, size);
+	CBillboard::Init(Pos, size);
+
+	// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_BYTE));
+
+	// 位置保存
+	m_SavePos = pos;
+
+	// 向き
+	D3DXVECTOR3 rot;
+
+	// UPの場合
+	if (m_Type == TYPE_UP)
+	{
+		// 向き
+		rot = UP_ROT;
+	}
+	// DOWNの場合
+	if (m_Type == TYPE_DOWN)
+	{
+		// 向き
+		rot = DOWN_ROT;
+	}
 
 	// 向き設定
-	SetRot(ZeroVector3);
+	SetRot(rot);
 
 	// 色設定
 	SetColor(COL);
 
-	// 透過値設定
-	SetAlpha(true);
-
+	// 加算合成
+	SetBlend(true);
 	return S_OK;
 }
 //=============================================================================
@@ -82,7 +133,6 @@ HRESULT CByte_Effect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CByte_Effect::Uninit(void)
 {
-
 	// 終了処理
 	CBillboard::Uninit();
 }
@@ -94,6 +144,48 @@ void CByte_Effect::Update(void)
 {
 	// 更新処理
 	CBillboard::Update();
+
+	// 位置取得
+	D3DXVECTOR3 pos = GetPos();
+
+	// UPの場合
+	if (m_Type == TYPE_UP)
+	{
+		// 位置がpos.y以下の場合
+		if (pos.y >= m_SavePos.y)
+		{
+			// 移動
+			Move();
+		}
+		else
+		{
+			// trueに
+			bEndByte = true;
+		}
+	}
+	// DOWNの場合
+	if (m_Type == TYPE_DOWN)
+	{
+
+		// 位置がpos.y以下の場合
+		if (pos.y <= m_SavePos.y)
+		{
+			// 移動
+			Move();
+		}
+		else
+		{
+			// trueに
+			bEndByte = true;
+		}
+	}
+	// trueの場合
+	if (bEndByte == true)
+	{
+		// 終了
+		Uninit();
+		return;
+	}
 }
 //=============================================================================
 // 描画処理関数
@@ -103,4 +195,41 @@ void CByte_Effect::Draw(void)
 {
 	// 描画処理
 	CBillboard::Draw();
+}
+//=============================================================================
+// エフェクト生成処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CByte_Effect::CrateEffect(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+{
+	// 上生成
+	Create(pos, size, TYPE_UP);
+
+	// 下生成
+	Create(pos, size, TYPE_DOWN);
+}
+//=============================================================================
+// 移動処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CByte_Effect::Move(void)
+{
+	// 移動
+	D3DXVECTOR3 move = ZeroVector3;
+
+	// UPの場合
+	if (m_Type == TYPE_UP)
+	{
+		// 移動
+		move.y = -MOVE_VALUE.y;
+	}
+	// DOWNの場合
+	if (m_Type == TYPE_DOWN)
+	{
+		// 移動
+		move.y = MOVE_VALUE.y;
+	}
+
+	// 移動
+	SetMove(move);
 }
