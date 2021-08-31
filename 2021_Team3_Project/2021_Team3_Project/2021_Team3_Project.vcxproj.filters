@@ -258,6 +258,9 @@
     <ClCompile Include="byte_effect.cpp">
       <Filter>06_Effect\Byte_Effect</Filter>
     </ClCompile>
+    <ClCompile Include="debug_proc.cpp">
+      <Filter>00_Important</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -421,6 +424,9 @@
     </ClInclude>
     <ClInclude Include="byte_effect.h">
       <Filter>06_Effect\Byte_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_proc.h">
+      <Filter>00_Important</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

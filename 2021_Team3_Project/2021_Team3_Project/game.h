@@ -69,7 +69,8 @@ public:
 	CLight *GetLight(void);			// ライトのポインタ情報
 	CPlayer *GetPlayer(void);		// プレイヤーのポインタ情報
 	CMap *GetMap(void) { return m_pMap; }	// マップのポインタ取得
-private:	
+private:
+	void DrawPlayerPos(void);	// プレイヤーの位置書き込み
 	CCamera *m_pCamera;			// カメラのポインタ	
 	CLight *m_pLight;			// ライトのポインタ
 	CMeshField *m_pMeshField;	// メッシュフィールドのポインタ

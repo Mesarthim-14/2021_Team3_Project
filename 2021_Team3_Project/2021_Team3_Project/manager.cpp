@@ -29,6 +29,7 @@
 #include "xfile.h"
 #include "polygon.h"
 #include "shadow.h"
+#include "debug_proc.h"
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -41,7 +42,7 @@ unique_ptr<CInputJoypad> CManager::m_pJoypad = nullptr;
 unique_ptr<CScene> CManager::m_pScene = nullptr;
 unique_ptr<CResourceManager> CManager::m_pResourceManager = nullptr;
 unique_ptr<CModeBase> CManager::m_pModeBase = nullptr;
-
+unique_ptr<CDebugProc> CManager::m_pDebugProc = nullptr;
 //=============================================================================
 // コンストラクタ
 //=============================================================================
@@ -67,6 +68,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	m_pJoypad.reset(new CInputJoypad);
 	m_pFade.reset(new CFade);
 	m_pResourceManager.reset(CResourceManager::GetInstance());
+	m_pDebugProc.reset(new CDebugProc);
 
 	//メモリが確保できたら
 	if (m_pRenderer != nullptr)
@@ -103,6 +105,13 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 		m_pFade->Init();
 	}
 
+	// !nullcheck
+	if (m_pDebugProc != nullptr)
+	{
+		// 初期化処理
+		m_pDebugProc->Init();
+	}
+
 	//全テクスチャの読み込み
 	LoadAll();
 
@@ -114,6 +123,14 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
+	// !nullcheck
+	if (m_pDebugProc != nullptr)
+	{
+		// デバッグプロシージャの終了処理呼び出し
+		m_pDebugProc->Uninit();
+		m_pDebugProc.reset();
+		m_pDebugProc = nullptr;
+	}
 	// !nullchack
 	if (m_pFade != nullptr)
 	{

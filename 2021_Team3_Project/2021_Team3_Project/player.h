@@ -50,6 +50,16 @@ public:
 		MOTION_MAX					// モーション最大数
 	};
 
+	//=============================================================================
+	//　パッドの種類の列挙型
+	//=============================================================================
+	enum PAD_TYPE
+	{
+		PAD_TYPE_1P = 0,
+		PAD_TYPE_2P,
+		PAD_TYPE_MAX
+	};
+
 	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// コンストラクタ
 	~CPlayer();													// デストラクタ
 
@@ -65,6 +75,7 @@ public:
 
 	void Death(void);											// 死亡関数
 	void Move(void);											// 移動処理
+	void Pad2Move(void);										// 2コントローラーの移動
 	void Attack(void);											// 攻撃の関数
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
@@ -74,5 +85,6 @@ private:
 	bool m_bMove;									// 歩いているフラグ
 	int m_nAttackCount_R;							// 右攻撃カウント
 	int m_nAttackCount_L;							// 左攻撃カウント
+	PAD_TYPE m_PadType;								// パッドタイプ
 };
 #endif

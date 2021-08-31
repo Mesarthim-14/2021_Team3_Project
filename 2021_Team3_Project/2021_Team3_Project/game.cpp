@@ -31,6 +31,7 @@
 #include "boss_shark.h"
 #include "byte_effect.h"
 #include "library.h"
+#include "debug_proc.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
@@ -55,6 +56,7 @@ CGame::CGame()
 	m_nTimeCounter		= ZERO_INT;
 	m_nEnemyNum			= ZERO_INT;
 	m_pEnemyFileData	= nullptr;
+	m_pFont				= nullptr;
 }
 
 //=======================================================================================
@@ -92,16 +94,12 @@ HRESULT CGame::Init(void)
 	// プレイヤーの生成
 	CreatePlayer();
 
-	// 敵のテキストファイル読み込み
-	//RoadEnemyFile(ENEMY_CREATE_TEXT);
-
 	// 敵生成
 	//CreateEnemy();
 
 	// マップの生成
 	CreateMap();
 
-	
 	return S_OK;
 }
 
@@ -143,6 +141,12 @@ void CGame::Uninit(void)
 		m_pMeshField->Uninit();
 		m_pMeshField = nullptr;
 	}
+	// デバッグ情報表示用フォントの破棄
+	if (m_pFont != nullptr)
+	{
+		m_pFont->Release();
+		m_pFont = nullptr;
+	}
 }
 
 //=======================================================================================
@@ -150,6 +154,8 @@ void CGame::Uninit(void)
 //=======================================================================================
 void CGame::Update(void)
 {
+	DrawPlayerPos();
+
 	if (m_pCamera != nullptr)
 	{
 		//カメラクラスの更新処理
@@ -165,7 +171,6 @@ void CGame::Update(void)
 //=======================================================================================
 void CGame::Draw(void)
 {
-
 }
 
 //=======================================================================================
@@ -325,6 +330,9 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 //=======================================================================================
 void CGame::CreateEnemy(void)
 {
+	// 敵のテキストファイル読み込み
+	RoadEnemyFile(ENEMY_CREATE_TEXT);
+
 	// !nullcheck
 	if (m_pEnemyFileData != nullptr)
 	{
@@ -387,4 +395,23 @@ CLight * CGame::GetLight(void)
 CPlayer * CGame::GetPlayer(void)
 {
 	return m_pPlayer;
+}
+//=======================================================================================
+// プレイヤーの情報
+// Author : SugawaraTsukasa
+//=======================================================================================
+void CGame::DrawPlayerPos(void)
+{
+	char str[1024];
+
+	// プレイヤーの位置取得
+	D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
+
+	// 向き取得
+	D3DXVECTOR3 PlayerRot = m_pPlayer->GetRot();
+
+	wsprintf(str, "POS:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z);
+	// 書き込み
+	CDebugProc::Print("POS:X%.1f Y%.1f Z%.1f\nROT:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z,
+		PlayerRot.x, PlayerRot.y, PlayerRot.z);
 }
