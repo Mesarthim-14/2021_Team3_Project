@@ -28,6 +28,11 @@ public:
 		PARTS_UNDER_BODY,	// 下半身
 		PARTS_MAX
 	};
+	enum MOTION_STATE
+	{
+		MOTION_STATE_IDLE = 0,
+		MOTION_STATE_BYTE
+	};
 	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
 	~CBoss_Shark();													// デストラクタ
 	static CBoss_Shark *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
@@ -35,10 +40,12 @@ public:
 	void Uninit(void);												// 終了処理
 	void Update(void);												// 更新処理
 	void Draw(void);												// 描画処理
-
 private:
 	void Attack(void);												// 攻撃処理
+	void ByteAttack(void);											// 噛みつき攻撃
+	void MotionUpdate(void);										// モーション処理
 
 	int m_nAttackCount;												// 攻撃カウント
+	MOTION_STATE m_MotionState;										// モーションの状態
 };
 #endif

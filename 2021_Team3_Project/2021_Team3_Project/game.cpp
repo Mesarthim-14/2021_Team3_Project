@@ -96,11 +96,12 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// ìGê∂ê¨
-	CreateEnemy_Obstacle();
+	//CreateEnemy_Obstacle();
 
 	// É}ÉbÉvÇÃê∂ê¨
 	//CreateMap();
 
+	CBoss_Shark::Create(ENEMY_POS, ENEMY_ROT);
 	return S_OK;
 }
 
@@ -183,7 +184,6 @@ void CGame::SetGame(void)
 	m_nTimeCounter++;
 	if (m_nTimeCounter == 60)
 	{
-		//CByte_Effect::CrateEffect(ENEMY_POS, SIZE);
 	}
 }
 

@@ -12,6 +12,7 @@
 #include "game.h"
 #include "player.h"
 #include "character_box.h"
+#include "byte_effect.h"
 #include "boss_shark.h"
 //=============================================================================
 // マクロ定義
@@ -31,7 +32,8 @@
 //=============================================================================
 CBoss_Shark::CBoss_Shark(PRIORITY Priority) : CEnemy(Priority)
 {
-	m_nAttackCount = ZERO_INT;
+	m_nAttackCount	= ZERO_INT;
+	m_MotionState		= MOTION_STATE_IDLE;
 }
 //=============================================================================
 // デストラクタ
@@ -119,6 +121,12 @@ void CBoss_Shark::Update(void)
 	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
 
+	// モーション更新
+	ModelAnimeUpdate();
+
+	// モーション処理
+	MotionUpdate();
+
 	// 古い座標保存
 	SetPosOld(pos);
 
@@ -134,6 +142,7 @@ void CBoss_Shark::Draw(void)
 	// 描画関数
 	CEnemy::Draw();
 }
+
 //=============================================================================
 // 攻撃処理関数
 // Author : Sugawara Tsukasa
@@ -142,4 +151,47 @@ void CBoss_Shark::Attack(void)
 {
 	// インクリメント
 	m_nAttackCount++;
+
+	// カウントが300以上の場合
+	if (m_nAttackCount >= ATTACK_COUNT)
+	{
+		// 噛みつき攻撃
+		ByteAttack();
+
+		// 0に
+		m_nAttackCount = ZERO_INT;
+	}
+}
+//=============================================================================
+// 噛みつき攻撃処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CBoss_Shark::ByteAttack(void)
+{
+	// 位置取得
+	D3DXVECTOR3 pos = GetPos();
+
+	// 噛みつきモーション
+	m_MotionState = MOTION_STATE_BYTE;
+
+	// 噛みつきエフェクト
+	CByte_Effect::CrateEffect(pos, SIZE);
+}
+//=============================================================================
+// モーション処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CBoss_Shark::MotionUpdate(void)
+{
+	// アイドルモーション
+	if (m_MotionState == MOTION_STATE_IDLE)
+	{
+		// モーション設定
+		SetMotion(MOTION_STATE_IDLE);
+	}
+	if (m_MotionState == MOTION_STATE_BYTE)
+	{
+		// モーション設定
+		SetMotion(MOTION_STATE_BYTE);
+	}
 }
