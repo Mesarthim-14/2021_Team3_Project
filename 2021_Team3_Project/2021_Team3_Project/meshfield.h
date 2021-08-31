@@ -14,14 +14,6 @@
 #include "mesh_3d.h"
 
 //=============================================================================
-// マクロ定義
-//=============================================================================
-#define FIELD_WIDTH					(4)				// 分割数
-#define FIELD_HEIGHT				(4)				// 分割数
-#define FIELD_WIDTH_SIZE			(16000.0f)		// サイズ
-#define FIELD_HEIGHT_SIZE			(16000.0f)		// サイズ
-
-//=============================================================================
 // メッシュフィールドクラス
 //=============================================================================
 class CMeshField : public CMesh3d
@@ -34,6 +26,8 @@ public:
 	void Uninit(void);									// 終了処理
 	void Update(void);									// 更新処理
 	void Draw(void);									// 描画処理
+	void CreateVerterx(void);								// 頂点の生成
+	void SetInfo(D3DXVECTOR3 size, INT_VERTEX_2D PieceNum);	// 情報の設定
 
 	static CMeshField*Create(void);		// メッシュフィールド
 private:

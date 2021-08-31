@@ -94,4 +94,11 @@ struct VERTEX_2D
 	D3DXVECTOR2 tex; // テクスチャ座標
 };
 
+// int型の構造体
+struct INT_VERTEX_2D
+{
+	int x;
+	int y;
+};
+
 #endif

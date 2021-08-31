@@ -201,6 +201,8 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="torpedo.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="water.cpp" />
+    <ClCompile Include="wave.cpp" />
     <ClCompile Include="xfile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +261,8 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="torpedo.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="water.h" />
+    <ClInclude Include="wave.h" />
     <ClInclude Include="xfile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

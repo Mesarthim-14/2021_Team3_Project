@@ -37,6 +37,7 @@ public:
 	D3DXVECTOR3 GetposR(void);			// カメラ角度
 	D3DXMATRIX GetMtxView(void);		// マトリクスビュー
 	D3DXVECTOR3 GetposVDest(void);		// 目的の角度
+	D3DXMATRIX GetMtxProj(void) { return m_mtxProjection; }
 
 	static CCamera*Create(void);		// クリエイト
 

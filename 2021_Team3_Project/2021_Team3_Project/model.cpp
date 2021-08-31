@@ -219,12 +219,18 @@ void CModel::BindModel(CXfile::MODEL model)
 	m_Model.pBuffMat = model.pBuffMat;
 	m_Model.dwNumMat = model.dwNumMat;
 	m_Model.apTexture = model.apTexture;
+}
 
+//=============================================================================
+// âeÇÃê›íË
+//=============================================================================
+void CModel::SetShadowInfo(CXfile::MODEL model)
+{
 	// nullcheck
 	if (!m_pShadow)
 	{
 		// âeÇÃê∂ê¨
-		//m_pShadow = CShadow::Create(model.pMesh);
+		m_pShadow = CShadow::Create(model.pMesh);
 	}
 }
 

@@ -143,21 +143,21 @@ void CCharacter::Draw()
 	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+	for (auto &model : m_apModelAnime)
 	{
-		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		if (model != nullptr)
 		{
-			//ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì•`‰æˆ—
-			m_apModelAnime.at(nCntModelNum)->Draw(m_rot);
+			model->Draw(m_rot);
 		}
 	}
 
-	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	// ‰e‚Ì•`‰æ
+	for (auto &model : m_apModelAnime)
 	{
-		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		if (model != nullptr)
 		{
-			// ŠK‘wƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰e•`‰æ
-			m_apModelAnime.at(nCntModelNum)->ShadowDraw(m_rot);
+			model->ShadowDraw(m_rot);
 		}
 	}
 }
@@ -182,7 +182,7 @@ void CCharacter::ModelCreate(CXfile::HIERARCHY_XFILE_NUM FileNum)
 			// ƒ[ƒJƒ‹•Ï”Žæ“¾
 			CModelAnime *pModelAnime = nullptr;
 			CXfile::MODELFILE ModelFile = pXfile->GetModelFile(nCntModel, FileNum);
-			std::vector<CXfile::MODEL> model = pXfile->GetHierarchyXfile(FileNum);
+			vector<CXfile::MODEL> model = pXfile->GetHierarchyXfile(FileNum);
 
 			// nullcheck
 			if (pModelAnime == nullptr)

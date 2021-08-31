@@ -74,6 +74,9 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 		// モデルの情報を渡す
 		BindModel(model);
+
+		// 影の設定
+		SetShadowInfo(model);
 	}
 
 	// サイズ設定

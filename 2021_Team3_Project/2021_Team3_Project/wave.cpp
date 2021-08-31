@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ライト処理 [light.cpp]
+// 上下運動のクラス	[wave.cpp]
 // Author : Konishi Yuuto
 //
 //=============================================================================
@@ -8,83 +8,77 @@
 //=============================================================================
 // インクルード
 //=============================================================================
-#include "light.h"
-#include "manager.h"
-#include "renderer.h"
-
-//=============================================================================
-// マクロ定義
-//=============================================================================
-#define LIGHT_POS		(D3DXVECTOR3(1000.0f, 1000.0f, 0.0f))		// ライトの座標
+#include "wave.h"
 
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CLight::CLight()
+CWave::CWave()
 {
-	//メモリの0クリア
-	SecureZeroMemory(&m_Light, sizeof(D3DLIGHT9));
+	m_fTime = 1.0f;
+	m_fTimeNum = 0.0f;
+	m_fPower = 0.0f;
+	m_fHeight = 0.0f;
 }
 
 //=============================================================================
 // デストラクタ
 //=============================================================================
-CLight::~CLight()
+CWave::~CWave()
 {
+}
+
+//=============================================================================
+// インスタンス生成
+//=============================================================================
+CWave * CWave::Create(float fTimeNum, float fPower, float fHeight)
+{
+	// メモリ確保
+	CWave *pWave = new CWave;
+
+	// nullcheck
+	if (pWave)
+	{
+		// 初期化処理
+		pWave->Init(fTimeNum, fPower, fHeight);
+	}
+
+	return pWave;
 }
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CLight::Init(void)
+HRESULT CWave::Init(float fTimeNum, float fPower, float fHeight)
 {
-	//デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-
-	//ライトをクリアする
-	SecureZeroMemory(&m_Light, sizeof(D3DLIGHT9));
-
-	// 座標設定
-	m_Light.Position = LIGHT_POS;
-
-	//ライトタイプの指定
-	m_Light.Type = D3DLIGHT_DIRECTIONAL;
-
-	//光の拡散の指定
-	//m_Light.Diffuse = D3DXCOLOR(2.0f, 2.0f, 2.0f, 1.0f);
-	m_Light.Diffuse = WhiteColor;
-
-	//m_Light.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
-	m_Light.Specular = WhiteColor;
-
-	//ライト方向の指定
-	m_vecDir = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
-
-	//正規化する（大きさ1のベクトルにする必要がある）
-	D3DXVec3Normalize(&m_vecDir, &m_vecDir);
-
-	// ベクトルの設定
-	m_Light.Direction = m_vecDir;
-
-	//ライトを設定する
-	pDevice->SetLight(0, &m_Light);
-
-	//ライトを有効にする
-	pDevice->LightEnable(0, TRUE);
+	m_fTimeNum = fTimeNum;
+	m_fPower = fPower;
+	m_fHeight = fHeight;
 
 	return S_OK;
 }
 
 //=============================================================================
-//ライトクラスの終了処理
+// 更新処理
 //=============================================================================
-void CLight::Uninit(void)
+void CWave::Update(void)
 {
+	// 値を足す
+	m_fTime += m_fTimeNum;
 }
 
 //=============================================================================
-//ライトクラスの更新処理
+// 上下運動
 //=============================================================================
-void CLight::Update(void)
+float CWave::Wave(void)
 {
+	return sinf(D3DX_PI / (m_fHeight) * m_fTime)*m_fPower;
+}
+
+//=============================================================================
+// 上下運動
+//=============================================================================
+float CWave::Wave(int nCntV, int nCntH)
+{
+	return sinf(D3DX_PI / (m_fHeight) * (m_fTime + nCntH + nCntV))*m_fPower;
 }

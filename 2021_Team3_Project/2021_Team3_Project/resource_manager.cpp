@@ -76,8 +76,7 @@ void CResourceManager::LoadAll(void)
 	if (m_pTexture != nullptr)
 	{
 		// テクスチャロード
-		m_pTexture->Load();
-		m_pTexture->SeparateTexLoad();
+		m_pTexture->LoadAll();
 	}
 
 	// !nullcheck
@@ -106,9 +105,8 @@ void CResourceManager::UnLoadAll(void)
 	// !nullcheck
 	if (m_pTexture != nullptr)
 	{
-		// テクスチャアンロード
-		m_pTexture->UnLoad();
-		m_pTexture->SeparateTexUnLoad();
+		// テクスチャのアンロード
+		m_pTexture->UnLoadAll();
 		delete m_pTexture;
 		m_pTexture = nullptr;
 	}

@@ -153,9 +153,8 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 	DWORD dwNumEdges = 0;	// エッジのカウント
 	m_dwNumVertices = 0;	// 頂点の数リセット
 
-	// プレイヤーの向きを反映
 	D3DXVECTOR3 posL = D3DXVECTOR3(
-		cosf(rot.y)*m_LightPos.x , m_LightPos.y, sinf(rot.y)*m_LightPos.z );
+		cosf(rot.y)*m_LightPos.x, m_LightPos.y, sinf(rot.y)*m_LightPos.z);
 
 	// 各面の設定
 	for (DWORD nCount = 0; nCount < m_dwNumFaces; nCount++)
@@ -187,6 +186,7 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 	// 座標の設定
 	for (DWORD nCount = 0; nCount < dwNumEdges; nCount++)
 	{
+
 		D3DXVECTOR3 v1 = m_MeshVertices[m_pEdges[2 * nCount + 0]].pos;
 		D3DXVECTOR3 v2 = m_MeshVertices[m_pEdges[2 * nCount + 1]].pos;
 		D3DXVECTOR3 v3 = v1 - posL * 1;

@@ -49,6 +49,7 @@ public:
 	void SubAlpha(float fAlpha);								// 透明度の減算
 	void ShadowDraw(D3DXVECTOR3 rot);							// 影の描画
 	void HasPtrDelete(void);									// 保持ポインタの開放処理
+	void SetShadowInfo(CXfile::MODEL model);
 
 	// Set関数
 	void SetPos(const D3DXVECTOR3 pos);					// 座標の設定

@@ -97,6 +97,9 @@
     <Filter Include="06_Effect\Particle_Effect">
       <UniqueIdentifier>{5e5bd267-683c-4885-a0f5-21dbc984809b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06_Effect\Ocean">
+      <UniqueIdentifier>{9e6e0e49-3815-4345-a963-d15ff9feae8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -267,6 +270,12 @@
     <ClCompile Include="effect.cpp">
       <Filter>06_Effect\Particle_Effect</Filter>
     </ClCompile>
+    <ClCompile Include="water.cpp">
+      <Filter>06_Effect\Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="wave.cpp">
+      <Filter>06_Effect\Ocean</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -436,6 +445,12 @@
     </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>06_Effect\Particle_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="water.h">
+      <Filter>06_Effect\Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="wave.h">
+      <Filter>06_Effect\Ocean</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
