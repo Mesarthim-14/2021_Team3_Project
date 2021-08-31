@@ -32,15 +32,16 @@
 #include "byte_effect.h"
 #include "library.h"
 #include "debug_proc.h"
+#include "rock.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
-#define ENEMY_CREATE_TEXT	("data/Text/Enemy/Enemy_Create.txt")			// 敵生成テキスト
-#define ENEMY_POS			(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// 敵の位置
-#define ENEMY_POS_2			(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// 敵の位置
-#define ENEMY_ROT			(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
-#define PLAYER_POS			(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
-#define SIZE				(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
+#define ENEMY_OBSTACLE_CREATE_TEXT	("data/Text/Enemy/Enemy_Obstacle_Create.txt")	// 敵生成テキスト
+#define ENEMY_POS					(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// 敵の位置
+#define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// 敵の位置
+#define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
+#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
+#define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -95,10 +96,10 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// 敵生成
-	//CreateEnemy();
+	CreateEnemy_Obstacle();
 
 	// マップの生成
-	CreateMap();
+	//CreateMap();
 
 	return S_OK;
 }
@@ -328,10 +329,10 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 // 敵生成関数
 // Author : Sugawara Tsukasa
 //=======================================================================================
-void CGame::CreateEnemy(void)
+void CGame::CreateEnemy_Obstacle(void)
 {
 	// 敵のテキストファイル読み込み
-	RoadEnemyFile(ENEMY_CREATE_TEXT);
+	RoadEnemyFile(ENEMY_OBSTACLE_CREATE_TEXT);
 
 	// !nullcheck
 	if (m_pEnemyFileData != nullptr)
@@ -343,19 +344,24 @@ void CGame::CreateEnemy(void)
 			switch (m_pEnemyFileData[nCnt].Type)
 			{
 				// 敵船の場合
-			case ENEMY_TYPE_SHIP:
+			case ENEMY_OBSTACLE_TYPE_SHIP:
 				// 敵船生成
 				CEnemy_Ship::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
 				// 敵船の場合
-			case ENEMY_TYPE_SCAFFOLDING:
+			case ENEMY_OBSTACLE_TYPE_SCAFFOLDING:
 				// 櫓生成
 				CEnemy_Scaffolding::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
 				// 魚雷の場合
-			case ENEMY_TYPE_TORPEDO:
+			case ENEMY_OBSTACLE_TYPE_TORPEDO:
 				// 魚雷生成
 				CTorpedo::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
+				break;
+				// 岩の場合
+			case ENEMY_OBSTACLE_TYPE_ROCK:
+				// 岩生成
+				CRock::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
 				// 例外の場合
 			default:
@@ -402,16 +408,9 @@ CPlayer * CGame::GetPlayer(void)
 //=======================================================================================
 void CGame::DrawPlayerPos(void)
 {
-	char str[1024];
-
 	// プレイヤーの位置取得
 	D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
 
-	// 向き取得
-	D3DXVECTOR3 PlayerRot = m_pPlayer->GetRot();
-
-	wsprintf(str, "POS:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z);
 	// 書き込み
-	CDebugProc::Print("POS:X%.1f Y%.1f Z%.1f\nROT:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z,
-		PlayerRot.x, PlayerRot.y, PlayerRot.z);
+	CDebugProc::Print("POS:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z);
 }

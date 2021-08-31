@@ -32,13 +32,14 @@ class CMap;
 class CGame : public CModeBase
 {
 public:
-	enum ENEMY_TYPE
+	enum ENEMY_OBSTACLE_TYPE
 	{
-		ENEMY_TYPE_MIN = 0,
-		ENEMY_TYPE_SHIP,
-		ENEMY_TYPE_SCAFFOLDING,
-		ENEMY_TYPE_TORPEDO,
-		ENEMY_TYPE_MAX
+		ENEMY_OBSTACLE_TYPE_MIN = 0,
+		ENEMY_OBSTACLE_TYPE_SHIP,
+		ENEMY_OBSTACLE_TYPE_SCAFFOLDING,
+		ENEMY_OBSTACLE_TYPE_TORPEDO,
+		ENEMY_OBSTACLE_TYPE_ROCK,
+		ENEMY_OBSTACLE_TYPE_MAX
 	};
 	//=============================================================================
 	//　敵生成ファイル情報の構造体
@@ -47,7 +48,7 @@ public:
 	{
 		D3DXVECTOR3 Pos;		// 位置のオフセット情報
 		D3DXVECTOR3 Rot;		// 向きのオフセット情報
-		ENEMY_TYPE Type;		// 種類情報
+		ENEMY_OBSTACLE_TYPE Type;		// 種類情報
 	};
 	
 	CGame();		// コンストラクタ
@@ -62,7 +63,7 @@ public:
 	void CreatePlayer(void);		// プレイヤーの生成	
 	void CreateMap(void);			// マップの生成	
 	void CreateGround(void);		// 地面の生成
-	void CreateEnemy(void);			// 敵生成関数
+	void CreateEnemy_Obstacle(void);			// 敵生成関数
 	void RoadEnemyFile(string pEnemyFile);			// 敵の生成ファイル読み込み
 
 	CCamera *GetCamera(void);		// カメラのポインタ情報
