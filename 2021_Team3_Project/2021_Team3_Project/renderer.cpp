@@ -17,6 +17,7 @@
 #include "keyboard.h"
 #include "polygon.h"
 #include "shadow.h"
+#include "debug_proc.h"
 
 //=============================================================================
 // レンダリングクラスのコンストラクタ
@@ -238,6 +239,12 @@ void CRenderer::Draw(void)
 		// 影の生成
 		CShadow::Draw();
 		
+		// デバッグプロシージャ
+		CDebugProc *pDebugProc = CManager::GetDebugProc();
+		if (pDebugProc != nullptr)
+		{
+			pDebugProc->Draw();
+		}
 		CFade *pFade = CManager::GetFade();
 
 		if (pFade != nullptr)

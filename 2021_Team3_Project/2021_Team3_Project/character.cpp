@@ -239,18 +239,14 @@ void CCharacter::ModelAnimeUpdate(void)
 //=============================================================================
 void CCharacter::Gravity(void)
 {
-	// 着地状態じゃなかったら
-	if (!m_bLanding)
-	{
-		// 重力をかける
-		m_move.y -= GRAVITY_POWAR;
-		m_pos.y += m_move.y;		// 落下
+	// 重力をかける
+	m_move.y -= GRAVITY_POWAR;
+	m_pos.y += m_move.y;		// 落下
 
-		// 地面の判定
-		if (m_pos.y <= GROUND_RIMIT)
-		{
-			Landing(GROUND_RIMIT);
-		}
+	// 地面の判定
+	if (m_pos.y <= GROUND_RIMIT)
+	{
+		Landing(GROUND_RIMIT);
 	}
 }
 

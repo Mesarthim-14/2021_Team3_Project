@@ -33,6 +33,7 @@ class CScene;
 class CResourceManager;
 class CGame;
 class CModeBase;
+class CDebugProc;
 
 //=============================================================================
 //マネージャークラス
@@ -73,7 +74,7 @@ public:
 	static CInputJoypad *GetJoypad(void)					{ return m_pJoypad.get(); }				// ジョイパッドコントローラの情報
 	static CScene *GetScene(void)							{ return m_pScene.get(); }				// シーン情報
 	static CResourceManager *GetResourceManager (void)		{ return m_pResourceManager.get(); }	// リソースマネージャのポインタ
-
+	static CDebugProc *GetDebugProc(void)					{ return m_pDebugProc.get(); }
 	static CModeBase *GetModeBase(void);					// ゲームモードの情報
 	static CGame *GetGame(void);							// ゲームの情報
 
@@ -86,6 +87,7 @@ private:
 	static unique_ptr<CResourceManager> m_pResourceManager;	// リソースマネージャのポインタ
 	static unique_ptr<CModeBase> m_pModeBase;				// モードのポインタ
 	static MODE_TYPE m_mode;								// モード
+	static unique_ptr<CDebugProc> m_pDebugProc;				// デバッグプロシージャ
 
 };
 #endif

@@ -268,12 +268,12 @@ HRESULT CXfile::HierarchyReadFile(void)
 
 			} while (aModeName.find("END_SCRIPT") == string::npos);
 
-			//ファイルクローズ
+			// ファイルクローズ
 			::fclose(pFile);
 		}
 		else
 		{
-			//失敗した場合メッセージボックスを表示
+			// 失敗した場合メッセージボックスを表示
 			MessageBox(nullptr, "ヒエラルキーファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 
 			return	E_FAIL;

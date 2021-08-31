@@ -150,13 +150,9 @@ void CModel::Draw(void)
 
 	for (int nCntMat = 0; nCntMat < (int)m_Model.dwNumMat; nCntMat++)
 	{
-		//// 色の設定
-		//pMat[nCntMat].MatD3D.Diffuse = D3DXCOLOR(m_Color.r, m_Color.g, m_Color.b, m_Color.a - m_fAlphaNum);
-
 		//マテリアルのアンビエントにディフューズカラーを設定
 		pMat[nCntMat].MatD3D.Ambient = pMat[nCntMat].MatD3D.Diffuse;
 
-	//	pMat[nCntMat].MatD3D.Emissive = pMat[nCntMat].MatD3D.Diffuse;
 		//マテリアルの設定
 		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -174,9 +170,6 @@ void CModel::Draw(void)
 		m_Model.pMesh->DrawSubset(nCntMat);
 
 		pDevice->SetTexture(0, nullptr);
-
-		// 透明度戻す
-		pMat[nCntMat].MatD3D.Diffuse.a = 1.0f;
 	}
 
 	//保持していたマテリアルを戻す
@@ -231,7 +224,7 @@ void CModel::BindModel(CXfile::MODEL model)
 	if (!m_pShadow)
 	{
 		// 影の生成
-		m_pShadow = CShadow::Create(model.pMesh);
+		//m_pShadow = CShadow::Create(model.pMesh);
 	}
 }
 

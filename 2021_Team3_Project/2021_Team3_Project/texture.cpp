@@ -1,71 +1,72 @@
-//=============================================================================
+ï»¿//=============================================================================
 //
-// ƒeƒNƒXƒ`ƒƒ‚ÌŠÇ—ƒNƒ‰ƒX [texture.cpp]
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç®¡ç†ã‚¯ãƒ©ã‚¹ [texture.cpp]
 // Author : Konishi Yuuto
 //
 //=============================================================================
 
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒh
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 //=============================================================================
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
 
 //=============================================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================================
 CTexture::CTexture()
 {
 	memset(m_apTexture, 0, sizeof(m_apTexture));
 
-	// ’ÊíƒeƒNƒXƒ`ƒƒ‚Ì–¼‘O‚ÌÝ’è
+	// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åå‰ã®è¨­å®š
 	m_aTexFileName =
 	{
-		{ "data/Texture/floor.jpg" },
-		{ "data/Texture/target.png" },
-		{ "data/Texture/arrow.png" },
+		{ "data/Texture/floor.jpg" },	// åºŠ
+		{ "data/Texture/target.png" },	// çš„
+		{ "data/Texture/arrow.png" },	// çŸ¢å°
+		{ "data/Texture/byte.png" },	// åš™ã¿ã¤ã
 	};
 
-	// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ì–¼‘O‚ÌÝ’è
+	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åå‰ã®è¨­å®š
 	m_aSparateTexFileName =
 	{
-	//	{"data/Texture/sharp_effect.png"},				// ‰s‚¢ƒGƒtƒFƒNƒg
+	//	{"data/Texture/sharp_effect.png"},				// é‹­ã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	};
 }
 
 //=============================================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================================
 CTexture::~CTexture()
 {
-	// ’ÊíƒeƒNƒXƒ`ƒƒƒNƒŠƒA
+	// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¯ãƒªã‚¢
 	m_aTexFileName.clear();
 
-	// •ªŠ„ƒeƒNƒXƒ`ƒƒƒNƒŠƒA
+	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¯ãƒªã‚¢
 	m_aSparateTexFileName.clear();
 }
 
 //=============================================================================
-// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
 //=============================================================================
 CTexture * CTexture::Create(void)
 {
-	// ƒƒ‚ƒŠŠm•Û
+	// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 	CTexture *pTexture = new CTexture;
 
 	return pTexture;
 }
 
 //=============================================================================
-// ƒeƒNƒXƒ`ƒƒƒ[ƒh
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
 //=============================================================================
 HRESULT CTexture::Load(void)
 {
-	//ƒfƒoƒCƒX‚ÌŽæ“¾
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚Ýž‚Ý
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 	for (size_t nCount = 0; nCount < m_aTexFileName.size(); nCount++)
 	{
 		D3DXCreateTextureFromFile(pDevice, m_aTexFileName[nCount].data(), &m_apTexture[nCount]);
@@ -75,7 +76,7 @@ HRESULT CTexture::Load(void)
 }
 
 //=============================================================================
-// ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
 //=============================================================================
 void CTexture::UnLoad(void)
 {
@@ -90,14 +91,14 @@ void CTexture::UnLoad(void)
 }
 
 //=============================================================================
-// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
+// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ­ãƒ¼ãƒ‰
 //=============================================================================
 HRESULT CTexture::SeparateTexLoad(void)
 {
-	//ƒfƒoƒCƒX‚ÌŽæ“¾
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚Ýž‚Ý
+	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 	for (size_t nCount = 0; nCount < m_aSparateTexFileName.size(); nCount++)
 	{
 		D3DXCreateTextureFromFile(pDevice, m_aSparateTexFileName[nCount].data(), &m_apSeparateTexture[nCount].pSeparateTexture);
@@ -107,11 +108,11 @@ HRESULT CTexture::SeparateTexLoad(void)
 }
 
 //=============================================================================
-// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚ÌƒAƒ“ƒ[ƒh
+// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
 //=============================================================================
 void CTexture::SeparateTexUnLoad(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ‚Ì‰ð•ú
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
 	for (int nCount = 0; nCount < SEPARATE_TEX_MAX; nCount++)
 	{
 		if (m_apSeparateTexture[nCount].pSeparateTexture != nullptr)
@@ -123,7 +124,7 @@ void CTexture::SeparateTexUnLoad(void)
 }
 
 //=============================================================================
-// ƒeƒNƒXƒ`ƒƒî•ñ
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
 //=============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEXTURE_TYPE Tex_Num)
 {
@@ -139,17 +140,17 @@ LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEXTURE_TYPE Tex_Num)
 }
 
 //=============================================================================
-// •ªŠ„ƒeƒNƒXƒ`ƒƒî•ñ
+// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
 //=============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
+	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
 		// NULLcheck
 		if (m_apSeparateTexture[SepaTex_Type].pSeparateTexture != nullptr)
 		{
-			// ƒeƒNƒXƒ`ƒƒî•ñ
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
 			return m_apSeparateTexture[SepaTex_Type].pSeparateTexture;
 		}
 	}
@@ -158,14 +159,14 @@ LPDIRECT3DTEXTURE9 CTexture::GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type)
 }
 
 //=============================================================================
-// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
+// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
 //=============================================================================
 D3DXVECTOR2 CTexture::GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
+	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
-		// ƒeƒNƒXƒ`ƒƒî•ñ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
 		return m_apSeparateTexture[SepaTex_Type].m_TexInfo;
 	}
 
@@ -174,10 +175,10 @@ D3DXVECTOR2 CTexture::GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type)
 
 bool CTexture::GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
+	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
-		// ƒeƒNƒXƒ`ƒƒî•ñ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
 		return m_apSeparateTexture[SepaTex_Type].bLoop;
 	}
 

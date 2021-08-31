@@ -10,6 +10,7 @@
 #include "resource_manager.h"
 #include "character.h"
 #include "collision.h"
+#include "renderer.h"
 #include "map.h"
 //=============================================================================
 // ƒ}ƒNƒ’è‹`

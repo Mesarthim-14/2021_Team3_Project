@@ -32,6 +32,25 @@ class CMap;
 class CGame : public CModeBase
 {
 public:
+	enum ENEMY_OBSTACLE_TYPE
+	{
+		ENEMY_OBSTACLE_TYPE_MIN = 0,
+		ENEMY_OBSTACLE_TYPE_SHIP,
+		ENEMY_OBSTACLE_TYPE_SCAFFOLDING,
+		ENEMY_OBSTACLE_TYPE_TORPEDO,
+		ENEMY_OBSTACLE_TYPE_ROCK,
+		ENEMY_OBSTACLE_TYPE_MAX
+	};
+	//=============================================================================
+	//　敵生成ファイル情報の構造体
+	//=============================================================================
+	struct ENEMY_FILE_DATA
+	{
+		D3DXVECTOR3 Pos;		// 位置のオフセット情報
+		D3DXVECTOR3 Rot;		// 向きのオフセット情報
+		ENEMY_OBSTACLE_TYPE Type;		// 種類情報
+	};
+	
 	CGame();		// コンストラクタ
 	~CGame();		// デストラクタ
 
@@ -44,13 +63,15 @@ public:
 	void CreatePlayer(void);		// プレイヤーの生成	
 	void CreateMap(void);			// マップの生成	
 	void CreateGround(void);		// 地面の生成
-	void CreateEnemy(void);			// 敵生成関数
+	void CreateEnemy_Obstacle(void);			// 敵生成関数
+	void RoadEnemyFile(string pEnemyFile);			// 敵の生成ファイル読み込み
 
-	CCamera *GetCamera(void);	// カメラのポインタ情報
-	CLight *GetLight(void);		// ライトのポインタ情報
-	CPlayer *GetPlayer(void);	// プレイヤーのポインタ情報
+	CCamera *GetCamera(void);		// カメラのポインタ情報
+	CLight *GetLight(void);			// ライトのポインタ情報
+	CPlayer *GetPlayer(void);		// プレイヤーのポインタ情報
 	CMap *GetMap(void) { return m_pMap; }	// マップのポインタ取得
-private:	
+private:
+	void DrawPlayerPos(void);	// プレイヤーの位置書き込み
 	CCamera *m_pCamera;			// カメラのポインタ	
 	CLight *m_pLight;			// ライトのポインタ
 	CMeshField *m_pMeshField;	// メッシュフィールドのポインタ
@@ -60,5 +81,8 @@ private:
 	LPD3DXFONT m_pFont;			// デバック用フォント
 	int m_nTimeCounter;			// ゲームのカウンター
 	bool m_bGameEnd;			// ゲームのエンドフラグ
+
+	int m_nEnemyNum;			// 敵数
+	ENEMY_FILE_DATA *m_pEnemyFileData;	// 敵のファイルデータ
 };
 #endif

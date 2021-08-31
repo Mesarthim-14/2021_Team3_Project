@@ -84,7 +84,7 @@ HRESULT CModelAnime::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CXfile::MODEL model)
 	if (!m_pShadow)
 	{
 		// âeÇÃê∂ê¨
-		m_pShadow = CShadow::Create(model.pMesh);
+		//m_pShadow = CShadow::Create(model.pMesh);
 	}
 
 	return S_OK;

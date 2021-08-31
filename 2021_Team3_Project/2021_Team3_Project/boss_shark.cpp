@@ -65,6 +65,7 @@ CBoss_Shark * CBoss_Shark::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			CCharacter_Box::Create(pos, rot, pBoss_Shark);
 		}
 	}
+
 	// ポインタを返す
 	return pBoss_Shark;
 }
@@ -89,6 +90,9 @@ HRESULT CBoss_Shark::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// サイズ設定
 	SetSize(SIZE);
+
+	// 攻撃判定設定
+	SetAttackDecision(ATTACK_DECISION_CIRCLE);
 
 	// 初期化関数
 	CEnemy::Init(pos, rot);

@@ -76,9 +76,6 @@ HRESULT CGage_3D_Back::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// êFê›íË
 	SetColor(COL);
 
-	// ìßâﬂílê›íË
-	SetAlpha(true);
-
 	return S_OK;
 }
 //=============================================================================

@@ -32,7 +32,6 @@ public:
 	// Set関数
 	void SetMove(D3DXVECTOR3 move);								// 移動量設定
 	void SetSizeBase(D3DXVECTOR3 sizeBase);						// サイズのベース
-	void SetAlpha(bool bAlpha);									// アルファテストの設定
 	void SetAlphaNum(int nAlphaNum);							// アルファテストの値
 	void SetBlend(bool bBlend);									// 加算合成
 	void SetLife(int nLife);									// 体力の設定
@@ -53,8 +52,6 @@ private:
 	int m_nLoop;				// ループするか
 	int m_nLife;				// ライフ
 	int m_nAlphaNum;			// アルファテストの値
-	bool m_bUse;				// 使用判定
-	bool m_bAlpha;				// アルファテストを使用するか
 	bool m_bBlend;				// 加算合成
 };
 
