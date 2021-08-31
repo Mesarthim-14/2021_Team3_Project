@@ -25,7 +25,7 @@
 #define POS_Y_MAX		(4000.0f)							// Y最大値
 #define PARENT_NUM		(0)									// 親のナンバー
 #define DAMAGE			(100)								// ダメージ
-#define ANGLE_90		(D3DXToRadian(90))					// 90度
+#define ANGLE_0		(D3DXToRadian(90))					// 90度
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
 #define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))
 //=============================================================================

@@ -40,6 +40,7 @@ PARAMETER_SET
 	POS = 500.0 500.0 0.0	# ˆÊ’u
 	ROT = 0.0 0.0 0.0  		# Œü‚« (Šp“x‚Å“ü—Í)
 END_PARAMETER_SET
+
 END_ENEMY_SET
 
 END_SCRIPT

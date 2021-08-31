@@ -86,5 +86,6 @@ private:
 	int m_nAttackCount_R;							// 右攻撃カウント
 	int m_nAttackCount_L;							// 左攻撃カウント
 	PAD_TYPE m_PadType;								// パッドタイプ
+	bool m_bBack;									// 後ろに移動しているか
 };
 #endif

@@ -94,6 +94,9 @@
     <Filter Include="06_Effect\Byte_Effect">
       <UniqueIdentifier>{af5e9746-c22c-435c-8d01-1ffc8e4b1e90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06_Effect\Particle_Effect">
+      <UniqueIdentifier>{5e5bd267-683c-4885-a0f5-21dbc984809b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -261,6 +264,9 @@
     <ClCompile Include="debug_proc.cpp">
       <Filter>00_Important</Filter>
     </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>06_Effect\Particle_Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -427,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="debug_proc.h">
       <Filter>00_Important</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>06_Effect\Particle_Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

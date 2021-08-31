@@ -155,6 +155,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_proc.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_attack_arrow_polygon.cpp" />
     <ClCompile Include="enemy_attack_point_polygon.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_proc.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemy_attack_arrow_polygon.h" />
     <ClInclude Include="enemy_attack_point_polygon.h" />

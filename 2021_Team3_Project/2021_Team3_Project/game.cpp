@@ -42,6 +42,8 @@
 #define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
 #define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
+#define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
+
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -96,7 +98,7 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// 敵生成
-	CreateEnemy_Obstacle();
+	//CreateEnemy_Obstacle();
 
 	// マップの生成
 	CreateMap();
@@ -195,7 +197,7 @@ void CGame::CreatePlayer(void)
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
 	{
-		m_pPlayer = CPlayer::Create(PLAYER_POS, ZeroVector3);
+		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
 	}
 }
 

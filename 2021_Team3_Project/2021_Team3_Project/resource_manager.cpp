@@ -12,6 +12,7 @@
 #include "texture.h"
 #include "xfile.h"
 #include "sound.h"
+#include "effect.h"
 
 //=============================================================================
 // staticèâä˙âªêÈåæ
@@ -92,6 +93,9 @@ void CResourceManager::LoadAll(void)
 	m_pXFile->HierarchyModelLoad();
 
 	}
+
+	// ì«Ç›çûÇ›
+	CEffect::Load();
 }
 
 //=============================================================================
@@ -127,6 +131,9 @@ void CResourceManager::UnLoadAll(void)
 		delete m_pSound;
 		m_pSound = nullptr;
 	}
+
+	// ì«Ç›çûÇ›
+	CEffect::Unload();
 }
 
 //=============================================================================
