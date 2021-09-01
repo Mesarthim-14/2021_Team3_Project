@@ -51,14 +51,11 @@ HRESULT CLight::Init(void)
 	m_Light.Type = D3DLIGHT_DIRECTIONAL;
 
 	//光の拡散の指定
-	//m_Light.Diffuse = D3DXCOLOR(2.0f, 2.0f, 2.0f, 1.0f);
 	m_Light.Diffuse = WhiteColor;
-
-	//m_Light.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
 	m_Light.Specular = WhiteColor;
 
 	//ライト方向の指定
-	m_vecDir = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+	m_vecDir = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
 
 	//正規化する（大きさ1のベクトルにする必要がある）
 	D3DXVec3Normalize(&m_vecDir, &m_vecDir);

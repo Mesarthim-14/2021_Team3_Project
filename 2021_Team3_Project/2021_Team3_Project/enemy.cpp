@@ -37,6 +37,7 @@ CEnemy::CEnemy(PRIORITY Priority) : CCharacter(Priority)
 {
 	m_Attack_Decision_Type	= ATTACK_DECISION_FAN;
 	m_bAttack_Decision		= false;
+	m_AttackCount = 0;
 }
 
 //=============================================================================
@@ -293,6 +294,7 @@ void CEnemy::Death(void)
 //=============================================================================
 void CEnemy::Attack(void)
 {
+	m_AttackCount++;
 }
 
 //=============================================================================

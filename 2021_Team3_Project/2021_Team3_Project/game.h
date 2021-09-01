@@ -54,35 +54,40 @@ public:
 	CGame();		// コンストラクタ
 	~CGame();		// デストラクタ
 
-	HRESULT Init(void);				// 初期化処理
-	void Uninit(void);				// 終了処理
-	void Update(void);				// 更新処理
-	void Draw(void);				// 描画処理
-	void SetGame(void);				// ゲームの設定
+	HRESULT Init(void);						// 初期化処理
+	void Uninit(void);						// 終了処理
+	void Update(void);						// 更新処理
+	void Draw(void);						// 描画処理
+	void SetGame(void);						// ゲームの設定
 
-	void CreatePlayer(void);		// プレイヤーの生成	
-	void CreateMap(void);			// マップの生成	
-	void CreateGround(void);		// 地面の生成
-	void CreateEnemy_Obstacle(void);			// 敵生成関数
-	void RoadEnemyFile(string pEnemyFile);			// 敵の生成ファイル読み込み
+	void CreatePlayer(void);				// プレイヤーの生成	
+	void CreateMap(void);					// マップの生成	
+	void CreateGround(void);				// 地面の生成
+	void CreateEnemy_Obstacle(void);		// 敵生成関数
+	void RoadEnemyFile(string pEnemyFile);	// 敵の生成ファイル読み込み
 
-	CCamera *GetCamera(void);		// カメラのポインタ情報
-	CLight *GetLight(void);			// ライトのポインタ情報
-	CPlayer *GetPlayer(void);		// プレイヤーのポインタ情報
-	CMap *GetMap(void) { return m_pMap; }	// マップのポインタ取得
+	// Get関数
+	CCamera *GetCamera(void)	{ return m_pCamera; }	// カメラのポインタ情報
+	CLight *GetLight(void)		{ return m_pLight; }	// ライトのポインタ情報
+	CPlayer *GetPlayer(void)	{ return m_pPlayer; }	// プレイヤーのポインタ情報
+	CMap *GetMap(void)			{ return m_pMap; }		// マップのポインタ取得
 private:
-	void DrawPlayerPos(void);	// プレイヤーの位置書き込み
-	CCamera *m_pCamera;			// カメラのポインタ	
-	CLight *m_pLight;			// ライトのポインタ
-	CMeshField *m_pMeshField;	// メッシュフィールドのポインタ
-	CBg *m_pBg;					// 背景のポインタ
-	CPlayer *m_pPlayer;			// プレイヤーのポインタ
-	CMap * m_pMap;				// マップのポインタ
-	LPD3DXFONT m_pFont;			// デバック用フォント
-	int m_nTimeCounter;			// ゲームのカウンター
-	bool m_bGameEnd;			// ゲームのエンドフラグ
+	// 関数
+	void DrawPlayerPos(void);				// プレイヤーの位置書き込み
 
-	int m_nEnemyNum;			// 敵数
-	ENEMY_FILE_DATA *m_pEnemyFileData;	// 敵のファイルデータ
+	// ポインタ
+	CCamera *m_pCamera;						// カメラのポインタ	
+	CLight *m_pLight;						// ライトのポインタ
+	CMeshField *m_pMeshField;				// メッシュフィールドのポインタ
+	CBg *m_pBg;								// 背景のポインタ
+	CPlayer *m_pPlayer;						// プレイヤーのポインタ
+	CMap * m_pMap;							// マップのポインタ
+
+	ENEMY_FILE_DATA *m_pEnemyFileData;		// 敵のファイルデータ
+	bool m_bGameEnd;						// ゲームのエンドフラグ
+	int m_nEnemyNum;						// 敵数
+
+	// デバック用
+	LPD3DXFONT m_pFont;						// デバック用フォント
 };
 #endif

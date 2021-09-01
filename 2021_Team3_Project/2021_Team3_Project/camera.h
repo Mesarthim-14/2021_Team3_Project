@@ -27,17 +27,17 @@ public:
 	void SetCamera(void);		// カメラの描画設定
 
 	// Set関数
-	void SetTarget(bool Target);
+	void SetTarget(bool Target) { m_bTarget = Target; }
 
 	// Get関数
-	bool GetTargetBool(void);			// ターゲットカメラのフラグ
-	float GetVartical(void);			// 縦の回転
-	float GetHorizontal(void);			// 横の回転
-	D3DXVECTOR3 GetposV(void);			// カメラ座標
-	D3DXVECTOR3 GetposR(void);			// カメラ角度
-	D3DXMATRIX GetMtxView(void);		// マトリクスビュー
-	D3DXVECTOR3 GetposVDest(void);		// 目的の角度
-	D3DXMATRIX GetMtxProj(void) { return m_mtxProjection; }
+	D3DXVECTOR3 GetposV(void)		{ return m_posV; }				// カメラ座標
+	D3DXVECTOR3 GetposR(void)		{	return m_posR;}				// カメラ角度
+	D3DXMATRIX GetMtxView(void)		{ return m_mtxView; }			// マトリクスビュー
+	D3DXVECTOR3 GetposVDest(void)	{ return m_posVDest; }			// 目的の角度
+	D3DXMATRIX GetMtxProj(void)		{ return m_mtxProjection; }		// プロジェクト
+	bool GetTargetBool(void)		{ return m_bTarget; }			// ターゲットカメラのフラグ
+	float GetVartical(void)			{ return m_fVartical; }			// 縦の回転
+	float GetHorizontal(void)		{return m_fHorizontal;}			// 横の回転
 
 	static CCamera*Create(void);		// クリエイト
 

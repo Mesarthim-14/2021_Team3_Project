@@ -117,7 +117,7 @@ void CEffect::Smoke(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOL
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//パーティクル分繰り返す
+	//パーティクル分繰り返す
 	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
 	{
 		//角度計算
@@ -157,7 +157,7 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//パーティクル分繰り返す
+	//パーティクル分繰り返す
 	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
 	{
 		//角度計算
@@ -242,7 +242,7 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//パーティクル分繰り返す
+	//パーティクル分繰り返す
 	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
 	{
 		//角度計算

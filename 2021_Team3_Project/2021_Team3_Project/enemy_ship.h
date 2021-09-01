@@ -36,8 +36,6 @@ public:
 
 private:
 	void Move(void);												// ˆÚ“®ˆ—
-	void Attack(void);												// UŒ‚ˆ—
-
-	int m_nAttackCount;												// UŒ‚ƒJƒEƒ“ƒg
+	void Attack(void) override;												// UŒ‚ˆ—
 };
 #endif

@@ -30,20 +30,20 @@
 //=============================================================================
 CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 {
-	 m_pos = ZeroVector3;
-	 m_posOld = ZeroVector3;
-	 m_move = ZeroVector3;
-	 m_rot = ZeroVector3;
-	 m_size = ZeroVector3;
-	 m_nLife = 0;
-	 m_fSpeed = 0.0f;
-	 m_bArmor = false;
-	 m_nStateCounter = 0;
-	 m_pMotion = nullptr;
-	 m_nParts = 0;
-	 m_apModelAnime.clear();
-	 m_bLanding = false;
-	 m_State = STATE_NORMAL;
+	m_pos = ZeroVector3;
+	m_posOld = ZeroVector3;
+	m_move = ZeroVector3;
+	m_rot = ZeroVector3;
+	m_size = ZeroVector3;
+	m_nLife = 0;
+	m_fSpeed = 0.0f;
+	m_bArmor = false;
+	m_nStateCounter = 0;
+	m_pMotion = nullptr;
+	m_nParts = 0;
+	m_apModelAnime.clear();
+	m_bLanding = false;
+	m_State = STATE_NORMAL;
 }
 
 //=============================================================================
@@ -60,8 +60,8 @@ CCharacter::~CCharacter()
 HRESULT CCharacter::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// à¯êîÇÃë„ì¸
-	m_pos = pos;	// ç¿ïWÇÃê›íË
-	m_rot = rot;	// äpìxÇÃê›íË
+	m_pos = pos;
+	m_rot = rot;
 
 	return S_OK;
 }
@@ -71,16 +71,16 @@ HRESULT CCharacter::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 void CCharacter::Uninit()
 {
-	for (size_t nCntModelNum = 0; nCntModelNum < m_apModelAnime.size(); nCntModelNum++)
+	for (auto &nCount : m_apModelAnime)
 	{
 		// !nullcheck
-		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		if (nCount != nullptr)
 		{
 			//ÉÅÉÇÉäÇÃçÌèú
-			delete m_apModelAnime.at(nCntModelNum);
+			delete nCount;
 
 			//ÉÅÉÇÉäÇÃÉNÉäÉA
-			m_apModelAnime.at(nCntModelNum) = nullptr;
+			nCount = nullptr;
 		}
 	}
 
@@ -153,11 +153,11 @@ void CCharacter::Draw()
 	}
 
 	// âeÇÃï`âÊ
-	for (auto &model : m_apModelAnime)
+	for (auto &shadow : m_apModelAnime)
 	{
-		if (model != nullptr)
+		if (shadow != nullptr)
 		{
-			model->ShadowDraw(m_rot);
+			shadow->ShadowDraw(m_rot);
 		}
 	}
 }

@@ -35,6 +35,9 @@ public:
 		CHARACTER_TYPE_MAX,			// 最大数
 	};
 
+	//=============================================================================
+	// キャラクターの状態
+	//=============================================================================
 	enum STATE
 	{
 		STATE_NORMAL = 0,
@@ -57,7 +60,6 @@ public:
 
 	// 純粋仮想関数
 	virtual void UpdateState(void) = 0;								// キャラクター状態
-	//virtual void UpdateMotionState(void) = 0;						// モーションの状態
 	virtual void Attack(void) = 0;									// 攻撃の処理
 	virtual void Move(void) = 0;									// 移動関数
 	virtual void Death(void) = 0;									// 死んだときの処理
@@ -73,6 +75,7 @@ public:
 	void SetMotion(int nMotionState);									// モーションの設定
 	void SetState(STATE state)				{ m_State = state; }		// 状態設定
 	void SetLanding(bool bLanding)			{ m_bLanding = bLanding; }	// 着地
+
 	// Get関数
 	D3DXVECTOR3 &GetPos(void)				{ return m_pos; }						// 現在の座標情報
 	D3DXVECTOR3 &GetOldPos(void)			{ return m_posOld; }					// 古い座標情報
@@ -86,7 +89,7 @@ public:
 	int GetStateCounter(void)				{ return m_nStateCounter; }				// 状態カウンターの情報
 	float GetSpeed(void)					{ return m_fSpeed; }					// スピードの情報
 	bool GetArmor(void)						{ return m_bArmor; }					// 無敵時間
-	STATE GetState(void) { return m_State; }										// 状態取得
+	STATE GetState(void)					{ return m_State; }						// 状態取得
 
 private:
 	vector<CModelAnime*> m_apModelAnime;	// モデルパーツ用ポインタ

@@ -17,7 +17,7 @@
 class CGage_3D_Back : public CBillboard
 {
 public:
-	CGage_3D_Back(PRIORITY Priority = PRIORITY_3D_UI);											// コンストラクタ
+	CGage_3D_Back(PRIORITY Priority = PRIORITY_3D_UI);										// コンストラクタ
 	~CGage_3D_Back();																		// デストラクタ
 	static CGage_3D_Back *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy *pEnemy);		// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);										// 初期化処理

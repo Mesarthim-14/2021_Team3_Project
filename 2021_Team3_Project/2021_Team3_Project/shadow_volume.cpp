@@ -76,7 +76,7 @@ HRESULT CShadowVolume::Init(LPD3DXMESH pSrcMesh)
 	m_pEdges = new WORD[m_dwNumFaces * 6];
 
 	// 影
-	CreateShadow(ZeroVector3);
+	CreateShadow(ZeroVector3, ZeroVector3);
 
 	return S_OK;
 }
@@ -103,6 +103,7 @@ void CShadowVolume::Draw(void)
 
 	pDevice->SetFVF(D3DFVF_XYZ);
 
+	// ポリゴンの描画
 	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_dwNumVertices / TRIANGLE,
 		m_pVertice, sizeof(D3DXVECTOR3));
 }
@@ -136,8 +137,15 @@ void CShadowVolume::AddEdge(WORD * pEdges, DWORD & dwNumEdges, WORD v0, WORD v1)
 //=============================================================================
 // 影の
 //=============================================================================
-HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
+HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot,  D3DXVECTOR3 ShipRot)
 {
+	D3DXMATRIX mtxRot, mtxTrans;
+	D3DXMATRIX mtxWorld;							// ワールドマトリックス
+	D3DXMatrixIdentity(&mtxWorld);
+
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+
 	// nullcheck
 	if (m_pEdges == nullptr)
 	{
@@ -150,11 +158,37 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 	m_pSrcMesh->LockVertexBuffer(0L, (LPVOID*)&m_MeshVertices);
 	m_pSrcMesh->LockIndexBuffer(0L, (LPVOID*)&m_pIndices);
 
+	// 頂点の数
+	int nVerticesNum = m_pSrcMesh->GetNumVertices();
+
+	// 座標の入れ物
+	vector<D3DXVECTOR3> VerticesPos;
+
+	for (int nCount = 0; nCount < nVerticesNum; nCount++)
+	{
+		// 初期化
+		D3DXMatrixIdentity(&mtxWorld);
+
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans,
+			m_MeshVertices[nCount].pos.x,
+			m_MeshVertices[nCount].pos.y,
+			m_MeshVertices[nCount].pos.z);
+		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
+
+		// 角度
+		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+
+		// 座標の変換
+		VerticesPos.push_back(D3DXVECTOR3(mtxWorld._41, mtxWorld._42, mtxWorld._43));
+	}
+
 	DWORD dwNumEdges = 0;	// エッジのカウント
 	m_dwNumVertices = 0;	// 頂点の数リセット
 
+	// 太陽の位置
 	D3DXVECTOR3 posL = D3DXVECTOR3(
-		cosf(rot.y)*m_LightPos.x, m_LightPos.y, sinf(rot.y)*m_LightPos.z);
+		cosf(ShipRot.y)*m_LightPos.x, m_LightPos.y, sinf(ShipRot.y)*m_LightPos.z);
 
 	// 各面の設定
 	for (DWORD nCount = 0; nCount < m_dwNumFaces; nCount++)
@@ -164,9 +198,9 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 		WORD wFace2 = m_pIndices[TRIANGLE * nCount + 2];
 
 		// 頂点座標の
-		D3DXVECTOR3 v0 = m_MeshVertices[wFace0].pos;
-		D3DXVECTOR3 v1 = m_MeshVertices[wFace1].pos;
-		D3DXVECTOR3 v2 = m_MeshVertices[wFace2].pos;
+		D3DXVECTOR3 v0 = VerticesPos[wFace0];
+		D3DXVECTOR3 v1 = VerticesPos[wFace1];
+		D3DXVECTOR3 v2 = VerticesPos[wFace2];
 
 		// 外積で法線の向きを求める
 		D3DXVECTOR3 vCross1(v2 - v1);
@@ -186,9 +220,8 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 	// 座標の設定
 	for (DWORD nCount = 0; nCount < dwNumEdges; nCount++)
 	{
-
-		D3DXVECTOR3 v1 = m_MeshVertices[m_pEdges[2 * nCount + 0]].pos;
-		D3DXVECTOR3 v2 = m_MeshVertices[m_pEdges[2 * nCount + 1]].pos;
+		D3DXVECTOR3 v1 = VerticesPos[m_pEdges[2 * nCount + 0]];
+		D3DXVECTOR3 v2 = VerticesPos[m_pEdges[2 * nCount + 1]];
 		D3DXVECTOR3 v3 = v1 - posL * 1;
 		D3DXVECTOR3 v4 = v2 - posL * 1;
 
@@ -205,6 +238,9 @@ HRESULT CShadowVolume::CreateShadow(D3DXVECTOR3 rot)
 	// バッファのアンロック
 	m_pSrcMesh->UnlockVertexBuffer();
 	m_pSrcMesh->UnlockIndexBuffer();
+
+	// 座標のクリア
+	VerticesPos.clear();
 
 	return S_OK;
 }

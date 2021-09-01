@@ -27,6 +27,7 @@ public:
 	void Update(void);													// 更新処理
 	void Draw(void);													// 描画処理
 
+	void CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size);				// 頂点の生成
 	void InitAnimation(int nCounterAnim, int nPatternAnim, int nLoop);	// アニメーション情報初期化
 	void InitScroll(int nSpeed, float fDivision);						// 画像スクロールの設定
 	void UpdateAnimation(void);											// アニメーションの更新

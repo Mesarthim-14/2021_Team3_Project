@@ -182,6 +182,7 @@ void CTexture::SeparateTexUnLoad(void)
 	// テクスチャの解放
 	for (int nCount = 0; nCount < SEPARATE_TEX_MAX; nCount++)
 	{
+
 		if (m_apSeparateTexture[nCount].pSeparateTexture != nullptr)
 		{
 			m_apSeparateTexture[nCount].pSeparateTexture->Release();

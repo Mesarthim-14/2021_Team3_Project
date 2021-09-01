@@ -62,10 +62,12 @@ public:
 	void SetAttackDecision(ENEMY_ATTACK_DECISION_TYPE Attck_Decision_Type) {m_Attack_Decision_Type = Attck_Decision_Type;}	// UŒ‚”»’èİ’èˆ—
 
 	// ƒQƒbƒ^[
-	ENEMY_ATTACK_DECISION_TYPE GetAttackDecision(void) { return m_Attack_Decision_Type; }	// UŒ‚”»’èæ“¾ˆ—
-	bool Get_bAttackDecision(void) { return m_bAttack_Decision; }							// UŒ‚”»’èæ“¾ˆ—
+	ENEMY_ATTACK_DECISION_TYPE GetAttackDecision(void)	{ return m_Attack_Decision_Type; }	// UŒ‚”»’èæ“¾ˆ—
+	bool Get_bAttackDecision(void)						{ return m_bAttack_Decision; }		// UŒ‚”»’èæ“¾ˆ—
+	int &GetAttackCount(void)							{ return m_AttackCount; }			// UŒ‚‚ÌƒJƒEƒ“ƒg
 private:
 	ENEMY_ATTACK_DECISION_TYPE m_Attack_Decision_Type;			// UŒ‚”»’è‚Ìí—Ş
 	bool m_bAttack_Decision;									// UŒ‚”»’è—p
+	int m_AttackCount;
 };
 #endif

@@ -17,7 +17,7 @@
 class CGage_3D :public CSceneBase
 {
 public:
-	CGage_3D(PRIORITY nPriority = PRIORITY_UI);									// コンストラクタ
+	CGage_3D(PRIORITY nPriority = PRIORITY_UI);								// コンストラクタ
 	~CGage_3D();															// デストラクタ
 	virtual HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);				// 初期化処理関数
 	virtual void Uninit(void);												// 終了処理関数

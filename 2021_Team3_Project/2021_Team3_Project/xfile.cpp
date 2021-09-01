@@ -37,11 +37,11 @@ CXfile::CXfile()
 	// Xファイルネームを取得
 	m_aXfileName =
 	{
-		{ "data/Model/Bullet/bullet.x" },		// 弾
-		{ "data/Model/box/box.x" },				// 箱
-		{ "data/Model/Obstacle/Rock.x"},		// 岩
-		{ "data/Model/Enemy/Torpedo/Torpedo.x" },		// 魚雷
-		{ "data/Model/Map/Map.x"},				// マップ
+		{ "data/Model/Bullet/bullet.x" },			// 弾
+		{ "data/Model/box/box.x" },					// 箱
+		{ "data/Model/Obstacle/Rock.x"},			// 岩
+		{ "data/Model/Enemy/Torpedo/Torpedo.x" },	// 魚雷
+		{ "data/Model/Map/Map.x"},					// マップ
 	};
 
 	m_aHierarchyXfileName =
@@ -49,7 +49,7 @@ CXfile::CXfile()
 		{ "data/Text/Player/motion_Player.txt"},			// プレイヤー
 		{ "data/Text/Enemy/motion_Enemy_Ship.txt"},			// 敵船
 		{ "data/Text/Enemy/motion_Enemy_scaffolding.txt" },	// 櫓
-		{ "data/Text/Enemy/motion_Boss_Shark.txt" },	// ボスサメ
+		{ "data/Text/Enemy/motion_Boss_Shark.txt" },		// ボスサメ
 	};
 }
 
@@ -59,7 +59,6 @@ CXfile::CXfile()
 CXfile::~CXfile()
 {
 	m_aXfileName.clear();
-
 	m_aHierarchyXfileName.clear();
 }
 
@@ -114,9 +113,6 @@ HRESULT CXfile::ModelLoad(void)
 
 			// テクスチャ情報取得
 			m_aXfile[nCount].apTexture.push_back(pTexture);
-
-
-
 		}
 
 	}

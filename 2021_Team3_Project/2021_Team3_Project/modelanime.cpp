@@ -84,7 +84,7 @@ HRESULT CModelAnime::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CXfile::MODEL model)
 	if (!m_pShadow)
 	{
 		// 影の生成
-		//m_pShadow = CShadow::Create(model.pMesh);
+		m_pShadow = CShadow::Create(model.pMesh);
 	}
 
 	return S_OK;
@@ -101,6 +101,7 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DXMATRIX mtxRot, mtxTrans, mtxParent;
 	D3DMATERIAL9 matDef;						//現在のマテリアル保持用
 	D3DXMATERIAL*pMat;							//マテリアルデータへのポインタ
+	D3DXMATRIX mtxWorld;							// ワールドマトリックス
 
 	// 剣の軌跡の古いデータ
 	m_OldMtxWorld1[4] = m_OldMtxWorld1[3];
@@ -112,23 +113,24 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
-
-	//アニメーションの向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rotAnime.y, m_rotAnime.x, m_rotAnime.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+	D3DXMatrixIdentity(&mtxWorld);
 
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//アニメーションの位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_posAnime.x, m_posAnime.y, m_posAnime.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
 	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+
+	//位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
+	
 	//親が存在する場合
 	if (m_pParent != nullptr)
 	{
@@ -143,7 +145,8 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	}
 
 	//親のマトリクスと掛け合わせる
-	m_mtxWorld *= mtxParent;
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxParent);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxParent);
 
 	//ワールドマトリクスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
@@ -186,7 +189,7 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	if (m_pShadow)
 	{
 		// 影の生成
-		m_pShadow->CreateShadow(m_rot + rot, m_mtxWorld);
+		m_pShadow->CreateShadow(m_rot, rot, mtxWorld);
 	}
 }
 

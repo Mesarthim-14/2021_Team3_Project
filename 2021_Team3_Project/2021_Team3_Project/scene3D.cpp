@@ -42,55 +42,12 @@ CScene3D::~CScene3D()
 //=============================================================================
 HRESULT CScene3D::Init(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;							// 頂点バッファ変数の宣言
-
-	//頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D)*NUM_VERTEX,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,
-		D3DPOOL_MANAGED,
-		&pVtxBuff,
-		nullptr);
-
-	VERTEX_3D*pVtx = nullptr;
-
 	// 変数代入
 	SetPos(pos);
 	SetSize(size);
 
-	//頂点バッファをロック
-	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	//頂点座標設定の設定
-	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), +(size.y / 2), +(size.z / 2));
-	pVtx[1].pos = D3DXVECTOR3(+(size.x / 2), +(size.y / 2), +(size.z / 2));
-	pVtx[2].pos = D3DXVECTOR3(-(size.x / 2), -(size.y / 2), -(size.z / 2));
-	pVtx[3].pos = D3DXVECTOR3(+(size.x / 2), -(size.y / 2), -(size.z / 2));
-
-	//各頂点の法線の設定
-	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-
-	//頂点カラーの設定
-	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
-
-	//各頂点の法線の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-	
-	//頂点バッファのアンロック
-	pVtxBuff->Unlock();
-
-	// バッファの設定
-	BindVtxBuff(pVtxBuff);
+	// 頂点の生成
+	CreateVertex(pos, size);
 
 	return S_OK;
 }
@@ -211,6 +168,58 @@ void CScene3D::Draw(void)
 
 	// アルファテストを有力化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+}
+
+//=============================================================================
+// 頂点の生成
+//=============================================================================
+void CScene3D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+{
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;							// 頂点バッファ変数の宣言
+
+	//頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D)*NUM_VERTEX,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
+		&pVtxBuff,
+		nullptr);
+
+	VERTEX_3D*pVtx = nullptr;
+
+	//頂点バッファをロック
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//頂点座標設定の設定
+	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), +(size.y / 2), +(size.z / 2));
+	pVtx[1].pos = D3DXVECTOR3(+(size.x / 2), +(size.y / 2), +(size.z / 2));
+	pVtx[2].pos = D3DXVECTOR3(-(size.x / 2), -(size.y / 2), -(size.z / 2));
+	pVtx[3].pos = D3DXVECTOR3(+(size.x / 2), -(size.y / 2), -(size.z / 2));
+
+	//各頂点の法線の設定
+	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+	//頂点カラーの設定
+	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+
+	//各頂点の法線の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	//頂点バッファのアンロック
+	pVtxBuff->Unlock();
+
+	// バッファの設定
+	BindVtxBuff(pVtxBuff);
 }
 
 //=============================================================================

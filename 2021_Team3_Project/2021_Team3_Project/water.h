@@ -38,12 +38,12 @@ private:
 	D3DXMATRIX m_mtxWorld;			// ワールドマトリクス
 
 	// エフェクト作成
-	static LPD3DXEFFECT m_pEffect;							// エフェクト用ポインタ
-	LPDIRECT3DVOLUMETEXTURE9 m_pNoiseVolumeTexture;	// ノイズテクスチャ
-	LPDIRECT3DCUBETEXTURE9 m_pEnvironmentTexture;	// キューブテクスチャ
-	float m_fFileTime;										// ファイルの経過時間
-	D3DXMATRIXA16 m_MatPlayer;								// プレイヤーのマトリクス
-	CWave *m_pWave;											// 波の移動
+	static LPD3DXEFFECT m_pEffect;						// エフェクト用ポインタ
+	LPDIRECT3DVOLUMETEXTURE9 m_pNoiseVolumeTexture;		// ノイズテクスチャ
+	LPDIRECT3DCUBETEXTURE9 m_pEnvironmentTexture;		// キューブテクスチャ
+	float m_fFileTime;									// ファイルの経過時間
+	D3DXMATRIXA16 m_MatPlayer;							// プレイヤーのマトリクス
+	CWave *m_pWave;										// 波の移動
 };
 
 #endif

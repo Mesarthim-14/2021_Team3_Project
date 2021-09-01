@@ -37,8 +37,6 @@ public:
 	void Draw(void);												// •`‰æˆ—
 
 private:
-	void Attack(void);												// UŒ‚ˆ—
-
-	int m_nAttackCount;												// UŒ‚ƒJƒEƒ“ƒg
+	void Attack(void)override;										// UŒ‚ˆ—
 };
 #endif

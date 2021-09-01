@@ -25,7 +25,9 @@ public:
 	virtual void Uninit(void);									// 終了処理
 	virtual void Update(void);									// 更新処理
 	virtual void Draw(void);									// 描画処理
+	void CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size);		// 頂点の設定
 
+	// Set関数
 	void SetMove(D3DXVECTOR3 move);								// 移動量
 	void SetPosision(D3DXVECTOR3 pos);							// 座標の更新
 	void SetAlpha(bool bAlpha);									// アルファテスト

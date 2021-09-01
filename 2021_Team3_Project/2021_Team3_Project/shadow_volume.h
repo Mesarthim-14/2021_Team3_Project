@@ -33,7 +33,7 @@ public:
 	void Uninit(void);													// 終了処理
 	void Draw(void);													// 描画処理
 	void AddEdge(WORD* pEdges, DWORD& dwNumEdges, WORD v0, WORD v1);	// エッジの設定
-	HRESULT CreateShadow(D3DXVECTOR3 rot);								// 影の生成
+	HRESULT CreateShadow(D3DXVECTOR3 rot, D3DXVECTOR3 ShipRot);			// 影の生成
 
 private:
 	D3DXVECTOR3 m_LightPos;				// ライトの座標

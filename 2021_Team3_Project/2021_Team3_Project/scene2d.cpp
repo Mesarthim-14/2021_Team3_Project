@@ -69,54 +69,8 @@ HRESULT CScene2D::Init(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	SetPos(pos);	// 座標
 	SetSize(size);	// サイズ
 
-	// Rendererクラスからデバイスを取得
-	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
-
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ
-
-	// 頂点バッファの生成
-	pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D)*NUM_VERTEX,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&pVtxBuff,
-		nullptr);
-
-	// 頂点情報を設定
-	VERTEX_2D *pVtx = nullptr;
-
-	// 頂点データをロックする
-	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(pos.x -size.x, pos.y - size.y, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(pos.x +size.x, pos.y - size.y, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(pos.x -size.x, pos.y + size.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(pos.x +size.x, pos.y + size.y, 0.0f);
-
-	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 頂点カラーの設定
-	pVtx[0].col = WhiteColor;
-	pVtx[1].col = WhiteColor;
-	pVtx[2].col = WhiteColor;
-	pVtx[3].col = WhiteColor;
-
-	// 頂点データをアンロックする
-	pVtxBuff->Unlock();
-
-	// 頂点バッファの設定
-	BindVtxBuff(pVtxBuff);
+	// 頂点の生成
+	CreateVertex(pos, size);
 
 	return S_OK;
 }
@@ -197,6 +151,61 @@ void CScene2D::SetCol(D3DXCOLOR col)
 
 	//頂点データをアンロック
 	pVtxBuff->Unlock();
+}
+
+//=============================================
+// 頂点の生成関数
+//=============================================
+void CScene2D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+{
+	// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ
+
+	// 頂点バッファの生成
+	pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D)*NUM_VERTEX,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		&pVtxBuff,
+		nullptr);
+
+	// 頂点情報を設定
+	VERTEX_2D *pVtx = nullptr;
+
+	// 頂点データをロックする
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	// 頂点座標の設定
+	pVtx[0].pos = D3DXVECTOR3(pos.x - size.x, pos.y - size.y, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(pos.x + size.x, pos.y - size.y, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(pos.x - size.x, pos.y + size.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(pos.x + size.x, pos.y + size.y, 0.0f);
+
+	// rhwの設定
+	pVtx[0].rhw = 1.0f;
+	pVtx[1].rhw = 1.0f;
+	pVtx[2].rhw = 1.0f;
+	pVtx[3].rhw = 1.0f;
+
+	// 頂点カラーの設定
+	pVtx[0].col = WhiteColor;
+	pVtx[1].col = WhiteColor;
+	pVtx[2].col = WhiteColor;
+	pVtx[3].col = WhiteColor;
+
+	// 頂点データをアンロックする
+	pVtxBuff->Unlock();
+
+	// 頂点バッファの設定
+	BindVtxBuff(pVtxBuff);
 }
 
 //=============================================

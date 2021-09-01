@@ -76,22 +76,22 @@ public:
 	CTexture();		// コンストラクタ
 	~CTexture();	// デストラクタ
 
-	static CTexture *Create(void);												// インスタンス生成
-	HRESULT SetTextureName(void);												// 初期化処理
-	void LoadAll(void);															// 全てのロード
-	void UnLoadAll(void);														// 全てのアンロード
+	static CTexture *Create(void);											// インスタンス生成
+	HRESULT SetTextureName(void);											// 初期化処理
+	void LoadAll(void);														// 全てのロード
+	void UnLoadAll(void);													// 全てのアンロード
 
 	// 通常テクスチャ
-	HRESULT NormalTexLoad(void);													// テクスチャロード
-	void NormalTexUnLoad(void);													// テクスチャアンロード
-	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);						// テクスチャの情報
+	HRESULT NormalTexLoad(void);											// テクスチャロード
+	void NormalTexUnLoad(void);												// テクスチャアンロード
+	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);					// テクスチャの情報
 
 	// 分割テクスチャ
-	HRESULT SeparateTexLoad(void);												// 分割テクスチャロード
-	void SeparateTexUnLoad(void);												// 分割テクスチャアンロード
-	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);		// 分割テクスチャ情報
-	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);				// 分割テクスチャ　UVの枚数取得
-	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);						// ループするか
+	HRESULT SeparateTexLoad(void);											// 分割テクスチャロード
+	void SeparateTexUnLoad(void);											// 分割テクスチャアンロード
+	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);	// 分割テクスチャ情報
+	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);			// 分割テクスチャ　UVの枚数取得
+	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);					// ループするか
 
 	// ボリュームテクスチャ
 	HRESULT VolumeTexLoad(void);											// ボリュームテクスチャロード
@@ -104,13 +104,13 @@ public:
 	LPDIRECT3DCUBETEXTURE9 GetCubeTexture(CUBE_TEX_TYPE Tex_Type);			// キューブテクスチャの情報
 
 private:
-	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];	// テクスチャのポインタ
+	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];						// テクスチャのポインタ
 	SEPARATE_TEX_INFO m_apSeparateTexture[SEPARATE_TEX_MAX] =
 	{
 		nullptr, CTexture::SEPARATE_TEX_SHARP, D3DXVECTOR2(5, 5), false,
 	};
-	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];	// ボリュームテクスチャ
-	LPDIRECT3DCUBETEXTURE9 m_pCubeTexture[CUBE_TEX_MAX];		// キューブテクスチャ
-	vector<string> m_aTexFileName[TEXTURE_TYPE_NUM_MAX];		// テクスチャの名前
+	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ボリュームテクスチャ
+	LPDIRECT3DCUBETEXTURE9 m_pCubeTexture[CUBE_TEX_MAX];					// キューブテクスチャ
+	vector<string> m_aTexFileName[TEXTURE_TYPE_NUM_MAX];					// テクスチャの名前
 };
 #endif

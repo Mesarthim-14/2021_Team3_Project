@@ -97,8 +97,8 @@ void CMeshField::CreateVerterx(void)
 
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;		// バッファ
 	LPDIRECT3DINDEXBUFFER9 pIdxBuff = nullptr;		// バッファの番号
-
-													// オブジェクトの頂点バッファを生成
+	
+	// オブジェクトの頂点バッファを生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * GetNumVertex(),
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
@@ -193,7 +193,7 @@ void CMeshField::SetInfo(D3DXVECTOR3 size, INT_VERTEX_2D PieceNum)
 	SetNumIndex((PieceNum.x + 1) * PieceNum.y * 2 + (PieceNum.y - 1) * 2);			// 5*(4*2)+3*2	46
 	SetNumPolygon(PieceNum.x * PieceNum.y * 2 + (PieceNum.y - 1) * 4);				// 4*8+3*4	44
 
-																					// サイズの設定
+	// サイズの設定
 	D3DXVECTOR3 AllSize = D3DXVECTOR3(size.x, 0.0f, size.z);
 	SetSize(AllSize);
 	D3DXVECTOR2 OneSize = D3DXVECTOR2(size.x * 2 / PieceNum.x, size.z * 2 / PieceNum.y);

@@ -320,56 +320,6 @@ void CPlayer::Move(void)
 	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 	
-	////入力が存在する
-	//if ((js.lX != 0.0f || js.lY != 0.0f))
-	//{
-	//	float fAngle3 = atan2f((float)js.lX, -(float)js.lY);	// コントローラの角度
-	//	float fAngle2 = atan2f(-(float)js.lX, (float)js.lY);	// コントローラの角度
-
-	//	// 移動量設定
-	//	move.x = sinf(fAngle + (fAngle2))* fSpeed;
-	//	move.z = cosf(fAngle + (fAngle2))* fSpeed;
-
-	//	// 角度の設定
-	//	m_rotDest.y = fAngle + (fAngle3);
-	//}
-
-	//// 前に移動
-	//if (pKeyboard->GetPress(DIK_W))
-	//{
-	//	// 移動量・角度の設定
-	//	move.x = -sinf(fAngle)*fSpeed;
-	//	move.z = -cosf(fAngle)*fSpeed;
-	//	m_rotDest.y = fAngle;
-	//	SetRot(D3DXVECTOR3(rot.x, fAngle, rot.z));
-	//}
-	//// 後ろに移動
-	//if (pKeyboard->GetPress(DIK_S))
-	//{
-	//	// 移動量・角度の設定
-	//	move.x = sinf((fAngle))*fSpeed;
-	//	move.z = cosf((fAngle))*fSpeed;
-	//	m_rotDest.y = fAngle;
-	//	SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(-180.0f), rot.z));
-	//}
-	//// 左に移動
-	//if (pKeyboard->GetPress(DIK_A))
-	//{
-	//	// 移動量・角度の設定
-	//	move.x = sinf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
-	//	move.z = cosf((fAngle + D3DXToRadian(90.0f)))*fSpeed;
-	//	m_rotDest.y = fAngle;
-	//	SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(-90.0f), rot.z));
-	//}
-	//// 右に移動
-	//if (pKeyboard->GetPress(DIK_D))
-	//{
-	//	// 移動量・角度の設定
-	//	move.x = sinf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
-	//	move.z = cosf((fAngle + D3DXToRadian(-90.0f)))*fSpeed;
-	//	m_rotDest.y = fAngle;
-	//	SetRot(D3DXVECTOR3(rot.x, fAngle + D3DXToRadian(90.0f), rot.z));
-	//}
 //===========================================
 // 右歯車
 //===========================================

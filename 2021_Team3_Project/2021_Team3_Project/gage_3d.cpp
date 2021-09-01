@@ -239,7 +239,7 @@ void CGage_3D::Draw(void)
 
 	pDevice->SetMaterial(&OldMaterial);					// マテリアルを元に戻す
 
-														// アルファテスト無効化
+	// アルファテスト無効化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	pDevice->LightEnable(0, TRUE);

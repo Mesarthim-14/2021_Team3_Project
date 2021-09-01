@@ -109,13 +109,13 @@ void CShadow::VolumeDraw(void)
 	//ワールドマトリクスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_ModelMtxWorld);
 
-
 	// シャドウの描画
 	if (m_pShadowVolume)
 	{
 		// ステンシル設定
 		pRenderer->SetStateStencil();
 
+		// シャドウボリュームの描画
 		m_pShadowVolume->Draw();
 
 		// 状態を元に戻す
@@ -123,9 +123,7 @@ void CShadow::VolumeDraw(void)
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xf);
-
 	}
-
 }
 
 //=============================================================================
@@ -145,12 +143,12 @@ void CShadow::PolygonRelese(void)
 //=============================================================================
 // 影の生成処理
 //=============================================================================
-void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
+void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXVECTOR3 ShipRot, D3DXMATRIX ModelMtxWorld)
 {
 	// 影の生成
 	if (m_pShadowVolume)
 	{
-		m_pShadowVolume->CreateShadow(rot);
+		m_pShadowVolume->CreateShadow(rot, ShipRot);
 	}
 
 	// ワールド座標を受け取る
@@ -162,7 +160,6 @@ void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
 //=============================================================================
 void CShadow::Draw(void)
 {
-
 	if (m_pPolygon)
 	{
 		// レンダラーポインタ取得
@@ -177,5 +174,4 @@ void CShadow::Draw(void)
 		// ステンシルリセット
 		pRenderer->ReSetStateStencil();
 	}
-
 }

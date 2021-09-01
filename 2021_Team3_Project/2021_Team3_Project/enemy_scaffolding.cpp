@@ -35,7 +35,6 @@
 //=============================================================================
 CEnemy_Scaffolding::CEnemy_Scaffolding(PRIORITY Priority) : CEnemy(Priority)
 {
-	m_nAttackCount = ZERO_INT;
 }
 //=============================================================================
 // デストラクタ
@@ -144,7 +143,7 @@ void CEnemy_Scaffolding::Draw(void)
 void CEnemy_Scaffolding::Attack(void)
 {
 	// インクリメント
-	m_nAttackCount++;
+	CEnemy::Attack();
 
 	// 攻撃判定取得
 	bool bAttack = Get_bAttackDecision();
@@ -153,7 +152,7 @@ void CEnemy_Scaffolding::Attack(void)
 	if (bAttack == true)
 	{
 		// カウントが60以上になった場合
-		if (m_nAttackCount >= ATTACK_COUNT)
+		if (GetAttackCount() >= ATTACK_COUNT)
 		{
 			// 砲台のポインタ取得
 			CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
@@ -162,7 +161,7 @@ void CEnemy_Scaffolding::Attack(void)
 			CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
 
 			// 0に
-			m_nAttackCount = ZERO_INT;
+			GetAttackCount() = ZERO_INT;
 		}
 	}
 }

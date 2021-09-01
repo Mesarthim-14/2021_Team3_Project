@@ -47,8 +47,8 @@ public:
 	//=============================================================================
 	struct Motion_Info
 	{
-		bool bLoop;				// ループするかどうか
-		int nNumKey;			// キー数
+		bool bLoop;					// ループするかどうか
+		int nNumKey;				// キー数
 		vector<KEY_INFO> aKeyInfo;	// キー情報
 	};
 
@@ -57,9 +57,9 @@ public:
 
 	static CMotion *Create(string cFileName);
 
-	void SetMotion(int nMotion, int nMaxParts, vector<CModelAnime*> pModelAnime);		// モーションの設定
+	void SetMotion(int nMotion, int nMaxParts, vector<CModelAnime*> pModelAnime);	// モーションの設定
 	void UpdateMotion(int nMaxParts, vector<CModelAnime*> pModelAnime);				// モーションの更新
-	HRESULT ReadMotionFile(string cFileName);									// モーションデータを読み込む
+	HRESULT ReadMotionFile(string cFileName);										// モーションデータを読み込む
 
 	// Get関数
 	int GetMotionState(void)	{ return m_nMotionState; }		// モーション状態
