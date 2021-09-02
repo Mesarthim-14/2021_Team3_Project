@@ -99,7 +99,7 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// “G¶¬
-	//CreateEnemy_Obstacle();
+	CreateEnemy_Obstacle();
 
 	// ƒ}ƒbƒv‚Ì¶¬
 	CreateMap();
