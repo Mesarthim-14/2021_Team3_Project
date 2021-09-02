@@ -32,6 +32,7 @@
 #define ANGLE_360		(D3DXToRadian(360.0f))						// 360度
 #define FAN_COS			(cosf(D3DXToRadian(180.0f / 2.0f)))			// cosfに
 #define RAY_HIT_RANGE	(250.0f)									// レイの範囲
+#define RAY_NUM			(1)											// レイの本数
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -311,51 +312,30 @@ void CTorpedo::FanDecision(void)
 //=============================================================================
 void CTorpedo::RayCollision(void)
 {
-	// レイがヒットしたか
-	BOOL bHit = false;
-
-	// 距離
-	float fDistancePlayer = ZERO_FLOAT;
-
-	// 位置
-	D3DXVECTOR3 vecStart, vecDirection;
+	// 位置取得
+	D3DXVECTOR3 pos = GetPos();
 
 	// 向き取得
 	D3DXVECTOR3 rot = GetRot();
 
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
-
 	// マップのポインタ取得
 	CMap *pMap = GET_MAP_PTR;
 
-	// !nullcheck
-	if (pMap != nullptr)
+	// レイの情報
+	CCollision::RAY_INFO Ray_Info;
+
+	// レイの当たり判定
+	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
+
+	// trueの場合
+	if (Ray_Info.bHit == true)
 	{
-		// 始める座標
-		vecStart = pos;
+		// 戻す
+		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
 
-			// レイを出す角度
-			vecDirection = D3DXVECTOR3(ZERO_FLOAT, rot.y, ZERO_FLOAT);
+		// 位置設定
+		SetPos(pos);
 
-			// レイがヒットしたか
-			D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
-				&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
-
-			// trueの場合
-			if (bHit == TRUE)
-			{
-				// 範囲より小さかったら
-				if (fDistancePlayer < RAY_HIT_RANGE)
-				{
-					// 戻す
-					pos -= (D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)));
-
-					// 位置設定
-					SetPos(pos);
-
-					return;
-				}
-			}
+		return;
 	}
 }

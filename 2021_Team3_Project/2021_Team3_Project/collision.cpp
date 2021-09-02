@@ -8,6 +8,7 @@
 //=============================================================================
 //インクルードファイル
 //=============================================================================
+#include"model.h"
 #include "collision.h"
 
 //=============================================================================
@@ -159,4 +160,57 @@ int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTO
 	}
 	// 当たった面を返す
 	return nSurFace;
+}
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, float fRadius, float fHitRange, int nNum)
+{
+	// レイがヒットしたか
+	BOOL bHit = false;
+
+	// 距離
+	float fDistancePlayer = ZERO_FLOAT;
+
+	// 位置
+	D3DXVECTOR3 vecDirection;
+
+	// レイの情報
+	RAY_INFO Ray_Info;
+
+	// 初期化
+	Ray_Info.bHit = false;
+	Ray_Info.VecDirection = ZeroVector3;
+
+	// !nullcheck
+	if (pModel != nullptr)
+	{
+		// nNum回繰り返す
+		for (int nCount = ZERO_INT; nCount < nNum; nCount++)
+		{
+			// レイを出す角度
+			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fRadius * nCount, ZERO_FLOAT);
+
+			// レイがヒットしたか
+			D3DXIntersect(pModel->GetMesh(), &Pos, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
+				&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
+
+			// trueの場合
+			if (bHit == TRUE)
+			{
+				// 範囲より小さかったら
+				if (fDistancePlayer < fHitRange)
+				{
+					// trueに
+					Ray_Info.bHit = true;
+
+					// ベクターの方向
+					Ray_Info.VecDirection = vecDirection;
+				}
+			}
+		}
+	}
+	// 情報を返す
+	return Ray_Info;
 }

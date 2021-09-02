@@ -13,6 +13,8 @@
 #include "player.h"
 #include "enemy_bullet.h"
 #include "character_box.h"
+#include "collision.h"
+#include "map.h"
 #include "enemy_ship.h"
 //=============================================================================
 // マクロ定義
@@ -25,7 +27,11 @@
 #define ANGLE_360		(360)									// 360度
 #define SIZE			(D3DXVECTOR3 (700.0f,900.0f,700.0f))	// サイズ
 #define ATTACK_COUNT	(300)									// 攻撃間隔
-
+#define SHIP_NUM		(0)										// 船のナンバー
+#define RAY_NUM			(1)										// レイの数
+#define RAY_HIT_RANGE	(600.0f)								// 範囲
+// 船体の位置
+#define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
 #define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
 //=============================================================================
@@ -244,5 +250,41 @@ void CEnemy_Ship::Attack(void)
 
 			// 0に
 			GetAttackCount() = ZERO_INT;
+	}
+}
+//=============================================================================
+// レイの当たり判定処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CEnemy_Ship::RayCollision(void)
+{
+	// モデルの情報取得
+	CModelAnime *pShip = GetModelAnime(SHIP_NUM);
+
+	// 位置取得
+	D3DXVECTOR3 pos = SHIP_POS;
+
+	// 向き取得
+	D3DXVECTOR3 rot = GetRot();
+
+	// マップのポインタ取得
+	CMap *pMap = GET_MAP_PTR;
+
+	// レイの情報
+	CCollision::RAY_INFO Ray_Info;
+
+	// レイの当たり判定
+	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
+
+	// trueの場合
+	if (Ray_Info.bHit == true)
+	{
+		// 戻す
+		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
+
+		// 位置設定
+		SetPos(pos);
+
+		return;
 	}
 }

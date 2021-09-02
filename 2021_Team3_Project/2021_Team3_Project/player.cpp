@@ -52,9 +52,7 @@
 #define ATTACK_COOLTIME			(90)									// 攻撃のクールタイム
 #define RAY_NUM					(4)										// レイの数
 #define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
-#define RAY_RADIUS_UNDER		(D3DXToRadian(-180.0f))					// レイを出す方向
 #define RAY_HIT_RANGE			(600.0f)								// 範囲
-#define RAY_HIT_RANGE_UNDER		(0.0f)									// 範囲
 #define MIN_LIFE				(0)										// ライフの最小
 #define LIFE					(100)									// ライフ
 #define ANGLE_MAX				(D3DXToRadian(360.0f))					// 角度の最大
@@ -1138,18 +1136,6 @@ void CPlayer::CrossCollision(void)
 //=============================================================================
 void CPlayer::RayCollision(void)
 {
-	// レイがヒットしたか
-	BOOL bHit = false;
-
-	// 距離
-	float fDistancePlayer = ZERO_FLOAT;
-
-	// 位置
-	D3DXVECTOR3 vecStart, vecDirection;
-
-	// 角度
-	float fRadius = RAY_RADIUS;
-
 	// モデルの情報取得
 	CModelAnime *pShip = GetModelAnime(SHIP_NUM);
 
@@ -1159,37 +1145,21 @@ void CPlayer::RayCollision(void)
 	// マップのポインタ取得
 	CMap *pMap = GET_MAP_PTR;
 
-	// !nullcheck
-	if (pMap != nullptr)
+	// レイの情報
+	CCollision::RAY_INFO Ray_Info;
+
+	// レイの当たり判定
+	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, RAY_RADIUS, RAY_HIT_RANGE, RAY_NUM);
+
+	// trueの場合
+	if (Ray_Info.bHit == true)
 	{
-		// 始める座標
-		vecStart = pos;
+		// 戻す
+		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
 
-		// 4回繰り返す
-		for (int nCount = ZERO_INT; nCount < RAY_NUM; nCount++)
-		{
-			// レイを出す角度
-			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fRadius * nCount, ZERO_FLOAT);
+		// 位置設定
+		SetPos(pos);
 
-			// レイがヒットしたか
-			D3DXIntersect(pMap->GetMesh(), &vecStart, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
-				&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
-
-			// trueの場合
-			if (bHit == TRUE)
-			{
-				// 範囲より小さかったら
-				if (fDistancePlayer < RAY_HIT_RANGE)
-				{
-					// 戻す
-					pos -= (D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)));
-
-					// 位置設定
-					SetPos(pos);
-
-					return;
-				}
-			}
-		}
+		return;
 	}
 }
