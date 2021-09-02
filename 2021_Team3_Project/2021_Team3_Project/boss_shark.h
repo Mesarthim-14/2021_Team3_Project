@@ -2,19 +2,19 @@
 #define _BOSS_SHARK_H_
 //=============================================================================
 //
-// ƒ{ƒXƒTƒ [boss_shark.h]
+// ãƒœã‚¹ã‚µãƒ¡ [boss_shark.h]
 // Author : Sugawara Tsukasa
 //
 //=============================================================================
 
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒh
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 // Author : Sugawara Tsukasa
 //=============================================================================
 #include "enemy.h"
 
 //=============================================================================
-// ƒGƒlƒ~[ƒNƒ‰ƒX
+// ã‚¨ãƒãƒŸãƒ¼ã‚¯ãƒ©ã‚¹
 // Author : Sugawara Tsukasa
 //=============================================================================
 class CBoss_Shark : public CEnemy
@@ -22,21 +22,31 @@ class CBoss_Shark : public CEnemy
 public:
 	enum PARTS
 	{
-		PARTS_BODY = 0,		// ‘Ì
-		PARTS_HEAD,			// “ª
-		PARTS_CHIN,			// Š{
-		PARTS_UNDER_BODY,	// ‰º”¼g
+		PARTS_BODY = 0,		// ä½“
+		PARTS_HEAD,			// é ­
+		PARTS_CHIN,			// é¡
+		PARTS_UNDER_BODY,	// ä¸‹åŠèº«
 		PARTS_MAX
 	};
-	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	~CBoss_Shark();													// ƒfƒXƒgƒ‰ƒNƒ^
-	static CBoss_Shark *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// ¶¬ˆ—
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);					// ‰Šú‰»ˆ—
-	void Uninit(void);												// I—¹ˆ—
-	void Update(void);												// XVˆ—
-	void Draw(void);												// •`‰æˆ—
-
+	enum MOTION_STATE
+	{
+		MOTION_STATE_IDLE = 0,
+		MOTION_STATE_BYTE
+	};
+	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				      // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	~CBoss_Shark();													                      // ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	static CBoss_Shark *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// ç”Ÿæˆå‡¦ç†
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);					      // åˆæœŸåŒ–å‡¦ç†
+	void Uninit(void);												// çµ‚äº†å‡¦ç†
+	void Update(void);												// æ›´æ–°å‡¦ç†
+	void Draw(void);												  // æç”»å‡¦ç†
 private:
-	void Attack(void)override;										// UŒ‚ˆ—
+	void Attack(void)override;								// æ”»æ’ƒå‡¦ç†
+	void Attack(void);												// æ”»æ’ƒå‡¦ç†
+	void ByteAttack(void);										// å™›ã¿ã¤ãæ”»æ’ƒ
+	void MotionUpdate(void);									// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†
+
+	int m_nAttackCount;												// æ”»æ’ƒã‚«ã‚¦ãƒ³ãƒˆ
+	MOTION_STATE m_MotionState;								// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®çŠ¶æ…‹
 };
 #endif
