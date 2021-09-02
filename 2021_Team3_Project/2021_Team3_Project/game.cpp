@@ -104,7 +104,6 @@ HRESULT CGame::Init(void)
 	// マップの生成
 	CreateMap();
 
-	CBoss_Shark::Create(ENEMY_POS, ENEMY_ROT);
 	return S_OK;
 }
 
@@ -184,11 +183,6 @@ void CGame::Draw(void)
 //=======================================================================================
 void CGame::SetGame(void)
 {
-	// ゲームのタイムカウンター
-	m_nTimeCounter++;
-	if (m_nTimeCounter == 60)
-	{
-	}
 }
 
 //=======================================================================================
@@ -320,11 +314,6 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 
 		//ファイルクローズ
 		::fclose(pFile);
-	}
-	else
-	{
-		//失敗した場合メッセージボックスを表示
-		MessageBox(nullptr, "敵生成ファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 	}
 }
 //=======================================================================================

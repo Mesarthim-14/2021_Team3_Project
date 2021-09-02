@@ -33,20 +33,19 @@ public:
 		MOTION_STATE_IDLE = 0,
 		MOTION_STATE_BYTE
 	};
-	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				      // コンストラクタ
-	~CBoss_Shark();													                      // デストラクタ
+	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
+	~CBoss_Shark();													// デストラクタ
 	static CBoss_Shark *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);					      // 初期化処理
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);					// 初期化処理
 	void Uninit(void);												// 終了処理
 	void Update(void);												// 更新処理
-	void Draw(void);												  // 描画処理
+	void Draw(void);												// 描画処理
 private:
-	void Attack(void)override;								// 攻撃処理
-	void Attack(void);												// 攻撃処理
-	void ByteAttack(void);										// 噛みつき攻撃
-	void MotionUpdate(void);									// モーション処理
+	void Attack(void)override;										// 攻撃処理
+	void ByteAttack(void);											// 噛みつき攻撃
+	void MotionUpdate(void);										// モーション処理
 
-	int m_nAttackCount;												// 攻撃カウント
-	MOTION_STATE m_MotionState;								// モーションの状態
+	int m_nAttackCount;			// 攻撃カウント
+	MOTION_STATE m_MotionState;	// モーションの状態
 };
 #endif
