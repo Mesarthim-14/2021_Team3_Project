@@ -107,6 +107,14 @@ void CEnemy::Update(void)
 		// î‚ÌUŒ‚”»’è
 		CircleDecision();
 	}
+
+	// ‘Ì—Í‚Ìİ’è
+	if (GetLife() <= MIN_LIFE)
+	{
+		// ó‘Ôİ’è
+		SetState(CCharacter::STATE_DEAD);
+	}
+
 	// ó‘Ôˆ—
 	UpdateState();
 }
@@ -127,19 +135,13 @@ void CEnemy::Draw(void)
 //=============================================================================
 void CEnemy::UpdateState(void)
 {
-	// ó‘Ô
+	// ó‘Ôæ“¾
 	int nState = GetState();
 
-	// ‘Ì—Í‚Ìİ’è
-	if (GetLife() <= MIN_LIFE)
+	// €–Só‘Ô
+	if (nState == STATE_DEAD)
 	{
-		// ó‘Ôİ’è
-		SetState(CCharacter::STATE_DEAD);
-	}
-	// DEAD‚Ìê‡
-	if (nState == CCharacter::STATE_DEAD)
-	{
-		// €–Sˆ—
+		// €–S
 		Death();
 	}
 }

@@ -35,6 +35,6 @@ public:
 	void Draw(void);														// •`‰æˆ—
 
 private:
-	void Attack(void) override;										// UŒ‚ˆ—
+	void Attack(void) override;		// UŒ‚ˆ—
 };
 #endif

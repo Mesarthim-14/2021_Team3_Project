@@ -50,7 +50,7 @@ public:
 		D3DXVECTOR3 Rot;		// 向きのオフセット情報
 		ENEMY_OBSTACLE_TYPE Type;		// 種類情報
 	};
-	
+
 	CGame();		// コンストラクタ
 	~CGame();		// デストラクタ
 
@@ -66,16 +66,16 @@ public:
 	void CreateEnemy_Obstacle(void);		// 敵生成関数
 	void RoadEnemyFile(string pEnemyFile);	// 敵の生成ファイル読み込み
 
-	// Get関数
-	CCamera *GetCamera(void)	{ return m_pCamera; }	// カメラのポインタ情報
-	CLight *GetLight(void)		{ return m_pLight; }	// ライトのポインタ情報
-	CPlayer *GetPlayer(void)	{ return m_pPlayer; }	// プレイヤーのポインタ情報
-	CMap *GetMap(void)			{ return m_pMap; }		// マップのポインタ取得
+											// Get関数
+	CCamera *GetCamera(void) { return m_pCamera; }	// カメラのポインタ情報
+	CLight *GetLight(void) { return m_pLight; }	// ライトのポインタ情報
+	CPlayer *GetPlayer(void) { return m_pPlayer; }	// プレイヤーのポインタ情報
+	CMap *GetMap(void) { return m_pMap; }		// マップのポインタ取得
 private:
 	// 関数
 	void DrawPlayerPos(void);				// プレイヤーの位置書き込み
 
-	// ポインタ
+											// ポインタ
 	CCamera *m_pCamera;						// カメラのポインタ	
 	CLight *m_pLight;						// ライトのポインタ
 	CMeshField *m_pMeshField;				// メッシュフィールドのポインタ
@@ -87,7 +87,7 @@ private:
 	bool m_bGameEnd;						// ゲームのエンドフラグ
 	int m_nEnemyNum;						// 敵数
 
-	// デバック用
+											// デバック用
 	LPD3DXFONT m_pFont;						// デバック用フォント
 };
 #endif

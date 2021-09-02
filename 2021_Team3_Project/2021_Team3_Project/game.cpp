@@ -1,12 +1,12 @@
 //=======================================================================================
 //
-// ã‚²ãƒ¼ãƒ å‡¦ç† [game.cpp]
+// ƒQ[ƒ€ˆ— [game.cpp]
 // Author : Konishi Yuuto
 //
 //=======================================================================================
 
 //=======================================================================================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+// ƒCƒ“ƒNƒ‹[ƒh
 //=======================================================================================
 #include "game.h"
 #include "camera.h"
@@ -36,57 +36,57 @@
 #include "water.h"
 
 //=======================================================================================
-// ãƒã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 //=======================================================================================
-#define ENEMY_OBSTACLE_CREATE_TEXT	("data/Text/Enemy/Enemy_Obstacle_Create.txt")	// æ•µç”Ÿæˆãƒ†ã‚­ã‚¹ãƒˆ
-#define ENEMY_POS					(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// æ•µã®ä½ç½®
-#define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// æ•µã®ä½ç½®
-#define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// æ•µã®å‘ã
-#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®
-#define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// ã‚µã‚¤ã‚º
-#define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã
+#define ENEMY_OBSTACLE_CREATE_TEXT	("data/Text/Enemy/Enemy_Obstacle_Create.txt")	// “G¶¬ƒeƒLƒXƒg
+#define ENEMY_POS					(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// “G‚ÌˆÊ’u
+#define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// “G‚ÌˆÊ’u
+#define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// “G‚ÌŒü‚«
+#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// ƒvƒŒƒCƒ„[‚ÌˆÊ’u
+#define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// ƒTƒCƒY
+#define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// ƒvƒŒƒCƒ„[‚ÌŒü‚«
 
 //=======================================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=======================================================================================
 CGame::CGame()
 {
-	m_pCamera			= nullptr;
-	m_pLight			= nullptr;
-	m_pMeshField		= nullptr;
-	m_pBg				= nullptr;
-	m_pPlayer			= nullptr;
-	m_pMap				= nullptr;
-	m_bGameEnd			= false;
-	m_nEnemyNum			= ZERO_INT;
-	m_pEnemyFileData	= nullptr;
-	m_pFont				= nullptr;
+	m_pCamera = nullptr;
+	m_pLight = nullptr;
+	m_pMeshField = nullptr;
+	m_pBg = nullptr;
+	m_pPlayer = nullptr;
+	m_pMap = nullptr;
+	m_bGameEnd = false;
+	m_nEnemyNum = ZERO_INT;
+	m_pEnemyFileData = nullptr;
+	m_pFont = nullptr;
 }
 
 //=======================================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 //=======================================================================================
 CGame::~CGame()
 {
-	// çµ‚äº†å‡¦ç†
+	// I—¹ˆ—
 	Uninit();
 }
 
 //=======================================================================================
-// åˆæœŸåŒ–å‡¦ç†
+// ‰Šú‰»ˆ—
 //=======================================================================================
 HRESULT CGame::Init(void)
 {
-	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æƒ…å ±
+	// ƒL[ƒ{[ƒhî•ñ
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// ã‚«ãƒ¡ãƒ©ã‚¯ãƒ©ã‚¹ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	// ƒJƒƒ‰ƒNƒ‰ƒX‚ÌƒNƒŠƒGƒCƒg
 	m_pCamera = CCamera::Create();
 
-	//ãƒ©ã‚¤ãƒˆã‚¯ãƒ©ã‚¹ã®ç”Ÿæˆ
+	//ƒ‰ƒCƒgƒNƒ‰ƒX‚Ì¶¬
 	m_pLight = new CLight;
 
-	// ãƒ©ã‚¤ãƒˆã®åˆæœŸåŒ–å‡¦ç†
+	// ƒ‰ƒCƒg‚Ì‰Šú‰»ˆ—
 	if (m_pLight != nullptr)
 	{
 		if (FAILED(m_pLight->Init()))
@@ -95,36 +95,36 @@ HRESULT CGame::Init(void)
 		}
 	}
 
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ
+	// ƒvƒŒƒCƒ„[‚Ì¶¬
 	CreatePlayer();
 
-	// æ•µç”Ÿæˆ
+	// “G¶¬
 	CreateEnemy_Obstacle();
 
-	// ãƒãƒƒãƒ—ã®ç”Ÿæˆ
-	CreateMap();
+	// ƒ}ƒbƒv‚Ì¶¬
+	//CreateMap();
 
 	return S_OK;
 }
 
 //=======================================================================================
-// çµ‚äº†å‡¦ç†
+// I—¹ˆ—
 //=======================================================================================
 void CGame::Uninit(void)
 {
 	if (m_pCamera != nullptr)
 	{
-		//ã‚«ãƒ¡ãƒ©ã‚¯ãƒ©ã‚¹ã®çµ‚äº†å‡¦ç†å‘¼ã³å‡ºã™
+		//ƒJƒƒ‰ƒNƒ‰ƒX‚ÌI—¹ˆ—ŒÄ‚Ño‚·
 		m_pCamera->Uninit();
 
-		//ãƒ¡ãƒ¢ãƒªã®ç ´æ£„
+		//ƒƒ‚ƒŠ‚Ì”jŠü
 		delete m_pCamera;
 
-		//ãƒ¡ãƒ¢ãƒªã®ã‚¯ãƒªã‚¢
+		//ƒƒ‚ƒŠ‚ÌƒNƒŠƒA
 		m_pCamera = nullptr;
 	}
 
-	// ãƒ©ã‚¤ãƒˆã®çµ‚äº†å‡¦ç†
+	// ƒ‰ƒCƒg‚ÌI—¹ˆ—
 	if (m_pLight != nullptr)
 	{
 		m_pLight->Uninit();
@@ -132,20 +132,20 @@ void CGame::Uninit(void)
 		m_pLight = nullptr;
 	}
 
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çµ‚äº†å‡¦ç†
+	// ƒvƒŒƒCƒ„[‚ÌI—¹ˆ—
 	if (m_pPlayer != nullptr)
 	{
 		m_pPlayer->Uninit();
 		m_pPlayer = nullptr;
 	}
 
-	// åœ°é¢ã®çµ‚äº†å‡¦ç†
+	// ’n–Ê‚ÌI—¹ˆ—
 	if (m_pMeshField != nullptr)
 	{
 		m_pMeshField->Uninit();
 		m_pMeshField = nullptr;
 	}
-	// ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤ºç”¨ãƒ•ã‚©ãƒ³ãƒˆã®ç ´æ£„
+	// ƒfƒoƒbƒOî•ñ•\¦—pƒtƒHƒ“ƒg‚Ì”jŠü
 	if (m_pFont != nullptr)
 	{
 		m_pFont->Release();
@@ -154,7 +154,7 @@ void CGame::Uninit(void)
 }
 
 //=======================================================================================
-// æ›´æ–°å‡¦ç†
+// XVˆ—
 //=======================================================================================
 void CGame::Update(void)
 {
@@ -162,16 +162,16 @@ void CGame::Update(void)
 
 	if (m_pCamera != nullptr)
 	{
-		//ã‚«ãƒ¡ãƒ©ã‚¯ãƒ©ã‚¹ã®æ›´æ–°å‡¦ç†
+		//ƒJƒƒ‰ƒNƒ‰ƒX‚ÌXVˆ—
 		m_pCamera->Update();
 	}
 
-	// ã‚²ãƒ¼ãƒ ã®è¨­å®š
+	// ƒQ[ƒ€‚Ìİ’è
 	SetGame();
 }
 
 //=======================================================================================
-// æç”»å‡¦ç†
+// •`‰æˆ—
 //=======================================================================================
 void CGame::Draw(void)
 {
@@ -179,18 +179,18 @@ void CGame::Draw(void)
 }
 
 //=======================================================================================
-// ã‚²ãƒ¼ãƒ ã®è¨­å®š
+// ƒQ[ƒ€‚Ìİ’è
 //=======================================================================================
 void CGame::SetGame(void)
 {
 }
 
 //=======================================================================================
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ
+// ƒvƒŒƒCƒ„[‚Ì¶¬
 //=======================================================================================
 void CGame::CreatePlayer(void)
 {
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ
+	// ƒvƒŒƒCƒ„[‚Ì¶¬
 	if (m_pPlayer == nullptr)
 	{
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
@@ -198,34 +198,34 @@ void CGame::CreatePlayer(void)
 }
 
 //=======================================================================================
-// ãƒãƒƒãƒ—ã®ç”Ÿæˆ
+// ƒ}ƒbƒv‚Ì¶¬
 //=======================================================================================
 void CGame::CreateMap(void)
 {
-	// åœ°é¢ã®ç”Ÿæˆ
+	// ’n–Ê‚Ì¶¬
 	CreateGround();
 
-	// ãƒãƒƒãƒ—ç”Ÿæˆ
+	// ƒ}ƒbƒv¶¬
 	m_pMap = CMap::Create(ZeroVector3, ZeroVector3);
 }
 
 //=======================================================================================
-// åœ°é¢ã®ç”Ÿæˆ
+// ’n–Ê‚Ì¶¬
 //=======================================================================================
 void CGame::CreateGround(void)
 {
-	// åœ°é¢ã®ç”Ÿæˆ
+	// ’n–Ê‚Ì¶¬
 	CWater::Create();
 }
 //=======================================================================================
-// æ•µã®ç”Ÿæˆãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
+// “G‚Ì¶¬ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
 //=======================================================================================
 void CGame::RoadEnemyFile(string pEnemyFile)
 {
-	// FILEãƒã‚¤ãƒ³ã‚¿
+	// FILEƒ|ƒCƒ“ƒ^
 	FILE *pFile = nullptr;
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³
+	// ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“
 	pFile = fopen(pEnemyFile.c_str(), "r");
 
 	string aHeadData;
@@ -236,75 +236,75 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 	{
 		do
 		{
-			// æ–‡å­—åˆ—ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
+			// •¶š—ñ‚ğƒNƒŠƒA‚·‚é
 			aHeadData.clear();
 
-			//ä¸€åˆ—èª­ã¿è¾¼ã‚“ã§ãƒ¢ãƒ¼ãƒ‰æƒ…å ±ã‚’æŠ½å‡º
+			//ˆê—ñ“Ç‚İ‚ñ‚Åƒ‚[ƒhî•ñ‚ğ’Šo
 			getline((ifstream)pFile, aHeadData);
 
-			// ä»£å…¥
+			// ‘ã“ü
 			aModeName = aHeadData;
 
-			// ENEMY_NUMã®å ´åˆ
+			// ENEMY_NUM‚Ìê‡
 			if (aHeadData.find("ENEMY_NUM") != string::npos)
 			{
-				// æ–‡å­—ã®åˆ†è§£
+				// •¶š‚Ì•ª‰ğ
 				aModeName = CLibrary::split(aHeadData, ' ', 2);
 
-				// æ•µæ•°ã®è¨­å®š
+				// “G”‚Ìİ’è
 				sscanf(aHeadData.c_str(), "%*s %*s %d", &m_nEnemyNum);
 
-				// ãƒ¡ãƒ¢ãƒªç¢ºä¿
+				// ƒƒ‚ƒŠŠm•Û
 				m_pEnemyFileData = new ENEMY_FILE_DATA[m_nEnemyNum];
 			}
-			//  ENEMY_SETã®å ´åˆ
+			//  ENEMY_SET‚Ìê‡
 			if (aModeName.compare(string("ENEMY_SET")) == 0)
 			{
-				// 0ã«æˆ»ã™
+				// 0‚É–ß‚·
 				m_nEnemyNum = ZERO_INT;
 
-				// END_ENEMY_SETã‚’èª­ã¿è¾¼ã‚€ã¾ã§ç¹°ã‚Šè¿”ã™
+				// END_ENEMY_SET‚ğ“Ç‚İ‚Ş‚Ü‚ÅŒJ‚è•Ô‚·
 				while (aModeName.compare(string("END_ENEMY_SET")) != 0)
 				{
-					// ä¸€åˆ—èª­ã¿è¾¼ã‚“ã§ãƒ¢ãƒ¼ãƒ‰æƒ…å ±ã‚’æŠ½å‡º
+					// ˆê—ñ“Ç‚İ‚ñ‚Åƒ‚[ƒhî•ñ‚ğ’Šo
 					getline((ifstream)pFile, aHeadData);
 
-					// æ–‡å­—ã®åˆ†è§£
+					// •¶š‚Ì•ª‰ğ
 					aModeName = CLibrary::split(aHeadData, ' ', 0);
 
-					// PARAMETER_SETã®å ´åˆ
+					// PARAMETER_SET‚Ìê‡
 					if (aModeName.compare(string("PARAMETER_SET")) == 0)
 					{
-						// END_PARAMETER_SETã‚’èª­ã¿è¾¼ã‚€ã¾ã§ç¹°ã‚Šè¿”ã™
+						// END_PARAMETER_SET‚ğ“Ç‚İ‚Ş‚Ü‚ÅŒJ‚è•Ô‚·
 						while (aModeName.compare(string("END_PARAMETER_SET")) != 0)
 						{
-							// ä¸€åˆ—èª­ã¿è¾¼ã‚“ã§ãƒ¢ãƒ¼ãƒ‰æƒ…å ±ã‚’æŠ½å‡º
+							// ˆê—ñ“Ç‚İ‚ñ‚Åƒ‚[ƒhî•ñ‚ğ’Šo
 							getline((ifstream)pFile, aHeadData);
 							aModeName = CLibrary::split(aHeadData, ' ', 1);
 
-							// NUMBERã®å ´åˆ
+							// NUMBER‚Ìê‡
 							if (aModeName.find(string("TYPE")) == 0)
 							{
-								// æ•µç¨®é¡æƒ…å ±ã®è¨­å®š
+								// “Gí—Şî•ñ‚Ìİ’è
 								sscanf(aHeadData.c_str(), "%*s %*s %d", &m_pEnemyFileData[m_nEnemyNum].Type);
 
 							}
-							// POSã®å ´åˆ
+							// POS‚Ìê‡
 							if (aModeName.find(string("POS")) == 0)
 							{
-								//ä½ç½®ã®è¨­å®š
+								//ˆÊ’u‚Ìİ’è
 								sscanf(aHeadData.c_str(), "%*s %*s %f %f %f", &m_pEnemyFileData[m_nEnemyNum].Pos.x,
 									&m_pEnemyFileData[m_nEnemyNum].Pos.y, &m_pEnemyFileData[m_nEnemyNum].Pos.z);
 							}
-							// ROTã®å ´åˆ
+							// ROT‚Ìê‡
 							if (aModeName.find(string("ROT")) == 0)
 							{
-								//å‘ãã®è¨­å®š
+								//Œü‚«‚Ìİ’è
 								sscanf(aHeadData.c_str(), "%*s %*s %f %f %f", &m_pEnemyFileData[m_nEnemyNum].Rot.x,
 									&m_pEnemyFileData[m_nEnemyNum].Rot.y, &m_pEnemyFileData[m_nEnemyNum].Rot.z);
 							}
 						}
-						// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ï¼‘ã¤é€²ã‚ã‚‹
+						// ƒCƒ“ƒfƒbƒNƒX‚ğ‚P‚Âi‚ß‚é
 						m_nEnemyNum++;
 					}
 				}
@@ -312,74 +312,80 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 
 		} while (aModeName.find("END_SCRIPT") == string::npos);
 
-		//ãƒ•ã‚¡ã‚¤ãƒ«ã‚¯ãƒ­ãƒ¼ã‚º
+		//ƒtƒ@ƒCƒ‹ƒNƒ[ƒY
 		::fclose(pFile);
+	}
+	// pFile‚ªnull‚Ìê‡
+	else
+	{
+		// ¸”s‚µ‚½ê‡ƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚ğ•\¦
+		MessageBox(nullptr, "ƒqƒGƒ‰ƒ‹ƒL[ƒtƒ@ƒCƒ‹‚ğŠJ‚­‚Ì‚É¸”s‚µ‚Ü‚µ‚½", "Œx", MB_OK | MB_ICONEXCLAMATION);
 	}
 }
 //=======================================================================================
-// æ•µç”Ÿæˆé–¢æ•°
+// “G¶¬ŠÖ”
 // Author : Sugawara Tsukasa
 //=======================================================================================
 void CGame::CreateEnemy_Obstacle(void)
 {
-	// æ•µã®ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
+	// “G‚ÌƒeƒLƒXƒgƒtƒ@ƒCƒ‹“Ç‚İ‚İ
 	RoadEnemyFile(ENEMY_OBSTACLE_CREATE_TEXT);
 
 	// !nullcheck
 	if (m_pEnemyFileData != nullptr)
 	{
-		// æ•µæ•°åˆ†ç¹°ã‚Šè¿”ã™
+		// “G”•ªŒJ‚è•Ô‚·
 		for (int nCnt = ZERO_INT; nCnt < m_nEnemyNum; nCnt++)
 		{
-			// æ•µã®ç¨®é¡
+			// “G‚Ìí—Ş
 			switch (m_pEnemyFileData[nCnt].Type)
 			{
-				// æ•µèˆ¹ã®å ´åˆ
+				// “G‘D‚Ìê‡
 			case ENEMY_OBSTACLE_TYPE_SHIP:
-				// æ•µèˆ¹ç”Ÿæˆ
+				// “G‘D¶¬
 				CEnemy_Ship::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
-				// æ•µèˆ¹ã®å ´åˆ
+				// “G‘D‚Ìê‡
 			case ENEMY_OBSTACLE_TYPE_SCAFFOLDING:
-				// æ«“ç”Ÿæˆ
+				// ˜E¶¬
 				CEnemy_Scaffolding::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
-				// é­šé›·ã®å ´åˆ
+				// ‹›—‹‚Ìê‡
 			case ENEMY_OBSTACLE_TYPE_TORPEDO:
-				// é­šé›·ç”Ÿæˆ
+				// ‹›—‹¶¬
 				CTorpedo::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
-				// å²©ã®å ´åˆ
+				// Šâ‚Ìê‡
 			case ENEMY_OBSTACLE_TYPE_ROCK:
-				// å²©ç”Ÿæˆ
+				// Šâ¶¬
 				CRock::Create(m_pEnemyFileData[nCnt].Pos, D3DXToRadian(m_pEnemyFileData[nCnt].Rot));
 				break;
-				// ä¾‹å¤–ã®å ´åˆ
+				// —áŠO‚Ìê‡
 			default:
 				break;
 			}
 		}
 
-		// ãƒ¡ãƒ¢ãƒªç ´æ£„
+		// ƒƒ‚ƒŠ”jŠü
 		delete[] m_pEnemyFileData;
 
-		// nullptrã«
+		// nullptr‚É
 		m_pEnemyFileData = nullptr;
 
-		// æ•µæ•°
+		// “G”
 		m_nEnemyNum = ZERO_INT;
 	}
 }
 
 //=======================================================================================
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æƒ…å ±
+// ƒvƒŒƒCƒ„[‚Ìî•ñ
 // Author : SugawaraTsukasa
 //=======================================================================================
 void CGame::DrawPlayerPos(void)
 {
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®å–å¾—
+	// ƒvƒŒƒCƒ„[‚ÌˆÊ’uæ“¾
 	D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
 
-	// æ›¸ãè¾¼ã¿
+	// ‘‚«‚İ
 	CDebugProc::Print("POS:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z);
 }

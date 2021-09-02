@@ -1,10 +1,10 @@
 //=============================================================================
-// æ•µã®èˆ¹ [enemy_ship.cpp]
+// “G‚Ì‘D [enemy_ship.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 
 //=============================================================================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 // Author : Sugawara Tsukasa
 //=============================================================================
 #include "manager.h"
@@ -15,183 +15,183 @@
 #include "byte_effect.h"
 #include "boss_shark.h"
 //=============================================================================
-// ãƒžã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE		(100)									// ä½“åŠ›
-#define MOVE_VALUE		(10.0f)									// ç§»å‹•é‡
-#define ROT_SPEED		(0.01f)									// æ—‹å›žé€Ÿåº¦
-#define ANGLE_180		(180)									// 180åº¦
-#define ANGLE_360		(360)									// 360åº¦
-#define SIZE			(D3DXVECTOR3 (700.0f,900.0f,700.0f))	// ã‚µã‚¤ã‚º
-#define ATTACK_COUNT	(300)									// æ”»æ’ƒé–“éš”
+#define MAX_LIFE		(100)									// ‘Ì—Í
+#define MOVE_VALUE		(10.0f)									// ˆÚ“®—Ê
+#define ROT_SPEED		(0.01f)									// ù‰ñ‘¬“x
+#define ANGLE_180		(180)									// 180“x
+#define ANGLE_360		(360)									// 360“x
+#define SIZE			(D3DXVECTOR3 (700.0f,900.0f,700.0f))	// ƒTƒCƒY
+#define ATTACK_COUNT	(300)									// UŒ‚ŠÔŠu
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 // Author : Sugawara Tsukasa
 //=============================================================================
 CBoss_Shark::CBoss_Shark(PRIORITY Priority) : CEnemy(Priority)
 {
-	m_nAttackCount	= ZERO_INT;
-	m_MotionState		= MOTION_STATE_IDLE;
+	m_nAttackCount = ZERO_INT;
+	m_MotionState = MOTION_STATE_IDLE;
 }
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 // Author : Sugawara Tsukasa
 //=============================================================================
 CBoss_Shark::~CBoss_Shark()
 {
 }
 //=============================================================================
-// ç”Ÿæˆé–¢æ•°
+// ¶¬ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 CBoss_Shark * CBoss_Shark::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CBoss_Sharkãƒã‚¤ãƒ³ã‚¿
+	// CBoss_Sharkƒ|ƒCƒ“ƒ^
 	CBoss_Shark *pBoss_Shark = nullptr;
 
 	// nullcheck
 	if (pBoss_Shark == nullptr)
 	{
-		// ãƒ¡ãƒ¢ãƒªç¢ºä¿
+		// ƒƒ‚ƒŠŠm•Û
 		pBoss_Shark = new CBoss_Shark;
 
 		// !nullcheck
 		if (pBoss_Shark != nullptr)
 		{
-			// åˆæœŸåŒ–å‡¦ç†
+			// ‰Šú‰»ˆ—
 			pBoss_Shark->Init(pos, rot);
 
-			// ãƒœãƒƒã‚¯ã‚¹ç”Ÿæˆ
+			// ƒ{ƒbƒNƒX¶¬
 			CCharacter_Box::Create(pos, rot, pBoss_Shark);
 		}
 	}
 
-	// ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+	// ƒ|ƒCƒ“ƒ^‚ð•Ô‚·
 	return pBoss_Shark;
 }
 //=============================================================================
-// åˆæœŸåŒ–é–¢æ•°
+// ‰Šú‰»ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 HRESULT CBoss_Shark::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±å–å¾—
+	// ƒ‚ƒfƒ‹î•ñŽæ“¾
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
 
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±ã‚’æ¸¡ã™
+		// ƒ‚ƒfƒ‹‚Ìî•ñ‚ð“n‚·
 		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_BOSS_SHARK);
 	}
 
-	// ä½“åŠ›è¨­å®š
+	// ‘Ì—ÍÝ’è
 	SetLife(MAX_LIFE);
 
-	// ã‚µã‚¤ã‚ºè¨­å®š
+	// ƒTƒCƒYÝ’è
 	SetSize(SIZE);
 
-	// æ”»æ’ƒåˆ¤å®šè¨­å®š
+	// UŒ‚”»’èÝ’è
 	SetAttackDecision(ATTACK_DECISION_CIRCLE);
 
-	// åˆæœŸåŒ–é–¢æ•°
+	// ‰Šú‰»ŠÖ”
 	CEnemy::Init(pos, rot);
 	return S_OK;
 }
 //=============================================================================
-// çµ‚äº†é–¢æ•°
+// I—¹ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::Uninit(void)
 {
-	// çµ‚äº†å‡¦ç†
+	// I—¹ˆ—
 	CEnemy::Uninit();
 }
 //=============================================================================
-// æ›´æ–°é–¢æ•°
+// XVŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::Update(void)
 {
-	// æ›´æ–°å‡¦ç†
+	// XVˆ—
 	CEnemy::Update();
 
-	// ä½ç½®å–å¾—
+	// ˆÊ’uŽæ“¾
 	D3DXVECTOR3 pos = GetPos();
 
-	// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³æ›´æ–°
+	// ƒ‚[ƒVƒ‡ƒ“XV
 	ModelAnimeUpdate();
 
-	// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†
+	// ƒ‚[ƒVƒ‡ƒ“ˆ—
 	MotionUpdate();
 
-	// å¤ã„åº§æ¨™ä¿å­˜
+	// ŒÃ‚¢À•W•Û‘¶
 	SetPosOld(pos);
 
-	// æ”»æ’ƒå‡¦ç†
+	// UŒ‚ˆ—
 	Attack();
 }
 //=============================================================================
-// æç”»é–¢æ•°
+// •`‰æŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::Draw(void)
 {
-	// æç”»é–¢æ•°
+	// •`‰æŠÖ”
 	CEnemy::Draw();
 }
 
 //=============================================================================
-// æ”»æ’ƒå‡¦ç†é–¢æ•°
+// UŒ‚ˆ—ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::Attack(void)
 {
-	// ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒ
+	// ƒGƒlƒ~[‚ÌUŒ‚
 	CEnemy::Attack();
 
-	// ã‚«ã‚¦ãƒ³ãƒˆãŒ300ä»¥ä¸Šã®å ´åˆ
+	// ƒJƒEƒ“ƒg‚ª300ˆÈã‚Ìê‡
 	if (m_nAttackCount >= ATTACK_COUNT)
 	{
-		// å™›ã¿ã¤ãæ”»æ’ƒ
+		// Šš‚Ý‚Â‚«UŒ‚
 		ByteAttack();
 
-		// 0ã«
+		// 0‚É
 		m_nAttackCount = ZERO_INT;
 	}
 }
 //=============================================================================
-// å™›ã¿ã¤ãæ”»æ’ƒå‡¦ç†é–¢æ•°
+// Šš‚Ý‚Â‚«UŒ‚ˆ—ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::ByteAttack(void)
 {
-	// ä½ç½®å–å¾—
+	// ˆÊ’uŽæ“¾
 	D3DXVECTOR3 pos = GetPos();
 
-	// å™›ã¿ã¤ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
+	// Šš‚Ý‚Â‚«ƒ‚[ƒVƒ‡ƒ“
 	m_MotionState = MOTION_STATE_BYTE;
 
-	// å™›ã¿ã¤ãã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+	// Šš‚Ý‚Â‚«ƒGƒtƒFƒNƒg
 	CByte_Effect::CrateEffect(pos, SIZE);
 }
 //=============================================================================
-// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†é–¢æ•°
+// ƒ‚[ƒVƒ‡ƒ“ˆ—ŠÖ”
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CBoss_Shark::MotionUpdate(void)
 {
-	// ã‚¢ã‚¤ãƒ‰ãƒ«ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
+	// ƒAƒCƒhƒ‹ƒ‚[ƒVƒ‡ƒ“
 	if (m_MotionState == MOTION_STATE_IDLE)
 	{
-		// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¨­å®š
+		// ƒ‚[ƒVƒ‡ƒ“Ý’è
 		SetMotion(MOTION_STATE_IDLE);
 	}
 	if (m_MotionState == MOTION_STATE_BYTE)
 	{
-		// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¨­å®š
+		// ƒ‚[ƒVƒ‡ƒ“Ý’è
 		SetMotion(MOTION_STATE_BYTE);
 	}
 }

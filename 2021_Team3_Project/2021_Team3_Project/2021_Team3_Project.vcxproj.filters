@@ -147,9 +147,6 @@
     <ClCompile Include="keyboard.cpp">
       <Filter>02_Input</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>03_Mode\Game</Filter>
-    </ClCompile>
     <ClCompile Include="result.cpp">
       <Filter>03_Mode\Result</Filter>
     </ClCompile>
@@ -258,9 +255,6 @@
     <ClCompile Include="player_life.cpp">
       <Filter>08_Ui\2D</Filter>
     </ClCompile>
-    <ClCompile Include="boss_shark.cpp">
-      <Filter>04_Character\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="byte_effect.cpp">
       <Filter>06_Effect\Byte_Effect</Filter>
     </ClCompile>
@@ -275,6 +269,12 @@
     </ClCompile>
     <ClCompile Include="wave.cpp">
       <Filter>06_Effect\Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>03_Mode\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_shark.cpp">
+      <Filter>04_Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +322,6 @@
     </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>02_Input</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>03_Mode\Game</Filter>
     </ClInclude>
     <ClInclude Include="result.h">
       <Filter>03_Mode\Result</Filter>
@@ -434,9 +431,6 @@
     <ClInclude Include="player_life.h">
       <Filter>08_Ui\2D</Filter>
     </ClInclude>
-    <ClInclude Include="boss_shark.h">
-      <Filter>04_Character\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="byte_effect.h">
       <Filter>06_Effect\Byte_Effect</Filter>
     </ClInclude>
@@ -451,6 +445,12 @@
     </ClInclude>
     <ClInclude Include="wave.h">
       <Filter>06_Effect\Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>03_Mode\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_shark.h">
+      <Filter>04_Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

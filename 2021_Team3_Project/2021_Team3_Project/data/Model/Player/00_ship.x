@@ -1906,7 +1906,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\gsp015\\Documents\\3D個人制作自機モデリング\\チーム制作\\scffolding\\wood.png";
+    "wood.png";
    }
   }
   Material {
