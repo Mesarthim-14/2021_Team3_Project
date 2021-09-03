@@ -350,9 +350,6 @@ void CPlayer::Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			// falseに
-			m_bBack = false;
 		}
 		// falseの場合
 		if (m_bBack == false)
@@ -405,9 +402,6 @@ void CPlayer::Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			// falseに
-			m_bBack = false;
 		}
 		// falseの場合
 		if (m_bBack == false)
@@ -458,6 +452,12 @@ void CPlayer::Move(void)
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 			}
+		}
+		// 右スティックと左スティックが下に倒されていない場合
+		else
+		{
+			// falseに
+			m_bBack = false;
 		}
 	}
 	// 角度が最大になった場合
@@ -548,9 +548,6 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			// falseに
-			m_bBack = false;
 		}
 		// falseの場合
 		if (m_bBack == false)
@@ -583,7 +580,7 @@ void CPlayer::Pad2Move(void)
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// コントローラーの角度
-		fAngle_R = atan2f((float)P2_js.lX, (float)P2_js.lY);
+		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
 		// 左に移動
 		if (fAngle_R < -ANGLE_0 && fAngle_R > -ANGLE_270)
@@ -603,9 +600,6 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			// falseに
-			m_bBack = false;
 		}
 		// falseの場合
 		if (m_bBack == false)
@@ -656,6 +650,12 @@ void CPlayer::Pad2Move(void)
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 			}
+		}
+		// 入力されていない場合
+		else
+		{
+			// falseに
+			m_bBack = false;
 		}
 	}
 	// 角度が最大になった場合
