@@ -23,7 +23,7 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CPlayer_Bullet::CPlayer_Bullet(PRIORITY Priority)
+CPlayer_Bullet::CPlayer_Bullet(PRIORITY Priority) : CBullet (Priority)
 {
 }
 //=============================================================================

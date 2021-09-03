@@ -77,6 +77,8 @@ public:
 	void Move(void);											// 移動処理
 	void Pad2Move(void);										// 2コントローラーの移動
 	void Attack(void);											// 攻撃の関数
+	void Pad2Attack(void);										// 2コントローラーの攻撃
+	void KeyboardMove(void);									// キーボード移動
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
 	void RayCollision(void);									// レイの当たり判定

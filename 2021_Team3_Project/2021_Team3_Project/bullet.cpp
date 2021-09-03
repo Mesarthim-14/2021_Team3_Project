@@ -22,7 +22,7 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBullet::CBullet(PRIORITY Priority)
+CBullet::CBullet(PRIORITY Priority) : CModel(Priority)
 {
 }
 //=============================================================================

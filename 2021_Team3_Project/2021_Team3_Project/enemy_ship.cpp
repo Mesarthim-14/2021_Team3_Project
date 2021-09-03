@@ -129,6 +129,9 @@ void CEnemy_Ship::Update(void)
 	// ŒÃ‚¢À•W•Û‘¶
 	SetPosOld(pos);	
 
+	// ƒŒƒC‚Ì“–‚½‚è”»’è
+	RayCollision();
+
 	// UŒ‚”»’èæ“¾
 	bool bAttack = Get_bAttackDecision();
 
@@ -138,7 +141,7 @@ void CEnemy_Ship::Update(void)
 		// UŒ‚ˆ—
 		Attack();
 		// ˆÚ“®ˆ—
-		//Move();
+		Move();
 	}
 }
 //=============================================================================
