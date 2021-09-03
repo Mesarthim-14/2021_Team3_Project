@@ -31,7 +31,7 @@
 #define RAY_NUM			(1)										// レイの数
 #define RAY_HIT_RANGE	(600.0f)								// 範囲
 // 船体の位置
-#define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
+#define SHIP_POS		(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
 #define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
 //=============================================================================
@@ -129,9 +129,6 @@ void CEnemy_Ship::Update(void)
 	// 古い座標保存
 	SetPosOld(pos);	
 
-	// レイの当たり判定
-	RayCollision();
-
 	// 攻撃判定取得
 	bool bAttack = Get_bAttackDecision();
 
@@ -140,8 +137,22 @@ void CEnemy_Ship::Update(void)
 	{
 		// 攻撃処理
 		Attack();
+
 		// 移動処理
 		Move();
+	}
+
+	// レイの当たり判定
+	RayCollision();
+
+	// 状態取得
+	int nState = GetState();
+
+	// 死亡状態
+	if (nState == STATE_DEAD)
+	{
+		// 死亡
+		Death();
 	}
 }
 //=============================================================================
@@ -245,14 +256,14 @@ void CEnemy_Ship::Attack(void)
 	// カウントが60以上になった場合
 	if (GetAttackCount() >= ATTACK_COUNT)
 	{
-			// 砲台のポインタ取得
-			CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
+		// 砲台のポインタ取得
+		CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
 
-			// 弾生成
-			CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
+		// 弾生成
+		CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
 
-			// 0に
-			GetAttackCount() = ZERO_INT;
+		// 0に
+		GetAttackCount() = ZERO_INT;
 	}
 }
 //=============================================================================

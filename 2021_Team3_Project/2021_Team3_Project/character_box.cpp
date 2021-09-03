@@ -116,12 +116,6 @@ void CCharacter_Box::Update(void)
 	// 更新処理
 	CModel::Update();
 
-	// ポインタ取得
-	CModelAnime *pAnime = m_pCharacter->GetModelAnime(PARENT_NUM);
-
-	// 位置設定
-	SetPos(POS);
-
 	// 死亡状態の場合
 	if (m_pCharacter->GetState() == CCharacter::STATE_DEAD)
 	{
@@ -130,6 +124,12 @@ void CCharacter_Box::Update(void)
 
 		return;
 	}
+
+	// ポインタ取得
+	CModelAnime *pAnime = m_pCharacter->GetModelAnime(PARENT_NUM);
+
+	// 位置設定
+	SetPos(POS);
 }
 //=============================================================================
 // 描画処理関数
