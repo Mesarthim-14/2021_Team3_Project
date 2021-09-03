@@ -44,6 +44,7 @@ CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 	m_apModelAnime.clear();
 	m_bLanding = false;
 	m_State = STATE_NORMAL;
+	m_bUseShadow = false;
 }
 
 //=============================================================================
@@ -152,12 +153,15 @@ void CCharacter::Draw()
 		}
 	}
 
-	// ‰e‚Ì•`‰æ
-	for (auto &shadow : m_apModelAnime)
+	if (m_bUseShadow)
 	{
-		if (shadow != nullptr)
+		// ‰e‚Ì•`‰æ
+		for (auto &shadow : m_apModelAnime)
 		{
-			shadow->ShadowDraw(m_rot);
+			if (shadow != nullptr)
+			{
+				shadow->ShadowDraw(m_rot);
+			}
 		}
 	}
 }
@@ -243,7 +247,7 @@ void CCharacter::Gravity(void)
 	m_move.y -= GRAVITY_POWAR;
 	m_pos.y += m_move.y;		// —Ž‰º
 
-	// ’n–Ê‚Ì”»’è
+								// ’n–Ê‚Ì”»’è
 	if (m_pos.y <= GROUND_RIMIT)
 	{
 		Landing(GROUND_RIMIT);
@@ -275,5 +279,20 @@ void CCharacter::SetMotion(int nMotionState)
 	{
 		// ƒ‚[ƒVƒ‡ƒ“‚ÌXV
 		m_pMotion->SetMotion(nMotionState, m_nParts, m_apModelAnime);
+	}
+}
+
+//=============================================================================
+// ‰e‚Ì‰ñ“]‚ð”½‰f‚³‚¹‚é‚©
+//=============================================================================
+void CCharacter::SetShadowRotCalculation(void)
+{
+	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+	for (auto &model : m_apModelAnime)
+	{
+		if (model != nullptr)
+		{
+			model->SetRotCalculation(true);
+		}
 	}
 }

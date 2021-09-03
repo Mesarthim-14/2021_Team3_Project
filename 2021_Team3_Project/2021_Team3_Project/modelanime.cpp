@@ -29,6 +29,7 @@ CModelAnime::CModelAnime()
 	ZeroMemory(m_OldMtxWorld, sizeof(m_OldMtxWorld));
 	ZeroMemory(m_mtxWorld, sizeof(m_mtxWorld));
 	m_pShadow = nullptr;
+	m_bRotCalculation = false;
 }
 
 //=============================================================================
@@ -101,9 +102,8 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DXMATRIX mtxRot, mtxTrans, mtxParent;
 	D3DMATERIAL9 matDef;						//現在のマテリアル保持用
 	D3DXMATERIAL*pMat;							//マテリアルデータへのポインタ
-	D3DXMATRIX mtxWorld;							// ワールドマトリックス
 
-	// 剣の軌跡の古いデータ
+												// 剣の軌跡の古いデータ
 	m_OldMtxWorld1[4] = m_OldMtxWorld1[3];
 	m_OldMtxWorld1[3] = m_OldMtxWorld1[2];
 	m_OldMtxWorld1[2] = m_OldMtxWorld1[1];
@@ -113,7 +113,6 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
-	D3DXMatrixIdentity(&mtxWorld);
 
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
@@ -123,14 +122,6 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	//向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, 0.0f, 0.0f, 0.0f);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
-
-	//位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
-	
 	//親が存在する場合
 	if (m_pParent != nullptr)
 	{
@@ -146,7 +137,6 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 
 	//親のマトリクスと掛け合わせる
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxParent);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxParent);
 
 	//ワールドマトリクスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
@@ -186,10 +176,19 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	//保持していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
 
+	// ワールドマトリックス
 	if (m_pShadow)
 	{
-		// 影の生成
-		m_pShadow->CreateShadow(m_rot, rot, mtxWorld);
+		if (m_bRotCalculation)
+		{
+			// 影の生成
+			m_pShadow->CreateShadow(m_rot, rot, SetShadowInfo(rot, mtxParent));
+		}
+		else
+		{
+			// 影の生成
+			m_pShadow->CreateShadow(m_rot + rot, m_mtxWorld);
+		}
 	}
 }
 
@@ -203,6 +202,28 @@ void CModelAnime::ShadowDraw(D3DXVECTOR3 rot)
 		// 影の描画処理
 		m_pShadow->VolumeDraw();
 	}
+}
+
+//=============================================================================
+// 影の情報の設定
+//=============================================================================
+D3DXMATRIX CModelAnime::SetShadowInfo(D3DXVECTOR3 rot, D3DXMATRIX pParent)
+{
+	D3DXMATRIX mtxRot, mtxTrans;
+	D3DXMATRIX mtxWorld;                            // ワールドマトリックス
+	D3DXMatrixIdentity(&mtxWorld);
+
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+
+	//位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
+
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &pParent);
+
+	return mtxWorld;
 }
 
 //=============================================================================

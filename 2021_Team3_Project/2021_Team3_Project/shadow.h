@@ -32,6 +32,7 @@ public:
 	void Uninit(void);																	// I—¹ˆ—
 	void VolumeDraw(void);																// ‰e•`‰æˆ—
 	void CreateShadow(D3DXVECTOR3 rot, D3DXVECTOR3 ShipRot, D3DXMATRIX ModelMtxWorld);	// ‰e‚Ì¶¬
+	void CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld);						// ‰e‚Ì¶¬
 	static void Draw(void);																// •`‰æˆ—
 	static void PolygonRelese(void);													// ƒ|ƒŠƒSƒ“‚ÌƒŠƒŠ[ƒX
 

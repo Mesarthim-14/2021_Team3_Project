@@ -155,6 +155,13 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 	// ライフ生成
 	CPlayer_Life::Create(LIFE_POS, ZeroVector3);
+
+	// 影の使用
+	SetUseShadow();
+
+	// 影の回転を反映させる
+	SetShadowRotCalculation();
+
 	return S_OK;
 }
 

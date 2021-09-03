@@ -74,7 +74,7 @@ HRESULT CShadow::Init(LPD3DXMESH pSrcMesh)
 		// インスタンス生成
 		m_pPolygon = CPolygon::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f),
 			D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
-	
+
 		// 色の設定
 		m_pPolygon->SetColor(D3DCOLOR_RGBA(0, 0, 0, 0x7f));
 	}
@@ -149,6 +149,21 @@ void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXVECTOR3 ShipRot, D3DXMATRIX Mode
 	if (m_pShadowVolume)
 	{
 		m_pShadowVolume->CreateShadow(rot, ShipRot);
+	}
+
+	// ワールド座標を受け取る
+	m_ModelMtxWorld = ModelMtxWorld;
+}
+
+//=============================================================================
+// 影の生成処理
+//=============================================================================
+void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
+{
+	// 影の生成
+	if (m_pShadowVolume)
+	{
+		m_pShadowVolume->CreateShadow(rot);
 	}
 
 	// ワールド座標を受け取る
