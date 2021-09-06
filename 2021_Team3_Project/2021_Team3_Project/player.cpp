@@ -26,6 +26,8 @@
 #include "player_bullet.h"
 #include "map.h"
 #include "player_life.h"
+#include "effect.h"
+
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
@@ -69,6 +71,43 @@
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
 #define LIFE_POS				(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
+
+//エフェクトの各数値
+//爆発
+#define EXPLOSION_POS		(D3DXVECTOR3(500, 500, 1))				
+#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))			
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
+#define EXPLOSION_LIFE		(70)									
+
+//煙
+#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))					
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))	
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))			
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))		
+#define SMOKE_LIFE			(500)									
+
+//水しぶき
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))					
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))		
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))		
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
+#define SPLASH_LIFE			(200)									
+
+//木材
+#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))					
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))	
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))		
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
+#define WOOD_LIFE			(500)									
+
+//波
+#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))
+#define WAVE_SIZE			(D3DXVECTOR3(50, 50, 50))				
+#define WAVE_MOVE			(D3DXVECTOR3(8.0, 8.0, 8.0))			
+#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
+#define WAVE_LIFE			(70)									
+
+
 //=============================================================================
 // 生成処理関数
 // Author : Sugawara Tsukasa
@@ -102,7 +141,8 @@ CPlayer::CPlayer(PRIORITY Priority)
 	m_bMove				= false;
 	m_nAttackCount_R	= ZERO_INT;
 	m_nAttackCount_L	= ZERO_INT;
-	m_PadType			= PAD_TYPE_1P;
+	m_PadType			= PAD_TYPE_1P; 
+	m_pEffect = nullptr;
 }
 
 //=============================================================================
@@ -900,8 +940,13 @@ void CPlayer::KeyboardMove(void)
 		// 目的の向き
 		m_rotDest.y = rot.y;
 
+		//エフェクト
+		CreateWave();
+
 		// falseに
 		m_bBack = false;
+
+	
 	}
 	// falseの場合
 	if (m_bBack == false)
@@ -945,8 +990,13 @@ void CPlayer::KeyboardMove(void)
 		// 目的の向き
 		m_rotDest.y = rot.y;
 
+		//エフェクト
+		CreateWave();
+
 		// falseに
 		m_bBack = false;
+
+	
 	}
 	// falseの場合
 	if (m_bBack == false)
@@ -995,6 +1045,17 @@ void CPlayer::KeyboardMove(void)
 			pos.z += cosf(rot.y)*fSpeed;
 		}
 	}
+
+	if (pKeyboard->GetPress(DIK_P))
+	{
+		//パーティクル生成
+		CreateSmoke();
+		CreateWoodEP();
+		CreateSplash();
+		CreateExplosion();
+	
+	}
+
 	// 角度が最大になった場合
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
@@ -1331,5 +1392,84 @@ void CPlayer::RayCollision(void)
 		SetPos(pos);
 
 		return;
+	}
+}
+//=======================================================================================
+// 煙生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateSmoke(void)
+{
+	if (m_pEffect == nullptr)
+	{
+		{
+			CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE,
+				ZeroVector3, SMOKE_COLOR,
+				CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
+		}
+	}
+}
+
+//=======================================================================================
+// 木材爆破生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateWoodEP(void)
+{
+	if (m_pEffect == nullptr)
+	{
+		{
+			CEffect::Create(WOOD_POS,
+				WOOD_SIZE, WOOD_MOVE,
+				ZeroVector3, WOOD_COLOR,
+				CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
+		}
+	}
+}
+
+//=======================================================================================
+// 水しぶき生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateSplash(void)
+{
+	if (m_pEffect == nullptr)
+	{
+		{
+			CEffect::Create(SPLASH_POS,
+				WOOD_SIZE, SPLASH_MOVE,
+				ZeroVector3, SPLASH_COLOR,
+				CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+		}
+	}
+}
+//=======================================================================================
+// 爆発生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateExplosion(void)
+{
+	if (m_pEffect == nullptr)
+	{
+		// パーティクル生成
+		CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3,
+			ZeroVector3, EXPLOSION_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+	}
+}
+
+//=======================================================================================
+// 波生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateWave(void)
+{
+	if (m_pEffect == nullptr)
+	{
+		// パーティクル生成
+		CEffect::Create(WAVE_POS,
+			WAVE_SIZE, WAVE_MOVE,
+			GetRot(), WAVE_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
 	}
 }

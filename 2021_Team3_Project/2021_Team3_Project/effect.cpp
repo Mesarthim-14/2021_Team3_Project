@@ -16,6 +16,7 @@
 
 //=============================================================================
 //マクロ定義
+//=============================================================================
 #define ANGLE_RADIAN					(D3DXToRadian((float)(rand() % 360)))	//ラジアンの角度
 #define PARTICLE_TEXTURE_SOMKE			("data/Texture/Smoke.png")				//パーティクルのテクスチャ
 #define PARTICLE_TEXTURE_EXPLOSION		("data/Texture/Explosion_Animation.png")//パーティクルのテクスチャ

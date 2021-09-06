@@ -12,6 +12,7 @@
 //=============================================================================
 #include "character.h"
 #include "modelanime.h"
+#include "effect.h"
 
 //=============================================================================
 //　モーション状態の列挙型
@@ -82,6 +83,13 @@ public:
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
 	void RayCollision(void);									// レイの当たり判定
+
+	void CreateSmoke(void);			//煙生成関数
+	void CreateWoodEP(void);			//木材生成関数
+	void CreateSplash(void);			//水しぶき生成関数
+	void CreateExplosion(void);		//爆発生成関数
+	void CreateWave(void);			//波生成関数
+
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	bool m_bMove;									// 歩いているフラグ
@@ -89,5 +97,6 @@ private:
 	int m_nAttackCount_L;							// 左攻撃カウント
 	PAD_TYPE m_PadType;								// パッドタイプ
 	bool m_bBack;									// 後ろに移動しているか
+	CEffect *m_pEffect;								//エフェクトのポインタ
 };
 #endif
