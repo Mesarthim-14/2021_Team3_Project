@@ -2,56 +2,57 @@
 #define _PLAYER_H_
 //=============================================================================
 //
-// �v���C���[�N���X�w�b�_�[ [player.h]
+// プレイヤークラスヘッダー [player.h]
 // Author : Sugawara Tsukasa
 //
 //=============================================================================
 
 //=============================================================================
-// �C���N���[�h
+// インクルード
 //=============================================================================
 #include "character.h"
 #include "modelanime.h"
+#include "effect.h"
 
 //=============================================================================
-//�@���[�V������Ԃ̗񋓌^
+//　モーション状態の列挙型
 //=============================================================================
 enum PARTS_NUM
 {
 	PARTS_NUM_NONE = -1,
-	PARTS_NUM_WAIST,			// [0]��
-	PARTS_NUM_MAX				// ���[�V�����ő吔
+	PARTS_NUM_WAIST,			// [0]腰
+	PARTS_NUM_MAX				// モーション最大数
 };
 
 //=============================================================================
-// �v���C���[�N���X
+// プレイヤークラス
 //=============================================================================
 class CPlayer : public CCharacter
 {
 public:
 	//=============================================================================
-	//�@��Ԃ̗񋓌^
+	//　状態の列挙型
 	//=============================================================================
 	enum PLAYER_STATE
 	{
-		PLAYER_STATE_NONE = 0,		// �����u
-		PLAYER_STATE_NORMAL,		// �ʏ���
-		PLAYER_STATE_DEAD,			// ���S���
-		PLAYER_STATE_MAX			// �ő吔
+		PLAYER_STATE_NONE = 0,		// 初期置
+		PLAYER_STATE_NORMAL,		// 通常状態
+		PLAYER_STATE_DEAD,			// 死亡状態
+		PLAYER_STATE_MAX			// 最大数
 	};
 
 	//=============================================================================
-	//�@���[�V������Ԃ̗񋓌^
+	//　モーション状態の列挙型
 	//=============================================================================
 	enum MOTION_STATE
 	{
 		MOTION_NONE = -1,
-		MOTION_IDOL,				// �A�C�h�����[�V����
-		MOTION_MAX					// ���[�V�����ő吔
+		MOTION_IDOL,				// アイドルモーション
+		MOTION_MAX					// モーション最大数
 	};
 
 	//=============================================================================
-	//�@�p�b�h�̎�ނ̗񋓌^
+	//　パッドの種類の列挙型
 	//=============================================================================
 	enum PAD_TYPE
 	{
@@ -60,39 +61,48 @@ public:
 		PAD_TYPE_MAX
 	};
 
-	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// �R���X�g���N�^
-	~CPlayer();													// �f�X�g���N�^
+	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// コンストラクタ
+	~CPlayer();													// デストラクタ
 
-	static CPlayer*Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// �N���G�C�g
+	static CPlayer*Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// クリエイト
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// ����������
-	void Uninit(void);											// �I������
-	void Update(void);											// �X�V����
-	void Draw(void);											// �`�揈��
-	void UpdateState(void);										// �v���C���[�̏��
-	void PlayerControl(void);									// �v���C���[�̐���
-	void UpdateRot(void);										// �p�x�̍X�V����
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// 初期化処理
+	void Uninit(void);											// 終了処理
+	void Update(void);											// 更新処理
+	void Draw(void);											// 描画処理
+	void UpdateState(void);										// プレイヤーの状態
+	void PlayerControl(void);									// プレイヤーの制御
+	void UpdateRot(void);										// 角度の更新処理
 
-	void Death(void);											// ���S�֐�
-	void Move(void);											// �ړ�����
-	void Pad2Move(void);										// 2�R���g���[���[�̈ړ�
-	void Attack(void);											// �U���̊֐�
-	void Pad2Attack(void);										// 2�R���g���[���[�̍U��
-	void KeyboardMove(void);									// �L�[�{�[�h�ړ�
-	void Collision(void);										// �����蔻��
-	void CrossCollision(void);									// �O�ϓ����蔻��
-	void RayCollision(void);									// ���C�̓����蔻��
-	void Knock_Back(void);										// �m�b�N�o�b�N����
+	void Death(void);											// 死亡関数
+	void Move(void);											// 移動処理
+	void Pad2Move(void);										// 2コントローラーの移動
+	void Attack(void);											// 攻撃の関数
+	void Pad2Attack(void);										// 2コントローラーの攻撃
+	void KeyboardMove(void);									// キーボード移動
+	void Collision(void);										// 当たり判定
+	void CrossCollision(void);									// 外積当たり判定
+	void RayCollision(void);									// レイの当たり判定
+
+	void CreateSmoke(void);			//煙生成関数
+	void CreateWoodEP(void);			//木材生成関数
+	void CreateSplash(void);			//水しぶき生成関数
+	void CreateExplosion(void);		//爆発生成関数
+	void CreateWave(void);			//波生成関数
+
+	void Knock_Back(void);										// ノックバック処理
+  
 private:
-	D3DXVECTOR3 m_rotDest;							// ��](�ڕW�l)
-	int m_nAttackCount_R;							// �E�U���J�E���g
-	int m_nAttackCount_L;							// ���U���J�E���g
-	int m_nRockHitCount;							// ��Ƀq�b�g�����J�E���g
-	PAD_TYPE m_PadType;								// �p�b�h�^�C�v
-	D3DXVECTOR3 m_Reflection_Vec;					// ���˃x�N�g��
-	float m_fRefrectionVec;							// ���˃x�N�g��
-	bool m_bBack;									// ���Ɉړ����Ă��邩
-	bool m_bMove;									// �����Ă���t���O
-	bool m_bKnock_Back;								// �m�b�N�o�b�N
+	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
+	int m_nAttackCount_R;							// 右攻撃カウント
+	int m_nAttackCount_L;							// 左攻撃カウント
+	int m_nRockHitCount;							// 岩にヒットしたカウント
+	PAD_TYPE m_PadType;								// パッドタイプ
+	D3DXVECTOR3 m_Reflection_Vec;					// 反射ベクトル
+	float m_fRefrectionVec;							// 反射ベクトル
+	bool m_bBack;									// 後ろに移動しているか
+	CEffect *m_pEffect;								//エフェクトのポインタ
+	bool m_bMove;									// 歩いているフラグ
+	bool m_bKnock_Back;								// ノックバック
 };
 #endif

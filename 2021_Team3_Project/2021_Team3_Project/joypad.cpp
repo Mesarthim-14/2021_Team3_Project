@@ -95,6 +95,7 @@ HRESULT CInputJoypad::Init(HINSTANCE hInstance, HWND hWnd)
 		}
 	}
 	return S_OK;
+
 }
 
 //=====================================================
