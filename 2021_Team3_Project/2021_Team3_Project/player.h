@@ -2,57 +2,57 @@
 #define _PLAYER_H_
 //=============================================================================
 //
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¯ãƒ©ã‚¹ãƒ˜ãƒƒãƒ€ãƒ¼ [player.h]
+// ƒvƒŒƒCƒ„[ƒNƒ‰ƒXƒwƒbƒ_[ [player.h]
 // Author : Sugawara Tsukasa
 //
 //=============================================================================
 
 //=============================================================================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+// ƒCƒ“ƒNƒ‹[ƒh
 //=============================================================================
 #include "character.h"
 #include "modelanime.h"
 #include "effect.h"
 
 //=============================================================================
-//ã€€ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³çŠ¶æ…‹ã®åˆ—æŒ™å‹
+//@ƒ‚[ƒVƒ‡ƒ“ó‘Ô‚Ì—ñ‹“Œ^
 //=============================================================================
 enum PARTS_NUM
 {
 	PARTS_NUM_NONE = -1,
-	PARTS_NUM_WAIST,			// [0]è…°
-	PARTS_NUM_MAX				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³æœ€å¤§æ•°
+	PARTS_NUM_WAIST,			// [0]˜
+	PARTS_NUM_MAX				// ƒ‚[ƒVƒ‡ƒ“Å‘å”
 };
 
 //=============================================================================
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¯ãƒ©ã‚¹
+// ƒvƒŒƒCƒ„[ƒNƒ‰ƒX
 //=============================================================================
 class CPlayer : public CCharacter
 {
 public:
 	//=============================================================================
-	//ã€€çŠ¶æ…‹ã®åˆ—æŒ™å‹
+	//@ó‘Ô‚Ì—ñ‹“Œ^
 	//=============================================================================
 	enum PLAYER_STATE
 	{
-		PLAYER_STATE_NONE = 0,		// åˆæœŸç½®
-		PLAYER_STATE_NORMAL,		// é€šå¸¸çŠ¶æ…‹
-		PLAYER_STATE_DEAD,			// æ­»äº¡çŠ¶æ…‹
-		PLAYER_STATE_MAX			// æœ€å¤§æ•°
+		PLAYER_STATE_NONE = 0,		// ‰Šú’u
+		PLAYER_STATE_NORMAL,		// ’Êíó‘Ô
+		PLAYER_STATE_DEAD,			// €–Só‘Ô
+		PLAYER_STATE_MAX			// Å‘å”
 	};
 
 	//=============================================================================
-	//ã€€ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³çŠ¶æ…‹ã®åˆ—æŒ™å‹
+	//@ƒ‚[ƒVƒ‡ƒ“ó‘Ô‚Ì—ñ‹“Œ^
 	//=============================================================================
 	enum MOTION_STATE
 	{
 		MOTION_NONE = -1,
-		MOTION_IDOL,				// ã‚¢ã‚¤ãƒ‰ãƒ«ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
-		MOTION_MAX					// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³æœ€å¤§æ•°
+		MOTION_IDOL,				// ƒAƒCƒhƒ‹ƒ‚[ƒVƒ‡ƒ“
+		MOTION_MAX					// ƒ‚[ƒVƒ‡ƒ“Å‘å”
 	};
 
 	//=============================================================================
-	//ã€€ãƒ‘ãƒƒãƒ‰ã®ç¨®é¡ã®åˆ—æŒ™å‹
+	//@ƒpƒbƒh‚Ìí—Ş‚Ì—ñ‹“Œ^
 	//=============================================================================
 	enum PAD_TYPE
 	{
@@ -61,48 +61,47 @@ public:
 		PAD_TYPE_MAX
 	};
 
-	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	~CPlayer();													// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	CPlayer(PRIORITY Priority = PRIORITY_CHARACTER);			// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	~CPlayer();													// ƒfƒXƒgƒ‰ƒNƒ^
 
-	static CPlayer*Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
+	static CPlayer*Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// ƒNƒŠƒGƒCƒg
 
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// åˆæœŸåŒ–å‡¦ç†
-	void Uninit(void);											// çµ‚äº†å‡¦ç†
-	void Update(void);											// æ›´æ–°å‡¦ç†
-	void Draw(void);											// æç”»å‡¦ç†
-	void UpdateState(void);										// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹
-	void PlayerControl(void);									// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆ¶å¾¡
-	void UpdateRot(void);										// è§’åº¦ã®æ›´æ–°å‡¦ç†
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// ‰Šú‰»ˆ—
+	void Uninit(void);											// I—¹ˆ—
+	void Update(void);											// XVˆ—
+	void Draw(void);											// •`‰æˆ—
+	void UpdateState(void);										// ƒvƒŒƒCƒ„[‚Ìó‘Ô
+	void PlayerControl(void);									// ƒvƒŒƒCƒ„[‚Ì§Œä
+	void UpdateRot(void);										// Šp“x‚ÌXVˆ—
 
-	void Death(void);											// æ­»äº¡é–¢æ•°
-	void Move(void);											// ç§»å‹•å‡¦ç†
-	void Pad2Move(void);										// 2ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ç§»å‹•
-	void Attack(void);											// æ”»æ’ƒã®é–¢æ•°
-	void Pad2Attack(void);										// 2ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æ”»æ’ƒ
-	void KeyboardMove(void);									// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ç§»å‹•
-	void Collision(void);										// å½“ãŸã‚Šåˆ¤å®š
-	void CrossCollision(void);									// å¤–ç©å½“ãŸã‚Šåˆ¤å®š
-	void RayCollision(void);									// ãƒ¬ã‚¤ã®å½“ãŸã‚Šåˆ¤å®š
+	void Death(void);											// €–SŠÖ”
+	void Move(void);											// ˆÚ“®ˆ—
+	void Pad2Move(void);										// 2ƒRƒ“ƒgƒ[ƒ‰[‚ÌˆÚ“®
+	void Attack(void);											// UŒ‚‚ÌŠÖ”
+	void Pad2Attack(void);										// 2ƒRƒ“ƒgƒ[ƒ‰[‚ÌUŒ‚
+	void KeyboardMove(void);									// ƒL[ƒ{[ƒhˆÚ“®
+	void Collision(void);										// “–‚½‚è”»’è
+	void CrossCollision(void);									// ŠOÏ“–‚½‚è”»’è
+	void RayCollision(void);									// ƒŒƒC‚Ì“–‚½‚è”»’è
 
-	void CreateSmoke(void);			//ç…™ç”Ÿæˆé–¢æ•°
-	void CreateWoodEP(void);			//æœ¨æç”Ÿæˆé–¢æ•°
-	void CreateSplash(void);			//æ°´ã—ã¶ãç”Ÿæˆé–¢æ•°
-	void CreateExplosion(void);		//çˆ†ç™ºç”Ÿæˆé–¢æ•°
-	void CreateWave(void);			//æ³¢ç”Ÿæˆé–¢æ•°
+	void CreateSmoke(void);										// ‰Œ¶¬ŠÖ”
+	void CreateWoodEP(void);									// –ØŞ¶¬ŠÖ”
+	void CreateSplash(void);									// …‚µ‚Ô‚«¶¬ŠÖ”
+	void CreateExplosion(void);									// ”š”­¶¬ŠÖ”
+	void CreateWave(void);										// ”g¶¬ŠÖ”
 
-	void Knock_Back(void);										// ãƒãƒƒã‚¯ãƒãƒƒã‚¯å‡¦ç†
-  
+	void Knock_Back(void);										// ƒmƒbƒNƒoƒbƒNˆ—
+
 private:
-	D3DXVECTOR3 m_rotDest;							// å›è»¢(ç›®æ¨™å€¤)
-	int m_nAttackCount_R;							// å³æ”»æ’ƒã‚«ã‚¦ãƒ³ãƒˆ
-	int m_nAttackCount_L;							// å·¦æ”»æ’ƒã‚«ã‚¦ãƒ³ãƒˆ
-	int m_nRockHitCount;							// å²©ã«ãƒ’ãƒƒãƒˆã—ãŸã‚«ã‚¦ãƒ³ãƒˆ
-	PAD_TYPE m_PadType;								// ãƒ‘ãƒƒãƒ‰ã‚¿ã‚¤ãƒ—
-	D3DXVECTOR3 m_Reflection_Vec;					// åå°„ãƒ™ã‚¯ãƒˆãƒ«
-	float m_fRefrectionVec;							// åå°„ãƒ™ã‚¯ãƒˆãƒ«
-	bool m_bBack;									// å¾Œã‚ã«ç§»å‹•ã—ã¦ã„ã‚‹ã‹
-	CEffect *m_pEffect;								//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
-	bool m_bMove;									// æ­©ã„ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°
-	bool m_bKnock_Back;								// ãƒãƒƒã‚¯ãƒãƒƒã‚¯
+	CEffect *m_pEffect;								// ƒGƒtƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
+	D3DXVECTOR3 m_rotDest;							// ‰ñ“](–Ú•W’l)
+	int m_nAttackCount_R;							// ‰EUŒ‚ƒJƒEƒ“ƒg
+	int m_nAttackCount_L;							// ¶UŒ‚ƒJƒEƒ“ƒg
+	int m_nRockHitCount;							// Šâ‚Éƒqƒbƒg‚µ‚½ƒJƒEƒ“ƒg
+	PAD_TYPE m_PadType;								// ƒpƒbƒhƒ^ƒCƒv
+	D3DXVECTOR3 m_Reflection_Vec;					// ”½ËƒxƒNƒgƒ‹
+	bool m_bBack;									// Œã‚ë‚ÉˆÚ“®‚µ‚Ä‚¢‚é‚©
+	bool m_bMove;									// •à‚¢‚Ä‚¢‚éƒtƒ‰ƒO
+	bool m_bKnock_Back;								// ƒmƒbƒNƒoƒbƒN
 };
 #endif
