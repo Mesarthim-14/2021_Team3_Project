@@ -57,12 +57,17 @@
 #define LIFE					(100)									// ライフ
 #define ANGLE_MAX				(D3DXToRadian(360.0f))					// 角度の最大
 #define ANGLE_MIN				(D3DXToRadian(-360.0f))					// 角度の最小
-#define ANGLE_0					(D3DXToRadian(0.0f))					// 角度45
-#define ANGLE_270				(D3DXToRadian(270.0f))					// 角度135
+#define ANGLE_0					(D3DXToRadian(0.0f))					// 角度0
+#define ANGLE_90				(D3DXToRadian(90.0f))					// 角度90
+#define ANGLE_180				(D3DXToRadian(180.0f))					// 角度180
+#define ANGLE_270				(D3DXToRadian(270.0f))					// 角度270
 #define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// デフォルトの角度
 #define DEAD_ZONE				(0.0f)									// コントローラーの反応しない範囲
 #define PAD_P1					(0)										// パッドプレイヤー1
 #define PAD_P2					(1)										// パッドプレイヤー2
+#define KNOCK_BACK_SPEED		(100.0f)								// ノックバックの速さ
+#define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
+#define ARCDIR						(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -85,7 +90,7 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		pPlayer->Init(pos, rot);
 
 		// 箱生成
-		CCharacter_Box::Create(pos, rot, pPlayer);
+		//CCharacter_Box::Create(pos, rot, pPlayer);
 	}
 
 	// ポインタを返す
@@ -99,10 +104,15 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 CPlayer::CPlayer(PRIORITY Priority)
 {
 	m_rotDest			= ZeroVector3;
-	m_bMove				= false;
 	m_nAttackCount_R	= ZERO_INT;
 	m_nAttackCount_L	= ZERO_INT;
+	m_nRockHitCount		= ZERO_INT;
 	m_PadType			= PAD_TYPE_1P;
+	m_Reflection_Vec	= ZeroVector3;
+	m_fRefrectionVec	= ZERO_FLOAT;
+	m_bMove				= false;
+	m_bBack				= false;
+	m_bKnock_Back		= false;
 }
 
 //=============================================================================
@@ -239,27 +249,36 @@ void CPlayer::UpdateState(void)
 //=============================================================================
 void CPlayer::PlayerControl()
 {
-	// 1Pの場合
-	if (m_PadType == PAD_TYPE_1P)
+	// falseの場合
+	if (m_bKnock_Back == false)
 	{
-		// プレイヤーの移動処理
-		Move();
+		// 1Pの場合
+		if (m_PadType == PAD_TYPE_1P)
+		{
+			// プレイヤーの移動処理
+			Move();
 
-		// 攻撃処理
-		Attack();
+			// 攻撃処理
+			Attack();
+		}
+		// 1Pの場合
+		if (m_PadType == PAD_TYPE_2P)
+		{
+			// プレイヤーの移動処理
+			Pad2Move();
+
+			// 攻撃処理
+			Pad2Attack();
+		}
+		// キーボード移動
+		KeyboardMove();
 	}
-	// 1Pの場合
-	if (m_PadType == PAD_TYPE_2P)
+	// trueの場合
+	if (m_bKnock_Back == true)
 	{
-		// プレイヤーの移動処理
-		Pad2Move();
-
-		// 攻撃処理
-		Pad2Attack();
+		// ノックバック処理
+		Knock_Back();
 	}
-
-	// キーボード移動
-	KeyboardMove();
 
 	// 当たり判定
 	Collision();
@@ -1200,42 +1219,31 @@ void CPlayer::Collision(void)
 				// サイズ取得
 				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
 
-				//どこの面に当たったか取得
-				// 左
-				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_LEFT)
+				// 矩形の当たり判定
+				if (CCollision::CollisionRectangleAndRectangle(ObstaclePos, pos, ObstacleSize, size) == true)
 				{
-					// 位置
-					pos.x = (-ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) - (size.x / DIVIDE_2);
+					// ベクトル
+					D3DXVECTOR3 Vec = ZeroVector3;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 右
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_RIGHT)
-				{
-					// 位置
-					pos.x = (ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) + (size.x / DIVIDE_2);
+					// 法線ベクトル
+					D3DXVECTOR3 NormalVec = ZeroVector3;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 手前
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_PREVIOUS)
-				{
-					// 位置
-					pos.z = (-ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) - (size.z / DIVIDE_2);
+					// 進行ベクトル
+					Vec.x = ObstaclePos.x - pos.x;
+					Vec.z = ObstaclePos.z - pos.z;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 奥
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_BACK)
-				{
-					// 位置
-					pos.z = (ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) + (size.z / DIVIDE_2);
+					// 長さ算出
+					float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
-					// 位置設定
-					SetPos(pos);
+					// 法線ベクトルに
+					NormalVec.x = Vec.x / fVec_Length;
+					NormalVec.z = Vec.z / fVec_Length;
+
+					// 反射ベクトル算出
+					D3DXVec3Normalize(&m_Reflection_Vec, &(Vec - 2.0f * D3DXVec3Dot(&Vec, &NormalVec) * NormalVec));
+
+					// trueに
+					m_bKnock_Back = true;
 				}
 				// 次のポインタ取得
 				pScene = pSceneCur;
@@ -1301,7 +1309,7 @@ void CPlayer::CrossCollision(void)
 	}
 }
 //=============================================================================
-// レイ外積の当たり判定処理
+// レイの当たり判定処理
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::RayCollision(void)
@@ -1331,5 +1339,40 @@ void CPlayer::RayCollision(void)
 		SetPos(pos);
 
 		return;
+	}
+}
+//=============================================================================
+// ノックバック処理関数
+// Author : SugawaraTsukasa
+//=============================================================================
+void CPlayer::Knock_Back(void)
+{
+	// カウントインクリメント
+	m_nRockHitCount++;
+
+	// 移動量取得
+	D3DXVECTOR3 move = GetMove();
+
+	// 0の場合
+	if (m_nRockHitCount <= KNOCK_BACK_COUNT)
+	{
+		// 移動量
+		move.x = m_Reflection_Vec.x *KNOCK_BACK_SPEED;
+		move.z = m_Reflection_Vec.z *KNOCK_BACK_SPEED;
+
+		// 移動量設定
+		SetMove(move);
+	}
+	// 10より大きい場合
+	if (m_nRockHitCount > KNOCK_BACK_COUNT)
+	{
+		// 移動量設定
+		SetMove(ZeroVector3);
+
+		// 0に戻す
+		m_nRockHitCount = ZERO_INT;
+
+		// falseに
+		m_bKnock_Back = false;
 	}
 }

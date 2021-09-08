@@ -55,7 +55,7 @@ CPlayer_Bullet * CPlayer_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pPlayer_Bullet->Init(pos, rot);
 
 			// î†ê∂ê¨
-			CModel_Box::Create(pos, rot, pPlayer_Bullet);
+			//CModel_Box::Create(pos, rot, pPlayer_Bullet);
 		}
 	}
 	// É|ÉCÉìÉ^Çï‘Ç∑

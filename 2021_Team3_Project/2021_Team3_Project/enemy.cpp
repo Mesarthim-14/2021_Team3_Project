@@ -201,15 +201,12 @@ void CEnemy::FanDecision(void)
 			fRot = Rot.y + ANGLE_90;
 		}
 
-		// 向き
-		D3DXVECTOR3 FanDir = FAN_DIR;
-
 		// 回転
 		D3DXVECTOR3 Rotate_ArcDir = ZeroVector3;
 
 		// ベクトルを回転させる
-		Rotate_ArcDir.x = FanDir.x * cosf(fRot) + FanDir.z * -sinf(fRot);
-		Rotate_ArcDir.z = FanDir.x * sinf(fRot) + FanDir.z * cosf(fRot);
+		Rotate_ArcDir.x = FAN_DIR.x * cosf(fRot) + FAN_DIR.z * -sinf(fRot);
+		Rotate_ArcDir.z = FAN_DIR.x * sinf(fRot) + FAN_DIR.z * cosf(fRot);
 
 		// 単位ベクトル
 		D3DXVECTOR3 Normal_Vec = ZeroVector3;
@@ -284,10 +281,6 @@ void CEnemy::CircleDecision(void)
 //=============================================================================
 void CEnemy::Death(void)
 {
-	// 終了処理
-	Uninit();
-
-	return;
 }
 
 //=============================================================================

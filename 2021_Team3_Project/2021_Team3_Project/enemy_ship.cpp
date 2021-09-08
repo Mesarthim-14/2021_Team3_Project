@@ -70,7 +70,7 @@ CEnemy_Ship * CEnemy_Ship::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pEnemy_Ship->Init(pos, rot);
 
 			// ボックス生成
-			CCharacter_Box::Create(pos, rot, pEnemy_Ship);
+			//CCharacter_Box::Create(pos, rot, pEnemy_Ship);
 		}
 	}
 	// ポインタを返す
@@ -126,6 +126,9 @@ void CEnemy_Ship::Update(void)
 	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
 
+	// 状態取得
+	int nState = GetState();
+
 	// 古い座標保存
 	SetPosOld(pos);	
 
@@ -142,18 +145,17 @@ void CEnemy_Ship::Update(void)
 		Move();
 	}
 
-	// レイの当たり判定
-	RayCollision();
-
-	// 状態取得
-	int nState = GetState();
-
 	// 死亡状態
 	if (nState == STATE_DEAD)
 	{
-		// 死亡
-		Death();
+		// 終了
+		Uninit();
+
+		return;
 	}
+
+	// レイの当たり判定
+	RayCollision();
 }
 //=============================================================================
 // 描画関数
@@ -284,21 +286,29 @@ void CEnemy_Ship::RayCollision(void)
 	// マップのポインタ取得
 	CMap *pMap = GET_MAP_PTR;
 
-	// レイの情報
-	CCollision::RAY_INFO Ray_Info;
-
-	// レイの当たり判定
-	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
-
-	// trueの場合
-	if (Ray_Info.bHit == true)
+	// !nullcheck
+	if (pShip != nullptr)
 	{
-		// 戻す
-		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
+		// !nullcheck
+		if (pMap != nullptr)
+		{
+			// レイの情報
+			CCollision::RAY_INFO Ray_Info;
 
-		// 位置設定
-		SetPos(pos);
+			// レイの当たり判定
+			Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
 
-		return;
+			// trueの場合
+			if (Ray_Info.bHit == true)
+			{
+				// 戻す
+				pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
+
+				// 位置設定
+				SetPos(pos);
+
+				return;
+			}
+		}
 	}
 }

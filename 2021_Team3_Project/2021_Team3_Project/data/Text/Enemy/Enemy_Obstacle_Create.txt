@@ -20,10 +20,11 @@ ENEMY_SET
 # “G˜E [1]
 #==========================================
 PARAMETER_SET
-	TYPE = 2 				# Ží—Þ 
+	TYPE = 4  				# Ží—Þ 
 	POS = 8291.1 0.0 -15463.0	# ˆÊ’u
 	ROT = 0.0 180.0 0.0  	# Œü‚« (Šp“x‚Å“ü—Í)
 END_PARAMETER_SET
+
 END_ENEMY_SET
 
 END_SCRIPT

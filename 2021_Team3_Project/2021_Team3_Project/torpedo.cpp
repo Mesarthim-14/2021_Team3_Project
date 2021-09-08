@@ -72,7 +72,7 @@ CTorpedo * CTorpedo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pTorpedo->Init(pos, rot);
 
 			// 箱生成
-			CModel_Box::Create(pos, rot, pTorpedo);
+			//CModel_Box::Create(pos, rot, pTorpedo);
 		}
 	}
 	// ポインタを返す
@@ -161,11 +161,11 @@ void CTorpedo::Update(void)
 		Move();
 	}
 
+	// 当たり判定
+	Collision();
+
 	// レイの当たり判定
 	RayCollision();
-
-	// 当たり判定
-	//Collision();
 }
 //=============================================================================
 // 描画処理関数
