@@ -21,7 +21,9 @@ bool CCollision::CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 po
 	if (pos2.x - (size2.x / 2) < pos1.x + (size1.x / 2) &&
 		pos2.x + (size2.x / 2) > pos1.x - (size1.x / 2) &&
 		pos2.y - (size2.y / 2) < pos1.y + (size1.y / 2) &&
-		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
+		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2)	&&
+		pos2.z - (size2.z / 2) < pos1.z + (size1.z / 2) &&
+		pos2.z + (size2.z / 2) > pos1.z - (size1.z / 2))
 	{
 		bCollision = true;
 	}

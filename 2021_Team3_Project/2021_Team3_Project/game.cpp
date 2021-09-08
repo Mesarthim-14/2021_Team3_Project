@@ -158,7 +158,7 @@ void CGame::Uninit(void)
 //=======================================================================================
 void CGame::Update(void)
 {
-	DrawPlayerPos();
+	//DrawPlayerPos();
 
 	if (m_pCamera != nullptr)
 	{

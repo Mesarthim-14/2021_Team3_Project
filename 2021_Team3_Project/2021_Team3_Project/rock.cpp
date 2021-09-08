@@ -58,7 +58,7 @@ CRock * CRock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pRock->Init(pos, rot);
 
 			// î†ê∂ê¨
-			CModel_Box::Create(pos, rot, pRock);
+			//CModel_Box::Create(pos, rot, pRock);
 		}
 	}
 	// É|ÉCÉìÉ^Çï‘Ç∑

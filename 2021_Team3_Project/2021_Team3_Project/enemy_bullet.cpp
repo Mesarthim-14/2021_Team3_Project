@@ -70,7 +70,7 @@ CEnemy_Bullet * CEnemy_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pEnemy_Bullet->Init(pos, rot);
 
 			// 箱生成
-			CModel_Box::Create(pos, rot, pEnemy_Bullet);
+			//CModel_Box::Create(pos, rot, pEnemy_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -93,6 +93,7 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	{
 		// 位置座標取得
 		m_PlayerPos = pPlayer->GetPos();
+
 		// 攻撃地点生成
 		AttackPoint_Crate();
 	}
