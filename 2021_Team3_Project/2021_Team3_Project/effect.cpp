@@ -41,7 +41,7 @@ LPDIRECT3DTEXTURE9	CEffect::m_apTexture[EFFECT_TEXTURE_MAX] = {};
 //=============================================================================
 //コンストラクタ
 //=============================================================================
-CEffect::CEffect()
+CEffect::CEffect(PRIORITY Prioity) : CBillboard(Prioity)
 {
 	m_bLoop = false;//アニメーションループ
 }
@@ -399,6 +399,8 @@ void CEffect::Update(void)
 	if (GetPos().y < 0)
 	{
 		Uninit();
+
+		return;
 	}
 	SetColor(D3DXCOLOR(GetColor().r, GetColor().g, GetColor().b, GetColor().a -= ALPHA_VALUE_DECREASE));
 	CBillboard::Update();
