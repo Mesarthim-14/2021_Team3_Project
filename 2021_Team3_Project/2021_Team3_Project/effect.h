@@ -46,7 +46,7 @@ public:
 		EFFECT_TEXTURE_MAX
 	};
 
-	CEffect(PRIORITY = PRIORITY_EFFECT);		//コンストラクタ
+	CEffect();		//コンストラクタ
 	~CEffect();		//デストラクタ
 
 	//クリエイト関数

@@ -162,6 +162,9 @@
     <ClCompile Include="character.cpp">
       <Filter>04_Character</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>04_Character\Player</Filter>
+    </ClCompile>
     <ClCompile Include="billboard.cpp">
       <Filter>05_Scene</Filter>
     </ClCompile>
@@ -273,9 +276,6 @@
     <ClCompile Include="boss_shark.cpp">
       <Filter>04_Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>04_Character\Player</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -337,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="character.h">
       <Filter>04_Character</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>04_Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="billboard.h">
       <Filter>05_Scene</Filter>
@@ -448,9 +451,6 @@
     </ClInclude>
     <ClInclude Include="boss_shark.h">
       <Filter>04_Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>04_Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
