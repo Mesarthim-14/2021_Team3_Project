@@ -11,6 +11,7 @@
 #include "character.h"
 #include "collision.h"
 #include "bullet.h"
+#include "effect.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
@@ -18,6 +19,13 @@
 #define GRAVITY		(0.1f)								// 重力
 #define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
 #define POS_Y_MIN	(0.0f)								// Y座標最小値
+//水しぶき
+#define SPLASH_POS			(D3DXVECTOR3(GetPos().x, 1,GetPos().z))					
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))		
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))		
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
+#define SPLASH_LIFE			(1000)									
+#define SPLASH_MAX			(10)
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -120,6 +128,9 @@ void CBullet::Update(void)
 	// yが0以下の場合
 	if (pos.y <= POS_Y_MIN)
 	{
+		//水しぶき
+		CreateSplash();
+
 		// 死亡状態に
 		SetState(STATE_DEAD);
 	}
@@ -137,6 +148,19 @@ void CBullet::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
+}
+//=======================================================================================
+// 水しぶき生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CBullet::CreateSplash(void)
+{
+	for (int nCntEffcet = 0; nCntEffcet < SPLASH_MAX; nCntEffcet++)
+	{
+		// パーティクル生成
+		CEffect::Create(SPLASH_POS, SPLASH_SIZE, SPLASH_MOVE, SPLASH_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+	}
 }
 //=============================================================================
 // 死亡処理関数

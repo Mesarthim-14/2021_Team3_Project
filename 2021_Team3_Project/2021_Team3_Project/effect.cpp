@@ -25,7 +25,7 @@
 #define ALPHA_VALUE_DECREASE			(0.001f)								//アルファ値の減少値
 #define MAX_GRAVITY_COUNTER_EXPLOSION	(30000)									//爆発の高さの最大値
 #define MAX_GRAVITY_COUNTER_SPLASH		(10000)									//水しぶきの高さの最大値
-#define MAX_GRAVITY_COUNTER_WAVE		(300)									//波の高さの最大値
+#define MAX_GRAVITY_COUNTER_WAVE		(350)									//波の高さの最大値
 #define PARTICLE_Fall_WAVE				(0.5f)									//降下倍率
 #define MAX_TEXTURE_SIZE				(5.0f)									//テクスチャサイズの倍率最大値
 #define MIN_TEXTURE_SIZE				(0.5f)									//テクスチャサイズの倍率最小値
@@ -35,7 +35,7 @@
 
 //=============================================================================
 //静的メンバ変数宣言
-//=============================================================================
+//===================================w==========================================
 LPDIRECT3DTEXTURE9	CEffect::m_apTexture[EFFECT_TEXTURE_MAX] = {};
 
 //=============================================================================
@@ -57,7 +57,7 @@ CEffect::~CEffect()
 //=============================================================================
 //クリエイト関数
 //=============================================================================
-CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXVECTOR3 rot, D3DXCOLOR col, EFFECT_TYPE type, int Life)
+CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
 	CEffect *m_pEffect = NULL;	//メモリ確保
 
@@ -80,7 +80,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 
 			//波
 		case EFFECT_TYPE::EFFECT_TYPE_3:
-			m_pEffect->Wave(pos, size, move, rot, col, type, Life);
+			m_pEffect->Wave(pos, size, move, col, type, Life);
 			break;
 
 			//水しぶき
@@ -101,7 +101,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 	{
 		//エラーのメッセージBOX
 		MessageBox(NULL, TEXT("Error in effect.cpp"),
-			TEXT("effect.cppNULLチェック出来ませんでした。"), MB_OK);
+			TEXT("Could not check for NULL."), MB_OK);
 	}
 	return m_pEffect;
 }
@@ -199,12 +199,12 @@ void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT
 //=============================================================================
 //波エフェクト関数
 //=============================================================================
-void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXVECTOR3 rot, D3DXCOLOR col, EFFECT_TYPE type, int Life)
+void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
-																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+	//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
+	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
@@ -239,7 +239,7 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
 	D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
@@ -266,7 +266,7 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 		//RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 		m_bLoop = true;//アニメーションループ
-		Init(CreatePos, size, ActualMove, type, col, Life);
+		Init(pos, size, ActualMove, type, col, Life);
 		BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
 	}
 }
@@ -306,12 +306,11 @@ void CEffect::Unload(void)
 //=============================================================================
 HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFECT_TYPE type, D3DXCOLOR col, int Life)
 {
-	//ビルボードの初期化
 	SetMove(move);					//移動量
-	GetColor() = col;
-	SetLife(Life);
-	m_nType = type;
-	CBillboard::Init(pos, size);
+	GetColor() = col;				//カラー
+	SetLife(Life);					//ライフ
+	m_nType = type;					//タイプ
+	CBillboard::Init(pos, size);	//ビルボード
 
 	//
 	switch (type)
@@ -369,7 +368,7 @@ void CEffect::Update(void)
 	case EFFECT_TYPE_3:
 		if (MAX_GRAVITY_COUNTER_WAVE< GetPos().y)
 		{
-			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z));
+			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y*2.5f, GetMove().z));
 			m_nType = EFFECT_TYPE_NONE;
 		}
 		break;
