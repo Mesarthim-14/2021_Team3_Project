@@ -91,10 +91,11 @@ public:
 	void CreateExplosion(void);		//”š”­¶¬ŠÖ”
 	void CreateWave(void);			//”g¶¬ŠÖ”
 
-	void SetAngle_L(float fangle_L)		{ m_fAngle_L = fangle_L; }
-	float GetAngle_L(void)				{ return m_fAngle_L; }
-	void SetAngle_R(float fangle_R)		{ m_fAngle_R = fangle_R; }
-	float GetAngle_R(void)				{ return m_fAngle_R; }
+	//ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚Ì‰ñ“]
+	void SetAngle_L(float fangle_L)		{ m_fAngle_L = fangle_L; }	//Ši”[L
+	float GetAngle_L(void)				{ return m_fAngle_L; }		//æ“¾L
+	void SetAngle_R(float fangle_R)		{ m_fAngle_R = fangle_R; }	//Ši”[R
+	float GetAngle_R(void)				{ return m_fAngle_R; }		//æ“¾R
 
 private:
 	D3DXVECTOR3 m_rotDest;							// ‰ñ“](–Ú•W’l)
