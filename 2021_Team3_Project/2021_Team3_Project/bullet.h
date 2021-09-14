@@ -25,6 +25,8 @@ public:
 	void Uninit(void);											// I—¹ˆ—
 	void Update(void);											// XVˆ—
 	void Draw(void);											// •`‰æˆ—
+	void CreateSplash(void);									//…‚µ‚Ô‚«¶¬ŠÖ”
+
 private:
 	void Death(void);											// €–Sˆ—ŠÖ”
 };
