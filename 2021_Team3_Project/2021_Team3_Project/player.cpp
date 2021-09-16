@@ -32,7 +32,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(50.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -141,11 +141,13 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 CPlayer::CPlayer(PRIORITY Priority)
 {
-	m_rotDest			= ZeroVector3;
-	m_bMove				= false;
-	m_nAttackCount_R	= ZERO_INT;
-	m_nAttackCount_L	= ZERO_INT;
-	m_PadType			= PAD_TYPE_1P; 
+	m_rotDest = ZeroVector3;
+	m_bMove = false;
+	m_nAttackCount_R = ZERO_INT;
+	m_nAttackCount_L = ZERO_INT;
+	m_PadType = PAD_TYPE_1P;
+	m_fAngle_L = 0;
+	m_fAngle_R = 0;
 }
 
 //=============================================================================
@@ -194,7 +196,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// パッドが2個つながってる場合
 	if (P1_PAD != nullptr && P2_PAD != nullptr)
 	{
-		m_PadType = PAD_TYPE_2P;
+		m_PadType = PAD_TYPE_1P;
 	}
 	// ライフ生成
 	CPlayer_Life::Create(LIFE_POS, ZeroVector3);
@@ -213,7 +215,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Uninit(void)
-{	
+{
 	// 終了処理
 	CCharacter::Uninit();
 }
@@ -231,7 +233,7 @@ void CPlayer::Update(void)
 	D3DXVECTOR3 pos = GetPos();
 
 	// 古い座標保存
-	SetPosOld(pos);				
+	SetPosOld(pos);
 
 	// プレイヤーの状態
 	UpdateState();
@@ -365,6 +367,9 @@ void CPlayer::Move(void)
 	float fSpeed = GetSpeed();												// スピード
 	float fAngle_R = ZERO_FLOAT;											// 右角度
 	float fAngle_L = ZERO_FLOAT;											// 左角度
+	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
+	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
+
 
 	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
@@ -379,14 +384,14 @@ void CPlayer::Move(void)
 	//===========================================
 	// 右歯車
 	//===========================================
-		// 右スティックが入力されている場合
+	// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
 		// コントローラーの角度
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
 		// 左に移動
-		if (fAngle_R < -ANGLE_0 && fAngle_R > -ANGLE_270)
+		if (fAngle_R < disfAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -408,7 +413,7 @@ void CPlayer::Move(void)
 		if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > ANGLE_0 && fAngle_R < ANGLE_270)
+			if (fAngle_R > disfAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -427,6 +432,9 @@ void CPlayer::Move(void)
 				m_rotDest.y = rot.y;
 			}
 		}
+		//波エフェクト
+		CreateWave();
+		SetAngle_R(fAngle_R);
 	}
 	//===========================================
 	// 左歯車
@@ -438,7 +446,7 @@ void CPlayer::Move(void)
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
 		// 右に移動
-		if (fAngle_L < -ANGLE_0 && fAngle_L > -ANGLE_270)
+		if (fAngle_L < disfAngle_L )
 		{
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
@@ -460,7 +468,7 @@ void CPlayer::Move(void)
 		if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > ANGLE_0 && fAngle_L < ANGLE_270)
+			if (fAngle_L > disfAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -479,12 +487,15 @@ void CPlayer::Move(void)
 				m_rotDest.y = rot.y;
 			}
 		}
+		//波エフェクト
+		CreateWave();
+		SetAngle_L(fAngle_L);
 	}
 	// 入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > ANGLE_0 && fAngle_L < ANGLE_270 && fAngle_R > ANGLE_0 && fAngle_R < ANGLE_270)
+		if (fAngle_L > disfAngle_L && fAngle_R > disfAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -504,7 +515,6 @@ void CPlayer::Move(void)
 				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
-
 
 			}
 		}
@@ -547,15 +557,17 @@ void CPlayer::Pad2Move(void)
 	// ジョイパッドの取得
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
+	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
+	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
 	// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
 	// 座標
-	D3DXVECTOR3 pos = GetPos();							
+	D3DXVECTOR3 pos = GetPos();
 
 	// 角度
-	D3DXVECTOR3 rot = GetRot();							
+	D3DXVECTOR3 rot = GetRot();
 
 	// スピード
 	float fSpeed = GetSpeed();
@@ -576,18 +588,15 @@ void CPlayer::Pad2Move(void)
 	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-//===========================================
-// 左歯車 ※1Player
-//===========================================
+	//===========================================
+	// 左歯車 ※1Player
+	//===========================================
 	// 左スティックが入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE)
 	{
 		// コントローラーの角度
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 
-		//前のコントローラーの角度を取得
-		float disfAngle_L = GetAngle_L();
-		
 		// 右に移動
 		if (fAngle_L < disfAngle_L)
 		{
@@ -606,16 +615,12 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			//波エフェクト
-			CreateWave();
-			SetAngle_L(fAngle_L);
 		}
 		// falseの場合
 		if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > disfAngle_L )
+			if (fAngle_L > disfAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -632,28 +637,23 @@ void CPlayer::Pad2Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
-
-				//波エフェクト
-				//CreateWave();
-				SetAngle_L(fAngle_L);
 			}
 		}
+		//波エフェクト
+		CreateWave();
 		SetAngle_L(fAngle_L);
 	}
-//===========================================
-// 右歯車 ※2Player
-//===========================================
+	//===========================================
+	// 右歯車 ※2Player
+	//===========================================
 	// 左スティックが入力されている場合
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// コントローラーの角度
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
-		//前のコントローラーの角度を取得
-		float disfAngle_R = GetAngle_R();
-
 		// 左に移動
-		if (fAngle_R < -ANGLE_0 && fAngle_R > -ANGLE_270)
+		if (fAngle_R < disfAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -670,15 +670,12 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
-
-			//波エフェクト
-			CreateWave();
 		}
 		// falseの場合
 		if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > ANGLE_0 && fAngle_R < ANGLE_270)
+			if (fAngle_R > disfAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -695,18 +692,18 @@ void CPlayer::Pad2Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
-
-				//波エフェクト
-				CreateWave();
 			}
 		}
+		//波エフェクト
+		CreateWave();
+		//格納
 		SetAngle_R(fAngle_R);
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > ANGLE_0 && fAngle_L < ANGLE_270 && fAngle_R > ANGLE_0 && fAngle_R < ANGLE_270)
+		if (fAngle_L > disfAngle_L && fAngle_R > disfAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -766,7 +763,7 @@ void CPlayer::Pad2Move(void)
 void CPlayer::Attack(void)
 {
 	// キーボード取得
-	CInputKeyboard *pKeyboard = CManager::GetKeyboard();	
+	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
 	// ジョイパッド取得
 	CInputJoypad *pJoypad = CManager::GetJoypad();
@@ -793,7 +790,7 @@ void CPlayer::Attack(void)
 	if (m_nAttackCount_R == ZERO_INT)
 	{
 		// RTトリガーを押した場合
-		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1)||
+		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
 			// 右弾生成
@@ -1024,7 +1021,7 @@ void CPlayer::KeyboardMove(void)
 		// falseに
 		m_bBack = false;
 
-	
+
 	}
 	// falseの場合
 	if (m_bBack == false)
@@ -1239,7 +1236,7 @@ void CPlayer::Collision(void)
 
 					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
-					
+
 					// 位置
 					pos.z = (-CharacterSize.z / DIVIDE_2 + CharacterPos.z) - (size.z / DIVIDE_2);
 
@@ -1265,8 +1262,8 @@ void CPlayer::Collision(void)
 					SetPos(pos);
 				}
 				// 次のポインタ取得
-				pScene= pSceneCur;
-			} 
+				pScene = pSceneCur;
+			}
 		}
 
 		// 先頭のポインタ取得
@@ -1474,9 +1471,9 @@ void CPlayer::CreateExplosion(void)
 //=======================================================================================
 void CPlayer::CreateWave(void)
 {
-	
+
 	// パーティクル生成
-	CEffect::Create(WAVE_POS,WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
+	CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
 }
 
