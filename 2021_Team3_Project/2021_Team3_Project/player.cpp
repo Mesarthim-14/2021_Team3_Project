@@ -584,7 +584,10 @@ void CPlayer::Pad2Move(void)
 	{
 		// コントローラーの角度
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
+
+		//前のコントローラーの角度を取得
 		float disfAngle_L = GetAngle_L();
+		
 		// 右に移動
 		if (fAngle_L < disfAngle_L)
 		{
@@ -645,7 +648,10 @@ void CPlayer::Pad2Move(void)
 	{
 		// コントローラーの角度
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
+
+		//前のコントローラーの角度を取得
 		float disfAngle_R = GetAngle_R();
+
 		// 左に移動
 		if (fAngle_R < -ANGLE_0 && fAngle_R > -ANGLE_270)
 		{

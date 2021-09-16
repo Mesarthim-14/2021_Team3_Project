@@ -91,7 +91,8 @@ public:
 	void CreateWave(void);										// 波生成関数
 
 	void Knock_Back(void);										// ノックバック処理
-																//ジョイスティックの回転
+	
+	//ジョイスティックの回転
 	void SetAngle_L(float fangle_L) { m_fAngle_L = fangle_L; }	//格納L
 	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
 	void SetAngle_R(float fangle_R) { m_fAngle_R = fangle_R; }	//格納R
