@@ -21,7 +21,7 @@
 #define GET_PLAYER_PTR		(CManager::GetGame()->GetPlayer())					// プレイヤーのポインタ
 #define GET_CAMERA_PTR		(CManager::GetGame()->GetCamera())					// カメラのポインタ
 #define GET_RENDERER_DEVICE	(CManager::GetRenderer()->GetDevice())				// デバイス取得
-#define GET_MAP_PTR			(CManager::GetModeBase()->GetMap())						// マップのポインタ取得
+#define GET_MAP_PTR			(CManager::GetGame()->GetMap())					// マップのポインタ取得
 //=============================================================================
 //前方宣言
 //=============================================================================

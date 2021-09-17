@@ -38,6 +38,7 @@ CModel::CModel(PRIORITY Priority) : CScene(Priority)
 	m_fAlphaNum = 0.0f;
 	m_pShadow = nullptr;
 	m_State = STATE_NORMAL;
+	m_RayData = { ZERO_FLOAT,ZERO_FLOAT,ZERO_INT };
 }
 
 //=============================================================================

@@ -29,7 +29,15 @@ class CShadow;
 class CModel : public CScene
 {
 public:
-
+	//=============================================================================
+	// レイの情報
+	//=============================================================================
+	struct RAY_DATA
+	{
+		float fAngle;
+		float fRange;
+		int nNum;
+	};
 	//=============================================================================
 	// 状態
 	//=============================================================================
@@ -66,7 +74,7 @@ public:
 	void SetScale(D3DXVECTOR3 scale)				{ m_scale = scale; }				// 拡大率
 	void SetState(STATE state)						{ m_State = state; }				// 状態設定
 	void BindTexture(LPDIRECT3DTEXTURE9 *pTexture)	{ m_apTexture = pTexture; }			// テクスチャの設定
-
+	void SetRay_Data(RAY_DATA Ray_Info) { m_RayData = Ray_Info; }						// レイの情報設定
 	// Get関数
 	D3DXVECTOR3 &GetPos(void)			{ return m_pos; }				// 座標の情報
 	D3DXVECTOR3 &GetMove(void)			{ return m_move; }				// 移動量の情報
@@ -81,6 +89,7 @@ public:
 	int GetLife(void)					{ return m_nLife; }				// ライフの設定
 	float GetAlphaNum(void)				{ return m_fAlphaNum; }			// 透明度の値
 	STATE GetState(void)				{ return m_State; }				// 状態取得
+	RAY_DATA GetRay_Data(void)			{ return m_RayData; }			// レイの情報取得
 private:
 	LPDIRECT3DTEXTURE9 *m_apTexture;	// テクスチャのポインタ
 	D3DXVECTOR3 m_pos;					// 位置
@@ -95,7 +104,7 @@ private:
 	int m_nLife;						// ライフ
 	float m_fAlphaNum;					// 透明度の値
 	STATE m_State;						// 状態
-
+	RAY_DATA m_RayData;					// レイの情報
 	// 影の生成用
 	CShadow *m_pShadow;		// 影のポインタ
 };

@@ -37,14 +37,14 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CTorpedo::CTorpedo(PRIORITY Priority)
+CTorpedo::CTorpedo(PRIORITY Priority) : CModel(Priority)
 {
 	m_bAttackDecision	= false;
 	m_bMove				= false;
 	m_fAngle			= ZERO_FLOAT;
 }
 //=============================================================================
-// インクルードファイル
+// デストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CTorpedo::~CTorpedo()
@@ -150,6 +150,12 @@ void CTorpedo::Update(void)
 				// 角度
 				m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
 			}
+			
+			// レイの情報
+			CModel::RAY_DATA Ray_Data = { ROT.y, RAY_HIT_RANGE,RAY_NUM };
+
+			// レイの情報設定
+			SetRay_Data(Ray_Data);
 
 			// 向き
 			SetRot(ROT);
@@ -165,7 +171,7 @@ void CTorpedo::Update(void)
 	Collision();
 
 	// レイの当たり判定
-	RayCollision();
+	//RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -315,30 +321,30 @@ void CTorpedo::FanDecision(void)
 //=============================================================================
 void CTorpedo::RayCollision(void)
 {
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
+	//// 位置取得
+	//D3DXVECTOR3 pos = GetPos();
 
-	// 向き取得
-	D3DXVECTOR3 rot = GetRot();
+	//// 向き取得
+	//D3DXVECTOR3 rot = GetRot();
 
-	// マップのポインタ取得
-	CMap *pMap = GET_MAP_PTR;
+	//// マップのポインタ取得
+	//CMap *pMap = GET_MAP_PTR;
 
-	// レイの情報
-	CCollision::RAY_INFO Ray_Info;
+	//// レイの情報
+	//CCollision::RAY_INFO Ray_Info;
 
-	// レイの当たり判定
-	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
+	//// レイの当たり判定
+	//Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
 
-	// trueの場合
-	if (Ray_Info.bHit == true)
-	{
-		// 戻す
-		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
+	//// trueの場合
+	//if (Ray_Info.bHit == true)
+	//{
+	//	// 戻す
+	//	pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
 
-		// 位置設定
-		SetPos(pos);
+	//	// 位置設定
+	//	SetPos(pos);
 
-		return;
-	}
+	//	return;
+	//}
 }

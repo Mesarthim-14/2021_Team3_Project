@@ -167,7 +167,7 @@ int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTO
 // レイの当たり判定
 // Author : SugawaraTsukasa
 //=============================================================================
-CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, float fRadius, float fHitRange, int nNum)
+CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, float fAngle, float fHitRange, int nNum)
 {
 	// レイがヒットしたか
 	BOOL bHit = false;
@@ -192,7 +192,7 @@ CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, f
 		for (int nCount = ZERO_INT; nCount < nNum; nCount++)
 		{
 			// レイを出す角度
-			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fRadius * nCount, ZERO_FLOAT);
+			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fAngle * nCount, ZERO_FLOAT);
 
 			// レイがヒットしたか
 			D3DXIntersect(pModel->GetMesh(), &Pos, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),

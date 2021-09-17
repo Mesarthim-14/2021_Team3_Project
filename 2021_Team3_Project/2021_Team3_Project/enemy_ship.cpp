@@ -30,6 +30,7 @@
 #define SHIP_NUM		(0)										// 船のナンバー
 #define RAY_NUM			(1)										// レイの数
 #define RAY_HIT_RANGE	(600.0f)								// 範囲
+#define RAY_ANGLE		(D3DXToRadian(360.0f / 4.0f))			// 角度
 // 船体の位置
 #define SHIP_POS		(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -103,6 +104,12 @@ HRESULT CEnemy_Ship::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// 初期化関数
 	CEnemy::Init(pos, rot);
+
+	// レイの情報
+	CCharacter::RAY_DATA Ray_Data = { RAY_ANGLE, RAY_HIT_RANGE, RAY_NUM };
+
+	// レイの情報設定
+	SetRay_Data(Ray_Data);
 	return S_OK;
 }
 //=============================================================================
@@ -274,41 +281,41 @@ void CEnemy_Ship::Attack(void)
 //=============================================================================
 void CEnemy_Ship::RayCollision(void)
 {
-	// モデルの情報取得
-	CModelAnime *pShip = GetModelAnime(SHIP_NUM);
+	//// モデルの情報取得
+	//CModelAnime *pShip = GetModelAnime(SHIP_NUM);
 
-	// 位置取得
-	D3DXVECTOR3 pos = SHIP_POS;
+	//// 位置取得
+	//D3DXVECTOR3 pos = SHIP_POS;
 
-	// 向き取得
-	D3DXVECTOR3 rot = GetRot();
+	//// 向き取得
+	//D3DXVECTOR3 rot = GetRot();
 
-	// マップのポインタ取得
-	CMap *pMap = GET_MAP_PTR;
+	//// マップのポインタ取得
+	//CMap *pMap = GET_MAP_PTR;
 
-	// !nullcheck
-	if (pShip != nullptr)
-	{
-		// !nullcheck
-		if (pMap != nullptr)
-		{
-			// レイの情報
-			CCollision::RAY_INFO Ray_Info;
+	//// !nullcheck
+	//if (pShip != nullptr)
+	//{
+	//	// !nullcheck
+	//	if (pMap != nullptr)
+	//	{
+	//		// レイの情報
+	//		CCollision::RAY_INFO Ray_Info;
 
-			// レイの当たり判定
-			Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
+	//		// レイの当たり判定
+	//		Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
 
-			// trueの場合
-			if (Ray_Info.bHit == true)
-			{
-				// 戻す
-				pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
+	//		// trueの場合
+	//		if (Ray_Info.bHit == true)
+	//		{
+	//			// 戻す
+	//			pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
 
-				// 位置設定
-				SetPos(pos);
+	//			// 位置設定
+	//			SetPos(pos);
 
-				return;
-			}
-		}
-	}
+	//			return;
+	//		}
+	//	}
+	//}
 }

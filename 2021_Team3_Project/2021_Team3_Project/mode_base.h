@@ -21,17 +21,13 @@ class CMap;
 class CModeBase
 {
 public:
-	CModeBase();						// コンストラクタ
+	CModeBase() {};						// コンストラクタ
 	virtual ~CModeBase() {};			// デストラクタ
 
 	virtual HRESULT Init(void) = 0;		// 初期化
 	virtual void Update(void) = 0;		// 更新
 	virtual void Draw(void) = 0;		// 描画
-
-	void SetMap(CMap *pMap) { m_pMap = pMap; }
-	CMap *GetMap(void) { return m_pMap; }		// マップのポインタ取得
 private:
-	CMap *m_pMap;							// マップのポインタ
 };
 
 #endif

@@ -18,7 +18,7 @@
 class CTorpedo : public CModel
 {
 public:
-	CTorpedo(PRIORITY Priority = PRIORITY_CHARACTER);			// コンストラクタ
+	CTorpedo(PRIORITY Priority = PRIORITY_TORPEDO);				// コンストラクタ
 	~CTorpedo();												// デストラクタ
 	static CTorpedo *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// 初期化処理

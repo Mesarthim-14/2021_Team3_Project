@@ -26,6 +26,15 @@ class CCharacter : public CScene
 {
 public:
 	//=============================================================================
+	// レイの情報
+	//=============================================================================
+	struct RAY_DATA
+	{
+		float fAngle;
+		float fRange;
+		int nNum;
+	};
+	//=============================================================================
 	// キャラクターの種類
 	//=============================================================================
 	enum CHARACTER_TYPE
@@ -64,35 +73,35 @@ public:
 	virtual void Move(void) = 0;									// 移動関数
 	virtual void Death(void) = 0;									// 死んだときの処理
 
-																	// Set関数
-	void SetPos(D3DXVECTOR3 &pos) { m_pos = pos; }			// 座標の設定
+	// Set関数
+	void SetPos(D3DXVECTOR3 &pos) { m_pos = pos; }					// 座標の設定
 	void SetPosOld(D3DXVECTOR3 &posOld) { m_posOld = posOld; }		// 座標の設定
-	void SetMove(D3DXVECTOR3 &move) { m_move = move; }			// 移動量の設定
-	void SetRot(D3DXVECTOR3 &rot) { m_rot = rot; }			// 角度の設定
-	void SetSize(D3DXVECTOR3 &size) { m_size = size; }			// サイズ設定
-	void SetLife(int nLife) { m_nLife = nLife; }		// ライフの設定
-	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }		// 速度の設定
-	void SetMotion(int nMotionState);									// モーションの設定
-	void SetState(STATE state) { m_State = state; }		// 状態設定
-	void SetLanding(bool bLanding) { m_bLanding = bLanding; }	// 着地
-	void SetUseShadow(void) { m_bUseShadow = true; }
+	void SetMove(D3DXVECTOR3 &move) { m_move = move; }				// 移動量の設定
+	void SetRot(D3DXVECTOR3 &rot) { m_rot = rot; }					// 角度の設定
+	void SetSize(D3DXVECTOR3 &size) { m_size = size; }				// サイズ設定
+	void SetLife(int nLife) { m_nLife = nLife; }					// ライフの設定
+	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }				// 速度の設定
+	void SetMotion(int nMotionState);								// モーションの設定
+	void SetState(STATE state) { m_State = state; }					// 状態設定
+	void SetLanding(bool bLanding) { m_bLanding = bLanding; }		// 着地
+	void SetUseShadow(void) { m_bUseShadow = true; }				// 影の使用判定
 	void SetShadowRotCalculation(void);
-
+	void SetRay_Data(RAY_DATA Ray_Info) { m_RayData = Ray_Info; }	// レイの情報設定
 	// Get関数
-	D3DXVECTOR3 &GetPos(void) { return m_pos; }						// 現在の座標情報
-	D3DXVECTOR3 &GetOldPos(void) { return m_posOld; }					// 古い座標情報
-	D3DXVECTOR3 &GetRot(void) { return m_rot; }						// 角度情報
-	D3DXVECTOR3 &GetMove(void) { return m_move; }						// 移動量の情報
-	D3DXVECTOR3 &GetSize(void) { return m_size; }						// サイズ取得
+	D3DXVECTOR3 &GetPos(void) { return m_pos; }										// 現在の座標情報
+	D3DXVECTOR3 &GetOldPos(void) { return m_posOld; }								// 古い座標情報
+	D3DXVECTOR3 &GetRot(void) { return m_rot; }										// 角度情報
+	D3DXVECTOR3 &GetMove(void) { return m_move; }									// 移動量の情報
+	D3DXVECTOR3 &GetSize(void) { return m_size; }									// サイズ取得
 	CModelAnime *GetModelAnime(int nCount) { return m_apModelAnime.at(nCount); }	// モーションのカウント情報
-	int GetPartsNum(void) { return m_apModelAnime.size(); }		// パーツ数取得
-	CMotion *GetMotion(void) { return m_pMotion; }					// モーションのポインタ情報
-	int GetLife(void) { return m_nLife; }						// ライフの情報
-	int GetStateCounter(void) { return m_nStateCounter; }				// 状態カウンターの情報
-	float GetSpeed(void) { return m_fSpeed; }					// スピードの情報
-	bool GetArmor(void) { return m_bArmor; }					// 無敵時間
-	STATE GetState(void) { return m_State; }						// 状態取得
-
+	int GetPartsNum(void) { return m_apModelAnime.size(); }							// パーツ数取得
+	CMotion *GetMotion(void) { return m_pMotion; }									// モーションのポインタ情報
+	int GetLife(void) { return m_nLife; }											// ライフの情報
+	int GetStateCounter(void) { return m_nStateCounter; }							// 状態カウンターの情報
+	float GetSpeed(void) { return m_fSpeed; }										// スピードの情報
+	bool GetArmor(void) { return m_bArmor; }										// 無敵時間
+	STATE GetState(void) { return m_State; }										// 状態取得
+	RAY_DATA GetRay_Data(void) { return m_RayData; }								// レイの情報取得
 private:
 	vector<CModelAnime*> m_apModelAnime;	// モデルパーツ用ポインタ
 	CMotion *m_pMotion;						// モーションクラスのポインタ
@@ -110,5 +119,6 @@ private:
 	bool m_bLanding;						// 着地フラグ
 	STATE m_State;							// 状態
 	bool m_bUseShadow;						// 影をつけるフラグ
+	RAY_DATA m_RayData;						// レイの情報
 };
 #endif

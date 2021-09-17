@@ -69,7 +69,7 @@
 #define PAD_P2					(1)										// パッドプレイヤー2
 #define KNOCK_BACK_SPEED		(100.0f)								// ノックバックの速さ
 #define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
-#define ARCDIR						(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
+#define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -139,7 +139,7 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CPlayer::CPlayer(PRIORITY Priority)
+CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 {
 	m_rotDest			= ZeroVector3;
 	m_bMove				= false;
@@ -205,6 +205,11 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 影の回転を反映させる
 	SetShadowRotCalculation();
 
+	// レイの情報設定
+	CCharacter::RAY_DATA Ray_Data = { RAY_RADIUS ,RAY_HIT_RANGE ,RAY_NUM };
+
+	// レイの情報設定
+	SetRay_Data(Ray_Data);
 	return S_OK;
 }
 
@@ -311,7 +316,7 @@ void CPlayer::PlayerControl()
 	Collision();
 
 	// マップとの当たり判定
-	RayCollision();
+	//RayCollision();
 }
 
 //=============================================================================

@@ -25,6 +25,7 @@ public:
 	void Uninit(void);										// 終了処理
 	void Update(void);										// 更新処理
 	void Draw(void);										// 描画処理
+	void RayCollision(void);								// レイの当たり判定
 private:
 };
 #endif

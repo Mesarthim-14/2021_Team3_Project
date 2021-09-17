@@ -208,7 +208,7 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//パーティクル分繰り返す
+	//パーティクル分繰り返す
 	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
 	{
 		//角度計算
@@ -217,18 +217,17 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 		float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
 		//慣性角度
-		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*move.x;
-		ActualMove.y = ((float)sin(fr + nCnt))*move.y;
-		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*move.z;
+		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*MAX_PARTICLE))*move.x;
+		ActualMove.y = ((float)sin(fr + MAX_PARTICLE))*move.y;
+		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr * MAX_PARTICLE))*move.z;
 
 		//大きさ
 		//RandomSize.x = (MinSize.x) + (int)(rand()*(MaxSize.x - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 		//RandomSize.y = (MinSize.y) + (int)(rand()*(MaxSize.y - MinSize.y + 1.0) / (1.0 + RAND_MAX));
-
-		m_bLoop = true;//アニメーションループ
-		Init(pos, size, ActualMove, type, col, Life);
-		BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
 	}
+	m_bLoop = true;//アニメーションループ
+	Init(pos, size, ActualMove, type, col, Life);
+	BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
 }
 
 //=============================================================================

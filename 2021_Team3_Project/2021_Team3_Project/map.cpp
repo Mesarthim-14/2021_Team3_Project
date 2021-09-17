@@ -11,6 +11,8 @@
 #include "character.h"
 #include "collision.h"
 #include "renderer.h"
+#include "game.h"
+#include "model.h"
 #include "map.h"
 //=============================================================================
 // マクロ定義
@@ -18,6 +20,7 @@
 //=============================================================================
 #define SIZE		(D3DXVECTOR3(80.0f,80.0f,80.0f))	// サイズ
 #define POS_Y_MIN	(0.0f)								// Y座標最小値
+#define PARENT_NUM	(0)									// 親の名前
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -98,6 +101,9 @@ void CMap::Update(void)
 {
 	// 更新処理
 	CModel::Update();
+
+	// レイの当たり判定
+	RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -107,4 +113,161 @@ void CMap::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
+}
+//=============================================================================
+// レイの当たり判定処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CMap::RayCollision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		//===============================================================
+		// 敵以外の親子関係のあるオブジェクト
+		//===============================================================
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_CHARACTER);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 Pos = ZeroVector3;
+
+				// 位置取得
+				Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+				Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+				Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
+				// レイの情報取得
+				CCharacter::RAY_DATA RayData = ((CCharacter*)pScene)->GetRay_Data();
+
+				// レイの数が0より多い場合
+				if (RayData.nNum > ZERO_INT)
+				{
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, GET_MAP_PTR, RayData.fAngle, RayData.fRange, RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						((CCharacter*)pScene)->SetMove(ZeroVector3);
+
+						// 位置
+						Pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						// 位置設定
+						((CCharacter*)pScene)->SetPos(Pos);
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+		//===============================================================
+		// 親子関係のある敵
+		//===============================================================
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_ENEMY);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 Pos = ZeroVector3;
+
+				// 位置取得
+				Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+				Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+				Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
+				// レイの情報取得
+				CCharacter::RAY_DATA RayData = ((CCharacter*)pScene)->GetRay_Data();
+
+				// レイの数が0より多い場合
+				if (RayData.nNum > ZERO_INT)
+				{
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, GET_MAP_PTR, RayData.fAngle, RayData.fRange, RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						((CCharacter*)pScene)->SetMove(ZeroVector3);
+
+						// 位置
+						Pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						// 位置設定
+						((CCharacter*)pScene)->SetPos(Pos);
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+
+		//===============================================================
+		// 親子関係のない敵
+		//===============================================================
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_TORPEDO);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 Pos = ((CModel*)pScene)->GetPos();
+
+				// レイの情報取得
+				CModel::RAY_DATA RayData = ((CModel*)pScene)->GetRay_Data();
+
+				// レイの数が0より多い場合
+				if (RayData.nNum > ZERO_INT)
+				{
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, GET_MAP_PTR, RayData.fAngle, RayData.fRange, RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						((CModel*)pScene)->SetMove(ZeroVector3);
+
+						// 位置
+						Pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						// 位置設定
+						((CModel*)pScene)->SetPos(Pos);
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+	}
 }
