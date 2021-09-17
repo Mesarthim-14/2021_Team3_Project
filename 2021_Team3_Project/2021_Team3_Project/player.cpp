@@ -79,38 +79,39 @@
 
 //エフェクトの各数値
 //爆発
-#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))				
-#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))			
-#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
-#define EXPLOSION_LIFE		(70)									
-
-//煙
-#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))					
-#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))	
-#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))			
-#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))		
-#define SMOKE_LIFE			(500)									
-
-//水しぶき
-#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))					
-#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))		
-#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))		
-#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
-#define SPLASH_LIFE			(200)									
-
-//木材
-#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))					
-#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))	
-#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))		
-#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
-#define WOOD_LIFE			(500)									
-
-//波
-#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))
-#define WAVE_SIZE			(D3DXVECTOR3(50, 50, 50))				
-#define WAVE_MOVE			(D3DXVECTOR3(8.0, 8.0, 8.0))			
-#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
-#define WAVE_LIFE			(70)		
+#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//位置
+#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//大きさ
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define EXPLOSION_LIFE		(70)													//体力
+																					
+//煙																				
+#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//大きさ
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//移動力
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//色
+#define SMOKE_LIFE			(500)													//体力
+																					
+//水しぶき																			
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//大きさ
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動力
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define SPLASH_LIFE			(200)													//体力
+																				
+//木材																			
+#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//大きさ
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//移動力
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define WOOD_LIFE			(500)													//体力
+																					
+//波																				
+#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//位置
+#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//大きさ
+#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//移動力
+#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define WAVE_LIFE			(70)													//体力
+#define WAVE_MAX_PARTICLE	(10)													//放出回数
 
 //=============================================================================
 // 生成処理関数
@@ -1452,10 +1453,13 @@ void CPlayer::CreateWoodEP(void)
 //=======================================================================================
 void CPlayer::CreateSplash(void)
 {
-	// パーティクル生成
-	CEffect::Create(SPLASH_POS,
-		WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
-		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+	for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
+	{
+		// パーティクル生成
+		CEffect::Create(SPLASH_POS,
+			WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+	}
 }
 
 //=======================================================================================
@@ -1476,10 +1480,12 @@ void CPlayer::CreateExplosion(void)
 //=======================================================================================
 void CPlayer::CreateWave(void)
 {
-
-	// パーティクル生成
-	CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
-		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
+	for (int nCntEffect = 0; nCntEffect < WAVE_MAX_PARTICLE; nCntEffect++)
+	{
+		// パーティクル生成
+		CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
+	}
 }
 
 //=============================================================================
