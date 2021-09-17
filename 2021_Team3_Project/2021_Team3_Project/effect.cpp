@@ -26,12 +26,17 @@
 #define MAX_GRAVITY_COUNTER_EXPLOSION	(30000)									//爆発の高さの最大値
 #define MAX_GRAVITY_COUNTER_SPLASH		(10000)									//水しぶきの高さの最大値
 #define MAX_GRAVITY_COUNTER_WAVE		(350)									//波の高さの最大値
-#define PARTICLE_Fall_WAVE				(0.5f)									//降下倍率
 #define MAX_TEXTURE_SIZE				(5.0f)									//テクスチャサイズの倍率最大値
 #define MIN_TEXTURE_SIZE				(0.5f)									//テクスチャサイズの倍率最小値
 #define ANIMETION_DEFAULT				(D3DXVECTOR2(1, 1))						//アニメーション無し
 #define ANIMETION_EXPLOSION				(D3DXVECTOR2(16, 4))					//アニメーション爆発
 #define ANIMETION_WOOD					(D3DXVECTOR2(8, 4))						//アニメーション木材
+
+//落下数値
+#define EFFECT_FALL_EXPLOSION			(D3DXVECTOR3(GetMove().x, -GetMove().y*0.5f, GetMove().z))	//爆発
+#define EFFECT_FALL_WAVE				(D3DXVECTOR3(0.0f, -GetMove().y, 0.0f))						//波
+#define EFFECT_FALL_SPLASH				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//水しぶき
+#define EFFECT_FALL_WOOD				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//木材
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -311,7 +316,7 @@ HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFEC
 	m_nType = type;					//タイプ
 	CBillboard::Init(pos, size);	//ビルボード
 
-	//
+	//エフェクトのタイプ
 	switch (type)
 	{
 		//煙
@@ -358,7 +363,7 @@ void CEffect::Update(void)
 	case EFFECT_TYPE_1:
 		if ((rand() % MAX_GRAVITY_COUNTER_EXPLOSION) < GetPos().y)
 		{
-			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y*PARTICLE_Fall_WAVE, GetMove().z));
+			SetMove(EFFECT_FALL_EXPLOSION);
 			m_nType = EFFECT_TYPE_NONE;
 		}
 		break;
@@ -367,7 +372,7 @@ void CEffect::Update(void)
 	case EFFECT_TYPE_3:
 		if (MAX_GRAVITY_COUNTER_WAVE< GetPos().y)
 		{
-			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y*2.5f, GetMove().z));
+			SetMove(EFFECT_FALL_WAVE);
 			m_nType = EFFECT_TYPE_NONE;
 		}
 		break;
@@ -376,7 +381,7 @@ void CEffect::Update(void)
 	case EFFECT_TYPE_4:
 		if ((rand() % MAX_GRAVITY_COUNTER_SPLASH)< GetPos().y)
 		{
-			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z));
+			SetMove(EFFECT_FALL_SPLASH);
 			m_nType = EFFECT_TYPE_NONE;
 		}
 		break;
@@ -385,7 +390,7 @@ void CEffect::Update(void)
 	case EFFECT_TYPE_5:
 		if ((rand() % MAX_GRAVITY_COUNTER_EXPLOSION) < GetPos().y)
 		{
-			SetMove(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z));
+			SetMove(EFFECT_FALL_WOOD);
 			m_nType = EFFECT_TYPE_NONE;
 		}
 		break;
