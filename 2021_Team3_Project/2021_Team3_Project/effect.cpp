@@ -17,7 +17,7 @@
 //=============================================================================
 //マクロ定義
 //=============================================================================
-#define ANGLE_RADIAN					(D3DXToRadian((float)(rand() % 360)))	//ラジアンの角度
+#define ANGLE_RADIAN					(D3DXToRadian((float)(rand() % 180)))	//ラジアンの角度
 #define PARTICLE_TEXTURE_SOMKE			("data/Texture/Smoke.png")				//パーティクルのテクスチャ
 #define PARTICLE_TEXTURE_EXPLOSION		("data/Texture/Explosion_Animation.png")//パーティクルのテクスチャ
 #define PARTICLE_TEXTURE_WAVE			("data/Texture/Wave_Effect.png")		//パーティクルのテクスチャ
@@ -28,6 +28,7 @@
 #define MAX_GRAVITY_COUNTER_WAVE		(350)									//波の高さの最大値
 #define MAX_TEXTURE_SIZE				(5.0f)									//テクスチャサイズの倍率最大値
 #define MIN_TEXTURE_SIZE				(0.5f)									//テクスチャサイズの倍率最小値
+#define FR_SIZE_VALUE					(400)									//半径の大きさの値
 #define ANIMETION_DEFAULT				(D3DXVECTOR2(1, 1))						//アニメーション無し
 #define ANIMETION_EXPLOSION				(D3DXVECTOR2(16, 4))					//アニメーション爆発
 #define ANIMETION_WOOD					(D3DXVECTOR2(8, 4))						//アニメーション木材
@@ -123,32 +124,28 @@ void CEffect::Smoke(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOL
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	//パーティクル分繰り返す
-	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
-	{
-		//角度計算
-		float fAngle = ANGLE_RADIAN;
-		//半径
-		float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
+																									//角度計算
+	float fAngle = ANGLE_RADIAN;
+	//半径
+	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-		//慣性角度
-		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*move.x;
-		ActualMove.y = ((float)cos(fr*nCnt))*move.y;
-		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*move.z;
+	//慣性角度
+	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = ((float)cos(fr * 400))*move.y;
+	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
 
-		//位置
-		CreatePos.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*pos.x;
-		CreatePos.y = ((float)cos(fr*nCnt))*pos.y;
-		CreatePos.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*pos.z;
+	//位置
+	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = ((float)cos(fr * 400))*pos.y;
+	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
 
-		//大きさ
-		RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
-		RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
+	//大きさ
+	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
+	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-		m_bLoop = true;	//アニメーションループ
-		Init(CreatePos, RandomSize, ActualMove, type, col, Life);
-		BindTexture(m_apTexture[EFFECT_TEXTURE_1]);//テクスチャ情報を格納
-	}
+	m_bLoop = true;	//アニメーションループ
+	BindTexture(m_apTexture[EFFECT_TEXTURE_1]);//テクスチャ情報を格納
+	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
 }
 
 //=============================================================================
@@ -163,33 +160,28 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	//パーティクル分繰り返す
-	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
-	{
-		//角度計算
-		float fAngle = ANGLE_RADIAN;
-		//半径
-		float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
+																									//角度計算
+	float fAngle = ANGLE_RADIAN;
+	//半径
+	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-		//慣性角度
-		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*move.x;
-		ActualMove.y = ((float)cos(fr*nCnt))*move.y;
-		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*move.z;
+	//慣性角度
+	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = ((float)cos(fr* FR_SIZE_VALUE))*move.y;
+	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
 
-		//位置
-		CreatePos.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*pos.x;
-		CreatePos.y = ((float)cos(fr*nCnt))*pos.y;
-		CreatePos.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*pos.z;
+	//位置
+	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = ((float)cos(fr* FR_SIZE_VALUE))*pos.y;
+	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
 
-		//大きさ
-		RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
-		RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
+	//大きさ
+	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
+	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-		m_bLoop = true;
-
-		Init(CreatePos, RandomSize, ActualMove, type, col, Life);
-		BindTexture(m_apTexture[EFFECT_TEXTURE_4]);//テクスチャ情報を格納
-	}
+	m_bLoop = true;
+	BindTexture(m_apTexture[EFFECT_TEXTURE_4]);//テクスチャ情報を格納
+	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
 }
 
 //=============================================================================
@@ -208,31 +200,28 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 {
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
-	//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	//パーティクル分繰り返す
-	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
-	{
-		//角度計算
-		float fAngle = ANGLE_RADIAN;
-		//半径
-		float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
+																									//角度計算
+	float fAngle = ANGLE_RADIAN;
+	//半径
+	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-		//慣性角度
-		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*MAX_PARTICLE))*move.x;
-		ActualMove.y = ((float)sin(fr + MAX_PARTICLE))*move.y;
-		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr * MAX_PARTICLE))*move.z;
+	//慣性角度
+	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = ((float)sin(fr + FR_SIZE_VALUE))*move.y;
+	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
 
-		//大きさ
-		//RandomSize.x = (MinSize.x) + (int)(rand()*(MaxSize.x - MinSize.x + 1.0) / (1.0 + RAND_MAX));
-		//RandomSize.y = (MinSize.y) + (int)(rand()*(MaxSize.y - MinSize.y + 1.0) / (1.0 + RAND_MAX));
-	}
+	//大きさ
+	//RandomSize.x = (MinSize.x) + (int)(rand()*(MaxSize.x - MinSize.x + 1.0) / (1.0 + RAND_MAX));
+	//RandomSize.y = (MinSize.y) + (int)(rand()*(MaxSize.y - MinSize.y + 1.0) / (1.0 + RAND_MAX));
+
 	m_bLoop = true;//アニメーションループ
-	Init(pos, size, ActualMove, type, col, Life);
 	BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
+	Init(pos, size, ActualMove, type, col, Life);
 }
 
 //=============================================================================
@@ -243,36 +232,32 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
 	D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	//パーティクル分繰り返す
-	for (int nCnt = 0; nCnt < MAX_PARTICLE; nCnt++)
-	{
-		//角度計算
-		float fAngle = ANGLE_RADIAN;
-		//半径
-		float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
+																									//角度計算
+	float fAngle = ANGLE_RADIAN;
+	//半径
+	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-		//慣性角度
-		ActualMove.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*move.x;
-		ActualMove.y = ((float)cos(fr*nCnt))*move.y;
-		ActualMove.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*move.z;
+	//慣性角度
+	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = ((float)cos(fr* FR_SIZE_VALUE))*move.y;
+	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
 
-		//位置
-		CreatePos.x = ((float)cos(fAngle)* (float)cos(fr*nCnt))*pos.x;
-		CreatePos.y = ((float)cos(fr*nCnt))*pos.y;
-		CreatePos.z = ((float)sin(fAngle)* (float)cos(fr*nCnt))*pos.z;
+	//位置
+	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = ((float)cos(fr* FR_SIZE_VALUE))*pos.y;
+	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
 
-		//大きさ
-		//RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
-		//RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
+	//大きさ
+	//RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
+	//RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-		m_bLoop = true;//アニメーションループ
-		Init(pos, size, ActualMove, type, col, Life);
-		BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
-	}
+	m_bLoop = true;//アニメーションループ
+	BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
+	Init(pos, size, ActualMove, type, col, Life);
 }
 
 //=============================================================================
@@ -316,7 +301,7 @@ HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFEC
 	m_nType = type;					//タイプ
 	CBillboard::Init(pos, size);	//ビルボード
 
-	//エフェクトのタイプ
+									//エフェクトのタイプ
 	switch (type)
 	{
 		//煙
