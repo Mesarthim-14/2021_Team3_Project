@@ -25,7 +25,7 @@
 #define ALPHA_VALUE_DECREASE			(0.001f)								//アルファ値の減少値
 #define MAX_GRAVITY_COUNTER_EXPLOSION	(30000)									//爆発の高さの最大値
 #define MAX_GRAVITY_COUNTER_SPLASH		(10000)									//水しぶきの高さの最大値
-#define MAX_GRAVITY_COUNTER_WAVE		(350)									//波の高さの最大値
+#define MAX_GRAVITY_COUNTER_WAVE		(3000)									//波の高さの最大値
 #define MAX_TEXTURE_SIZE				(5.0f)									//テクスチャサイズの倍率最大値
 #define MIN_TEXTURE_SIZE				(0.5f)									//テクスチャサイズの倍率最小値
 #define FR_SIZE_VALUE					(400)									//半径の大きさの値
@@ -200,8 +200,8 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 {
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
-																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+	//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
+	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
@@ -232,7 +232,7 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
 	D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
@@ -355,7 +355,7 @@ void CEffect::Update(void)
 
 		//波
 	case EFFECT_TYPE_3:
-		if (MAX_GRAVITY_COUNTER_WAVE< GetPos().y)
+		if (rand() % MAX_GRAVITY_COUNTER_WAVE< GetPos().y)
 		{
 			SetMove(EFFECT_FALL_WAVE);
 			m_nType = EFFECT_TYPE_NONE;
