@@ -92,10 +92,10 @@ public:
 
 	void Knock_Back(void);										// ノックバック処理
 
-																//ジョイスティックの回転
-	void SetAngle_L(float fangle_L) { m_fAngle_L = fangle_L; }	//格納L
+	//ジョイスティックの回転
+	void SetAngle_L(float fangle_L);	//格納L
 	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
-	void SetAngle_R(float fangle_R) { m_fAngle_R = fangle_R; }	//格納R
+	void SetAngle_R(float fangle_R);	//格納R
 	float GetAngle_R(void) { return m_fAngle_R; }		//取得R
 
 private:

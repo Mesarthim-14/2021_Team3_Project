@@ -70,6 +70,7 @@
 #define KNOCK_BACK_SPEED		(100.0f)								// ノックバックの速さ
 #define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
 #define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
+#define STICK_ANGLERANGE		(1.0f)									//スティックの角度範囲
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -397,7 +398,7 @@ void CPlayer::Move(void)
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
 		// 左に移動
-		if (fAngle_R < disfAngle_R)
+		if (fAngle_R < disfAngle_R && fAngle_R + STICK_ANGLERANGE > disfAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -416,10 +417,10 @@ void CPlayer::Move(void)
 			m_rotDest.y = rot.y;
 		}
 		// falseの場合
-		if (m_bBack == false)
+		else if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > disfAngle_R)
+			if (fAngle_R > disfAngle_R && fAngle_R - STICK_ANGLERANGE < disfAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -452,7 +453,7 @@ void CPlayer::Move(void)
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
 		// 右に移動
-		if (fAngle_L < disfAngle_L )
+		if (fAngle_L < disfAngle_L && fAngle_L + STICK_ANGLERANGE > disfAngle_L)
 		{
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
@@ -471,10 +472,10 @@ void CPlayer::Move(void)
 			m_rotDest.y = rot.y;
 		}
 		// falseの場合
-		if (m_bBack == false)
+		else if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > disfAngle_L)
+			if (fAngle_L > disfAngle_L && fAngle_L - STICK_ANGLERANGE < disfAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -1522,4 +1523,24 @@ void CPlayer::Knock_Back(void)
 		// falseに
 		m_bKnock_Back = false;
 	}
+}
+
+//=============================================================================
+// Lスティック角度値格納関数
+// Author : SugawaraTsukasa
+//=============================================================================
+void CPlayer::SetAngle_L(float fangle_L)
+{
+	m_fAngle_L = fangle_L;
+
+}
+
+//=============================================================================
+// Rスティック角度値格納関数
+// Author : SugawaraTsukasa
+//=============================================================================
+void CPlayer::SetAngle_R(float fangle_R)
+{
+	m_fAngle_R = fangle_R;
+
 }
