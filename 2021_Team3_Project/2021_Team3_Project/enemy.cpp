@@ -37,7 +37,7 @@ CEnemy::CEnemy(PRIORITY Priority) : CCharacter(Priority)
 {
 	m_Attack_Decision_Type	= ATTACK_DECISION_FAN;
 	m_bAttack_Decision		= false;
-	m_AttackCount = 0;
+	m_AttackCount			= 0;
 }
 
 //=============================================================================
@@ -192,13 +192,13 @@ void CEnemy::FanDecision(void)
 		if (Rot.y > ANGLE_90 && Rot.y < ANGLE_270 || Rot.y < ANGLE_90 && Rot.y > -ANGLE_90)
 		{
 			// Œü‚«
- 			fRot = Rot.y - ANGLE_90;
+ 			fRot = Rot.y + ANGLE_90;
 		}
 		//‰E‚ðŒü‚¢‚Ä‚é‚©¶‚ðŒü‚¢‚Ä‚é‚©
 		if (Rot.y > ANGLE_0 && Rot.y < ANGLE_360 || Rot.y < ANGLE_0 && Rot.y > -ANGLE_0)
 		{
 			// Œü‚«
-			fRot = Rot.y + ANGLE_90;
+			fRot = Rot.y - ANGLE_90;
 		}
 
 		// ‰ñ“]

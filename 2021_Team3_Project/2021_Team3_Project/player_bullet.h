@@ -18,7 +18,7 @@
 class CPlayer_Bullet : public CBullet
 {
 public:
-	CPlayer_Bullet(PRIORITY Priority = PRIORITY_CHARACTER);		// コンストラクタ
+	CPlayer_Bullet(PRIORITY Priority = PRIORITY_MODEL);		// コンストラクタ
 	~CPlayer_Bullet();											// デストラクタ
 	static CPlayer_Bullet *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// 初期化処理

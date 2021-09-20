@@ -131,12 +131,7 @@ void CBullet::Update(void)
 		//…‚µ‚Ô‚«
 		CreateSplash();
 
-		// €–Só‘Ô‚É
-		SetState(STATE_DEAD);
-	}
-	// €–Só‘Ô‚Ìê‡
-	if (GetState() == STATE_DEAD)
-	{
+		// ”jŠü
 		Death();
 	}
 }
@@ -168,6 +163,9 @@ void CBullet::CreateSplash(void)
 //=============================================================================
 void CBullet::Death(void)
 {
+	// €–Só‘Ô‚É
+	SetState(STATE_DEAD);
+
 	// I—¹ˆ—
 	Uninit();
 
