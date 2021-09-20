@@ -33,9 +33,12 @@ public:
 private:
 	void Move(void);											// 移動処理
 	void Collision(void);										// 当たり判定処理
-	void AttackPoint_Crate(void);								// 攻撃地点生成
-	CEnemy_Bullet *m_pEnemy_Bullet;								// CEnemy_Bulletのポインタ
-	D3DXVECTOR3 m_PlayerPos;									// プレイヤーの位置
+	void AttackPoint_Crate(CEnemy_Bullet * pEnemyBullet);		// 攻撃地点生成
+	void Projectile_motion(void);								// 斜方投射処理
+
+	D3DXVECTOR3 m_TargetPos;									// プレイヤーの位置
 	STATE m_State;												// 状態
+	D3DXVECTOR3 m_StartPos;										// 初期位置
+	bool m_bInitVelocity;										// 初速
 };
 #endif

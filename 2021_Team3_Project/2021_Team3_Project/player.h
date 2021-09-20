@@ -74,6 +74,7 @@ public:
 	void PlayerControl(void);									// プレイヤーの制御
 	void UpdateRot(void);										// 角度の更新処理
 
+	void Hit(int nDamage);										// ヒット処理関数
 	void Death(void);											// 死亡関数
 	void Move(void);											// 移動処理
 	void Pad2Move(void);										// 2コントローラーの移動

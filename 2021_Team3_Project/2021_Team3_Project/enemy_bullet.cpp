@@ -1,5 +1,5 @@
 //=============================================================================
-// プレイヤー弾 [player_bullet.cpp]
+// 敵の弾 [player_bullet.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -20,12 +20,19 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE		(40.0f)								// 移動量
-#define MOVE_VALUE_Y	(60.0f)								// 移動量
-#define POS_Y_MAX		(4000.0f)							// Y最大値
-#define PARENT_NUM		(0)									// 親のナンバー
-#define DAMAGE			(100)								// ダメージ
-#define ANGLE_0		(D3DXToRadian(90))						// 90度
+#define MOVE_VALUE			(30.0f)								// 移動量
+#define MOVE_VALUE_Y		(60.0f)								// 移動量
+#define POS_Y_MAX			(4000.0f)							// Y最大値
+#define PARENT_NUM			(0)									// 親のナンバー
+#define DAMAGE				(10)								// ダメージ
+#define TIME				(1)									// 時間
+#define GRAVITY				(-1.0f)								// 重力
+#define DIVIDE_2F			(2.0f)								// ÷2
+#define ANGLE				(D3DXToRadian(60.0f))				// 角度
+#define SPEED_RATE			(1)									// 移動速度倍率
+#define POW_VALUE			(2.0f)								// 累乗値
+#define TARGET_Y			(0.0f)							// 目標地点Y
+// 攻撃地点のサイズ
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
 #define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))
 //=============================================================================
@@ -34,9 +41,10 @@
 //=============================================================================
 CEnemy_Bullet::CEnemy_Bullet(PRIORITY Priority)
 {
-	m_PlayerPos		= ZeroVector3;
-	m_State			= STATE_UP;
-	m_pEnemy_Bullet = nullptr;
+	m_TargetPos = ZeroVector3;
+	m_State = STATE_UP;
+	m_StartPos = ZeroVector3;
+	m_bInitVelocity = true;
 }
 //=============================================================================
 // インクルードファイル
@@ -63,14 +71,14 @@ CEnemy_Bullet * CEnemy_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		// !nullcheck
 		if (pEnemy_Bullet != nullptr)
 		{
-			// 代入
-			pEnemy_Bullet->m_pEnemy_Bullet = pEnemy_Bullet;
-
 			// 初期化処理
 			pEnemy_Bullet->Init(pos, rot);
 
 			// 箱生成
-			//CModel_Box::Create(pos, rot, pEnemy_Bullet);
+			CModel_Box::Create(pos, rot, pEnemy_Bullet);
+
+			// 攻撃地点生成
+			pEnemy_Bullet->AttackPoint_Crate(pEnemy_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -85,6 +93,9 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 初期化処理
 	CBullet::Init(pos, rot);
 
+	// 代入
+	m_StartPos = pos;
+
 	// プレイヤーのポインタ取得
 	CPlayer *pPlayer = GET_PLAYER_PTR;
 
@@ -92,10 +103,7 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pPlayer != nullptr)
 	{
 		// 位置座標取得
-		m_PlayerPos = pPlayer->GetPos();
-
-		// 攻撃地点生成
-		AttackPoint_Crate();
+		m_TargetPos = pPlayer->GetPos();
 	}
 	return S_OK;
 }
@@ -118,7 +126,7 @@ void CEnemy_Bullet::Update(void)
 	CBullet::Update();
 
 	// 移動処理
-	Move();
+	Projectile_motion();
 
 	// 当たり判定
 	Collision();
@@ -145,7 +153,7 @@ void CEnemy_Bullet::Move(void)
 	D3DXVECTOR3 move = ZeroVector3;
 
 	// 角度
-	float fAngle = atan2f((pos.x - m_PlayerPos.x), (pos.z - m_PlayerPos.z));
+	float fAngle = atan2f((pos.x - m_TargetPos.x), (pos.z - m_TargetPos.z));
 
 	// 0以上の場合
 	if ((int)fAngle != ZERO_INT)
@@ -201,28 +209,95 @@ void CEnemy_Bullet::Collision(void)
 	// プレイヤーのポインタ取得
 	CPlayer *pPlayer = GET_PLAYER_PTR;
 
-	// プレイヤー位置座標取得
-	D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
-
-	// プレイヤーサイズ取得
-	D3DXVECTOR3 PlayerSize = pPlayer->GetSize();
-
-	// 判定
-	if (CCollision::CollisionRectangleAndRectangle(pos, PlayerPos, size, PlayerSize) == true)
+	// nullptrでない場合
+	if (pPlayer != nullptr)
 	{
-		// 状態設定
-		SetState(STATE_DEAD);
+		// プレイヤー位置座標取得
+		D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
+
+		// プレイヤーサイズ取得
+		D3DXVECTOR3 PlayerSize = pPlayer->GetSize();
+
+		// 判定
+		if (CCollision::CollisionRectangleAndRectangle(pos, PlayerPos, size, PlayerSize) == true)
+		{
+			// ヒット処理
+			pPlayer->Hit(DAMAGE);
+
+			// 状態設定
+			Death();
+		}
 	}
 }
 //=============================================================================
 // 攻撃地点生成
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Bullet::AttackPoint_Crate(void)
+void CEnemy_Bullet::AttackPoint_Crate(CEnemy_Bullet * pEnemyBullet)
 {
 	// 矢印生成
-	CEnemy_Attack_Arrow_Polygon::Create(m_PlayerPos, ARROW_SIZE, m_pEnemy_Bullet);
+	CEnemy_Attack_Arrow_Polygon::Create(m_TargetPos, ARROW_SIZE, pEnemyBullet);
 
 	// 攻撃地点生成
-	CEnemy_Attack_Point_Polygon::Create(m_PlayerPos, POINT_SIZE, m_pEnemy_Bullet);
+	CEnemy_Attack_Point_Polygon::Create(m_TargetPos, POINT_SIZE, pEnemyBullet);
+}
+//=============================================================================
+// 斜方投射処理
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CEnemy_Bullet::Projectile_motion(void)
+{
+	// 距離
+	D3DXVECTOR3 Dist = ZeroVector3;
+
+	// 距離算出
+	Dist.x = m_StartPos.x - m_TargetPos.x;
+	Dist.y = m_StartPos.y - m_TargetPos.y;
+	Dist.z = m_StartPos.z - m_TargetPos.z;
+
+	// 水平方向の距離
+	float fX = sqrtf((Dist.x * Dist.x) + (Dist.z * Dist.z));
+
+	// 垂直方向
+	float fY = Dist.y;
+
+	// 斜方投射の公式を初速度について解く
+	float fSpeed = sqrtf(-GRAVITY * powf(fX, POW_VALUE) / (2.0f * powf(cosf(ANGLE), POW_VALUE) * (fX * tanf(ANGLE) + fY)));
+
+	// ベクトル
+	D3DXVECTOR3 Vec = ZeroVector3;
+
+	// 正規化
+	D3DXVec3Normalize(&Vec, &(D3DXVECTOR3(m_TargetPos.x - m_StartPos.x, fX * tanf(ANGLE), m_TargetPos.z - m_StartPos.z)));
+
+	// 速度
+	Vec *= fSpeed;
+
+	// 移動量取得
+	D3DXVECTOR3 move = GetMove();
+
+	// falseの場合
+	if (m_bInitVelocity == false)
+	{
+		// 重力
+		move.y += GRAVITY;
+	}
+	// trueの場合
+	if (m_bInitVelocity == true)
+	{
+		// 力 =速度 * 質量
+		move = Vec;
+
+		// 発射時重力を/2
+		move.y += GRAVITY / DIVIDE_2F;
+
+		// trueなら
+		if (m_bInitVelocity == true)
+		{
+			// false1に
+			m_bInitVelocity = false;
+		}
+	}
+	// 移動量
+	SetMove(move);
 }

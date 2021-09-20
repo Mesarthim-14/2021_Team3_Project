@@ -350,6 +350,16 @@ void CPlayer::UpdateRot(void)
 }
 
 //=============================================================================
+// 敵の弾のヒット処理
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CPlayer::Hit(int nDamage)
+{
+	// ダメージ減算
+	SetLife(GetLife() - nDamage);
+}
+
+//=============================================================================
 // 死んだときの処理
 // Author : Sugawara Tsukasa
 //=============================================================================
@@ -1291,42 +1301,31 @@ void CPlayer::Collision(void)
 				// サイズ取得
 				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
 
-				//どこの面に当たったか取得
-				// 左
-				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_LEFT)
+				// 矩形の当たり判定
+				if (CCollision::CollisionRectangleAndRectangle(ObstaclePos, pos, ObstacleSize, size) == true)
 				{
-					// 位置
-					pos.x = (-ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) - (size.x / DIVIDE_2);
+					// ベクトル
+					D3DXVECTOR3 Vec = ZeroVector3;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 右
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_RIGHT)
-				{
-					// 位置
-					pos.x = (ObstacleSize.x / DIVIDE_2 + ObstaclePos.x) + (size.x / DIVIDE_2);
+					// 法線ベクトル
+					D3DXVECTOR3 NormalVec = ZeroVector3;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 手前
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_PREVIOUS)
-				{
-					// 位置
-					pos.z = (-ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) - (size.z / DIVIDE_2);
+					// 進行ベクトル
+					Vec.x = ObstaclePos.x - pos.x;
+					Vec.z = ObstaclePos.z - pos.z;
 
-					// 位置設定
-					SetPos(pos);
-				}
-				// 奥
-				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, ObstaclePos, size, ObstacleSize) == CCollision::SURFACE_BACK)
-				{
-					// 位置
-					pos.z = (ObstacleSize.z / DIVIDE_2 + ObstaclePos.z) + (size.z / DIVIDE_2);
+					// 長さ算出
+					float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
-					// 位置設定
-					SetPos(pos);
+					// 法線ベクトルに
+					NormalVec.x = Vec.x / fVec_Length;
+					NormalVec.z = Vec.z / fVec_Length;
+
+					// 反射ベクトル算出
+					D3DXVec3Normalize(&m_Reflection_Vec, &(Vec - 2.0f * D3DXVec3Dot(&Vec, &NormalVec) * NormalVec));
+
+					// trueに
+					m_bKnock_Back = true;
 				}
 				// 次のポインタ取得
 				pScene = pSceneCur;

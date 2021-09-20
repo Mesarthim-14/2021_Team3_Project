@@ -156,7 +156,7 @@ void CMap::RayCollision(void)
 				if (RayData.nNum > ZERO_INT)
 				{
 					// ƒŒƒC‚Ìî•ñ
-					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, GET_MAP_PTR, RayData.fAngle, RayData.fRange, RayData.nNum);
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, this, RayData.fAngle, RayData.fRange, RayData.nNum);
 
 					// true‚Ìê‡
 					if (Ray_Info.bHit == true)
