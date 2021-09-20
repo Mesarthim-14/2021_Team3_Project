@@ -25,13 +25,10 @@
 #define POS_Y_MAX			(4000.0f)							// Y最大値
 #define PARENT_NUM			(0)									// 親のナンバー
 #define DAMAGE				(10)								// ダメージ
-#define TIME				(1)									// 時間
 #define GRAVITY				(-1.0f)								// 重力
 #define DIVIDE_2F			(2.0f)								// ÷2
 #define ANGLE				(D3DXToRadian(60.0f))				// 角度
-#define SPEED_RATE			(1)									// 移動速度倍率
 #define POW_VALUE			(2.0f)								// 累乗値
-#define TARGET_Y			(0.0f)							// 目標地点Y
 // 攻撃地点のサイズ
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
 #define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))
