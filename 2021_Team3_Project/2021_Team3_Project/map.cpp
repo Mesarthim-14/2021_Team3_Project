@@ -27,6 +27,7 @@
 //=============================================================================
 CMap::CMap(PRIORITY Priority) : CModel(Priority)
 {
+	m_Type = TYPE_NORMAL;
 }
 //=============================================================================
 // インクルードファイル
@@ -39,7 +40,7 @@ CMap::~CMap()
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CMap * CMap::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CMap * CMap::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, TYPE type)
 {
 	// CBulletのポインタ
 	CMap *pMap = nullptr;
@@ -53,6 +54,9 @@ CMap * CMap::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		// !nullcheck
 		if (pMap != nullptr)
 		{
+			// 代入
+			pMap->m_Type = type;
+
 			// 初期化処理
 			pMap->Init(pos, rot);
 		}
@@ -72,9 +76,21 @@ HRESULT CMap::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_MAP);
+		// モデル
+		CXfile::MODEL model;
 
+		// TYPE_NORMALの場合
+		if (m_Type == TYPE_NORMAL)
+		{
+			// モデル情報取得
+			model = pXfile->GetXfile(CXfile::XFILE_NUM_MAP);
+		}
+		// TYPE_BOSSの場合
+		if (m_Type == TYPE_BOSS)
+		{
+			// モデル情報取得
+			model = pXfile->GetXfile(CXfile::XFILE_NUM_BOSS_MAP);
+		}
 		// モデルの情報を渡す
 		BindModel(model);
 	}

@@ -1,89 +1,75 @@
 //=============================================================================
-// 敵ライフゲージ [enemy_life.cpp]
+// ライフゲージの背景 [gage_3d_back.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-#include "enemy_life.h"
-#include "gage_3d_back.h"
+#include "manager.h"
+#include "renderer.h"
+#include "texture.h"
+#include "resource_manager.h"
+#include "boss_life_back.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define POS			(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
-#define SIZE		(D3DXVECTOR3(500.0f,30.0f,0.0f))				// サイズ
-#define COL			(D3DXCOLOR(1.0f,0.0f,0.0f,1.0f))				// 色
+#define COL		(D3DXCOLOR(0.0f,0.0f,0.0f,1.0f))// 色
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Life::CEnemy_Life(PRIORITY nPriority) : CGage_3D(nPriority)
+CBoss_Life_Back::CBoss_Life_Back(PRIORITY Priority) : CScene2D(Priority)
 {
-	m_pEnemy		= nullptr;
+	m_pEnemy = nullptr;
 }
 //=============================================================================
-// デストラクタ
+// インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Life::~CEnemy_Life()
+CBoss_Life_Back::~CBoss_Life_Back()
 {
 }
 //=============================================================================
-// 生成処理関数
+// インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Life * CEnemy_Life::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy * pEnemy)
+CBoss_Life_Back * CBoss_Life_Back::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy *pEnemy)
 {
-	// CEnemy_Lifeのポインタ
-	CEnemy_Life * pEnemy_Life = nullptr;
+	// CBoss_Life_Backのポインタ
+	CBoss_Life_Back *pBoss_Life_Back = nullptr;
 
 	// nullcheck
-	if (pEnemy_Life == nullptr)
+	if (pBoss_Life_Back == nullptr)
 	{
 		// メモリ確保
-		pEnemy_Life = new CEnemy_Life;
+		pBoss_Life_Back = new CBoss_Life_Back;
 
 		// !nullcheck
-		if (pEnemy_Life != nullptr)
+		if (pBoss_Life_Back != nullptr)
 		{
 			// 代入
-			pEnemy_Life->m_pEnemy = pEnemy;
+			pBoss_Life_Back->m_pEnemy = pEnemy;
 
 			// 初期化処理
-			pEnemy_Life->Init(pos, SIZE);
-
-			// 背景生成
-			CGage_3D_Back::Create(pos, size, pEnemy);
+			pBoss_Life_Back->Init(pos, (size / DIVIDE_2) );
 		}
 	}
 	// ポインタを返す
-	return pEnemy_Life;
+	return pBoss_Life_Back;
 }
 //=============================================================================
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CEnemy_Life::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CBoss_Life_Back::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// ライフ取得
-	int nLife = m_pEnemy->GetLife();
-
-	// ライフの最大値設定
-	SetMaxGageNum(nLife);
-
 	// 初期化処理
-	CGage_3D::Init(pos, size);
-
-	// ライフの値設定
-	SetGageNum(nLife);
+	CScene2D::Init(pos, size);
 
 	// 色設定
-	SetColor(COL);
-
-	// アルファブレンド
-	SetAlpha(true);
+	SetCol(COL);
 
 	return S_OK;
 }
@@ -91,7 +77,7 @@ HRESULT CEnemy_Life::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Life::Uninit(void)
+void CBoss_Life_Back::Uninit(void)
 {
 	// !nullcheck
 	if (m_pEnemy != nullptr)
@@ -101,40 +87,17 @@ void CEnemy_Life::Uninit(void)
 	}
 
 	// 終了処理
-	CGage_3D::Uninit();
+	CScene2D::Uninit();
 }
 //=============================================================================
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Life::Update(void)
+void CBoss_Life_Back::Update(void)
 {
 	// 更新処理
-	CGage_3D::Update();
+	CScene2D::Update();
 
-	// 位置取得
-	D3DXVECTOR3 pos = m_pEnemy->GetPos();
-
-	// サイズ取得
-	D3DXVECTOR3 size = m_pEnemy->GetSize();
-
-	// 位置設定
-	SetPosition(POS);
-
-	// ヒット判定取得
-	bool bHit = m_pEnemy->GetHit();
-	// trueの場合
-	if (bHit == true)
-	{
-		// ライフ取得
-		int nLife = m_pEnemy->GetLife();
-
-		// ゲージの値設定
-		SetGageNum(nLife);
-
-		// ヒット設定
-		m_pEnemy->SetHit(false);
-	}
 	// 死亡状態の場合
 	if (m_pEnemy->GetState() == CEnemy::STATE_DEAD)
 	{
@@ -148,8 +111,8 @@ void CEnemy_Life::Update(void)
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Life::Draw(void)
+void CBoss_Life_Back::Draw(void)
 {
-	// 更新処理
-	CGage_3D::Draw();
+	// 描画処理
+	CScene2D::Draw();
 }

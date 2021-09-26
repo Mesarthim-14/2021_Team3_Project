@@ -27,6 +27,8 @@ CScene3D::CScene3D(PRIORITY Priority) : CSceneBase(Priority)
 	m_bAlpha = false;
 	m_bInverse = false;
 	m_fAlphaNum = 0.0f;
+	m_move = ZeroVector3;
+
 }
 
 //=============================================================================
@@ -66,6 +68,9 @@ void CScene3D::Uninit(void)
 //=============================================================================
 void CScene3D::Update(void)
 {
+	// 移動量加算
+	GetPos() += m_move;
+
 	// アニメーションの設定がされたとき
 	if (m_nPatternAnim != 0)
 	{

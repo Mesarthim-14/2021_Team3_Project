@@ -313,9 +313,6 @@ void CPlayer::PlayerControl()
 	// キーボード移動
 	KeyboardMove();
 
-	// 攻撃処理
-	Attack();
-
 	// 当たり判定
 	Collision();
 

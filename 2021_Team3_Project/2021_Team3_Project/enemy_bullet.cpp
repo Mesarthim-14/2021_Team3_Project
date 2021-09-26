@@ -1,5 +1,5 @@
 //=============================================================================
-// 敵の弾 [player_bullet.cpp]
+// 敵の弾 [enemy_bullet.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -25,13 +25,10 @@
 #define POS_Y_MAX			(4000.0f)							// Y最大値
 #define PARENT_NUM			(0)									// 親のナンバー
 #define DAMAGE				(10)								// ダメージ
-#define TIME				(1)									// 時間
 #define GRAVITY				(-1.0f)								// 重力
 #define DIVIDE_2F			(2.0f)								// ÷2
 #define ANGLE				(D3DXToRadian(60.0f))				// 角度
-#define SPEED_RATE			(1)									// 移動速度倍率
 #define POW_VALUE			(2.0f)								// 累乗値
-#define TARGET_Y			(0.0f)							// 目標地点Y
 // 攻撃地点のサイズ
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
 #define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))
@@ -73,12 +70,6 @@ CEnemy_Bullet * CEnemy_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pEnemy_Bullet->Init(pos, rot);
-
-			// 箱生成
-			CModel_Box::Create(pos, rot, pEnemy_Bullet);
-
-			// 攻撃地点生成
-			pEnemy_Bullet->AttackPoint_Crate(pEnemy_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -96,15 +87,12 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 代入
 	m_StartPos = pos;
 
-	// プレイヤーのポインタ取得
-	CPlayer *pPlayer = GET_PLAYER_PTR;
+	// 箱生成
+	CModel_Box::Create(pos, rot, this);
 
-	// !nullcheck
-	if (pPlayer != nullptr)
-	{
-		// 位置座標取得
-		m_TargetPos = pPlayer->GetPos();
-	}
+	// 攻撃地点生成
+	AttackPoint_Crate(this);
+
 	return S_OK;
 }
 //=============================================================================
@@ -124,12 +112,6 @@ void CEnemy_Bullet::Update(void)
 {
 	// 更新処理
 	CBullet::Update();
-
-	// 移動処理
-	Projectile_motion();
-
-	// 当たり判定
-	Collision();
 }
 //=============================================================================
 // 描画処理関数
@@ -233,13 +215,13 @@ void CEnemy_Bullet::Collision(void)
 // 攻撃地点生成
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Bullet::AttackPoint_Crate(CEnemy_Bullet * pEnemyBullet)
+void CEnemy_Bullet::AttackPoint_Crate(CBullet * pBullet)
 {
 	// 矢印生成
-	CEnemy_Attack_Arrow_Polygon::Create(m_TargetPos, ARROW_SIZE, pEnemyBullet);
+	CEnemy_Attack_Arrow_Polygon::Create(m_TargetPos, ARROW_SIZE, pBullet);
 
 	// 攻撃地点生成
-	CEnemy_Attack_Point_Polygon::Create(m_TargetPos, POINT_SIZE, pEnemyBullet);
+	CEnemy_Attack_Point_Polygon::Create(m_TargetPos, POINT_SIZE, pBullet);
 }
 //=============================================================================
 // 斜方投射処理

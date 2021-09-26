@@ -11,6 +11,7 @@
 #include "character.h"
 #include "collision.h"
 #include "model_box.h"
+#include "enemy.h"
 #include "player_bullet.h"
 //=============================================================================
 // マクロ定義
@@ -67,6 +68,9 @@ CPlayer_Bullet * CPlayer_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
+	// XFile名設定
+	SetXFileNum(CXfile::XFILE_NUM_BULLET);
+
 	// 初期化処理
 	CBullet::Init(pos, ZeroVector3);
 
@@ -80,6 +84,8 @@ HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 移動量設定
 	SetMove(move);
 
+	// 箱生成
+	//CModel_Box::Create(pos, rot, this);
 	return S_OK;
 }
 //=============================================================================
@@ -146,27 +152,23 @@ void CPlayer_Bullet::Collision(void)
 				D3DXVECTOR3 CharacterPos = ZeroVector3;
 
 				// 位置取得
-				CharacterPos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
-				CharacterPos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
-				CharacterPos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+				CharacterPos.x = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+				CharacterPos.y = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+				CharacterPos.z = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
 
 				// サイズ取得
-				D3DXVECTOR3 CharacterSize = ((CCharacter*)pScene)->GetSize();
+				D3DXVECTOR3 CharacterSize = ((CEnemy*)pScene)->GetSize();
 
 				// 判定
 				if (CCollision::CollisionRectangleAndRectangle(pos, CharacterPos, size, CharacterSize) == true)
 				{
-					// 状態設定
-					SetState(CModel::STATE_DEAD);
-
-					// ダメージ
-					int nLife = ((CCharacter*)pScene)->GetLife();
-
-					// ライフ減算
-					nLife = nLife - DAMAGE;
-
 					// ライフ設定
-					((CCharacter*)pScene)->SetLife(nLife);
+					((CEnemy*)pScene)->Hit(DAMAGE);
+
+					// 終了
+					Uninit();
+
+					return;
 				}
 
 				// 次に代入
