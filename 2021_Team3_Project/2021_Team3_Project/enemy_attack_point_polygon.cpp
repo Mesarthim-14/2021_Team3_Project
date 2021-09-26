@@ -33,7 +33,7 @@
 //=============================================================================
 CEnemy_Attack_Point_Polygon::CEnemy_Attack_Point_Polygon(PRIORITY Priority) : CScene3D(Priority)
 {
-	m_pEnemy_Bullet = nullptr;
+	m_pBullet		= nullptr;
 	m_bCollision	= false;
 }
 //=============================================================================
@@ -47,7 +47,7 @@ CEnemy_Attack_Point_Polygon::~CEnemy_Attack_Point_Polygon()
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Attack_Point_Polygon * CEnemy_Attack_Point_Polygon::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEnemy_Bullet *pEnemy_Bullet)
+CEnemy_Attack_Point_Polygon * CEnemy_Attack_Point_Polygon::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CBullet *pBullet)
 {
 	// CEnemy_Attack_Point_Polygonのポインタ
 	CEnemy_Attack_Point_Polygon *pEnemy_Attack_Point_Polygon = nullptr;
@@ -62,7 +62,7 @@ CEnemy_Attack_Point_Polygon * CEnemy_Attack_Point_Polygon::Create(D3DXVECTOR3 po
 		if (pEnemy_Attack_Point_Polygon != nullptr)
 		{
 			// 代入
-			pEnemy_Attack_Point_Polygon->m_pEnemy_Bullet = pEnemy_Bullet;
+			pEnemy_Attack_Point_Polygon->m_pBullet = pBullet;
 
 			// 初期化処理
 			pEnemy_Attack_Point_Polygon->Init(pos, size);
@@ -105,9 +105,9 @@ HRESULT CEnemy_Attack_Point_Polygon::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 void CEnemy_Attack_Point_Polygon::Uninit(void)
 {
 	// !nullcheck
-	if (m_pEnemy_Bullet != nullptr)
+	if (m_pBullet != nullptr)
 	{
-		m_pEnemy_Bullet = nullptr;
+		m_pBullet = nullptr;
 	}
 
 	// 終了処理
@@ -129,7 +129,7 @@ void CEnemy_Attack_Point_Polygon::Update(void)
 	Collision();
 
 	// 死亡状態の場合
-	if (m_pEnemy_Bullet->GetState() == CModel::STATE_DEAD)
+	if (m_pBullet->GetState() == CModel::STATE_DEAD)
 	{
 		// 終了処理
 		Uninit();

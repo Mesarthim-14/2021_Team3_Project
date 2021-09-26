@@ -63,12 +63,6 @@ CEnemy_Scaffolding * CEnemy_Scaffolding::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot
 		{
 			// 初期化処理
 			pEnemy_Scaffolding->Init(pos, rot);
-
-			// ボックス生成
-			//CCharacter_Box::Create(pos, rot, pEnemy_Scaffolding);
-
-			// ライフゲージ生成
-			//CEnemy_Life::Create(pos, rot, pEnemy_Scaffolding);
 		}
 	}
 	// ポインタを返す

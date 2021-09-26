@@ -13,26 +13,37 @@
 #include "player.h"
 #include "character_box.h"
 #include "byte_effect.h"
+#include "motion.h"
+#include "boss_bullet.h"
+#include "byte_attack_range.h"
 #include "boss_shark.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE		(100)									// 体力
-#define MOVE_VALUE		(10.0f)									// 移動量
-#define ROT_SPEED		(0.01f)									// 旋回速度
-#define ANGLE_180		(180)									// 180度
-#define ANGLE_360		(360)									// 360度
-#define SIZE			(D3DXVECTOR3 (700.0f,900.0f,700.0f))	// サイズ
-#define ATTACK_COUNT	(300)									// 攻撃間隔
-
+#define MAX_LIFE		(1000)														// 体力
+#define ROT_SPEED		(0.01f)														// 旋回速度
+#define ANGLE_180		(D3DXToRadian(180))											// 180度
+#define ANGLE_90		(D3DXToRadian(90))											// 90度
+#define SIZE			(D3DXVECTOR3 (700.0f,900.0f,900.0f))						// サイズ
+#define BYTE_SIZE		(D3DXVECTOR3 (900.0f,900.0f,0.0f))							// 噛みつきエフェクトサイズ
+#define BYTE_RANGE_SIZE	(D3DXVECTOR3 (10000.0f,0.0f,10000.0f))						// 噛みつき範囲サイズ
+#define ATTACK_COUNT	(300)														// 攻撃間隔
+#define BYTE_COUNT		(500)														// 噛みつき攻撃
+#define BYTE_KEY_MAX	(1)															// 噛みつき攻撃Keyの最大
+#define BYTE_FRAME		(15)														// エフェクト生成Frame
+#define BYTE_FRAME_MAX	(45)														// 噛みつき攻撃Frameの最大
+#define BULLET_ROT		(D3DXVECTOR3(D3DXToRadian(90.0f),0.0f,D3DXToRadian(180.0f)))// 向き
+#define MUT_2			(2)															// 2倍
+#define RANGE_LENGTH	(10000.0f)													// 攻撃範囲位置算出用
+// 顎の位置
+#define CHIN_POS		(D3DXVECTOR3(pChin->GetMtxWorld()._41, pChin->GetMtxWorld()._42, pChin->GetMtxWorld()._43))
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CBoss_Shark::CBoss_Shark(PRIORITY Priority) : CEnemy(Priority)
 {
-	m_nAttackCount = ZERO_INT;
 	m_MotionState = MOTION_STATE_IDLE;
 }
 //=============================================================================
@@ -62,12 +73,8 @@ CBoss_Shark * CBoss_Shark::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pBoss_Shark->Init(pos, rot);
-
-			// ボックス生成
-			CCharacter_Box::Create(pos, rot, pBoss_Shark);
 		}
 	}
-
 	// ポインタを返す
 	return pBoss_Shark;
 }
@@ -96,8 +103,12 @@ HRESULT CBoss_Shark::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 攻撃判定設定
 	SetAttackDecision(ATTACK_DECISION_CIRCLE);
 
+	// タイプ設定
+	SetType(TYPE_BOSS);
+
 	// 初期化関数
 	CEnemy::Init(pos, rot);
+
 	return S_OK;
 }
 //=============================================================================
@@ -132,6 +143,9 @@ void CBoss_Shark::Update(void)
 
 	// 攻撃処理
 	Attack();
+
+	// 死亡処理
+	Death();
 }
 //=============================================================================
 // 描画関数
@@ -152,14 +166,56 @@ void CBoss_Shark::Attack(void)
 	// エネミーの攻撃
 	CEnemy::Attack();
 
+	// 攻撃カウント取得
+	int nAttackCount = GetAttackCount();
+
 	// カウントが300以上の場合
-	if (m_nAttackCount >= ATTACK_COUNT)
+	if (nAttackCount == ATTACK_COUNT)
+	{
+		// 位置取得
+		D3DXVECTOR3 pos = GetPos();
+
+		// 向き取得
+		D3DXVECTOR3 rot = GetRot();
+
+		// 攻撃範囲位置
+		D3DXVECTOR3 RangePos = ZeroVector3;
+
+		// 座標を求める
+		RangePos.x = pos.x - cosf(rot.y + ANGLE_90) * RANGE_LENGTH;
+		RangePos.z = pos.z + sinf(rot.y + ANGLE_90) * RANGE_LENGTH;
+
+		// 攻撃範囲生成
+		//CByte_Attack_Range::Create(RangePos, BYTE_RANGE_SIZE);
+
+		SharkBulletAttack();
+	}
+	// カウントが500以上の場合
+	if (nAttackCount == BYTE_COUNT)
 	{
 		// 噛みつき攻撃
-		ByteAttack();
+		//ByteAttack();
 
 		// 0に
-		m_nAttackCount = ZERO_INT;
+		GetAttackCount() = ZERO_INT;
+	}
+}
+//=============================================================================
+// 死亡処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CBoss_Shark::Death(void)
+{
+	// 状態取得
+	int nState = GetState();
+
+	// 死亡状態
+	if (nState == STATE_DEAD)
+	{
+		// 終了
+		Uninit();
+
+		return;
 	}
 }
 //=============================================================================
@@ -168,14 +224,20 @@ void CBoss_Shark::Attack(void)
 //=============================================================================
 void CBoss_Shark::ByteAttack(void)
 {
-	// 位置取得
-	D3DXVECTOR3 pos = GetPos();
-
 	// 噛みつきモーション
 	m_MotionState = MOTION_STATE_BYTE;
+}
+//=============================================================================
+// サメの弾攻撃処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CBoss_Shark::SharkBulletAttack(void)
+{
+	// 顎のポインタ取得
+	CModelAnime *pChin = GetModelAnime(PARTS_CHIN);
 
-	// 噛みつきエフェクト
-	CByte_Effect::CrateEffect(pos, SIZE);
+	// 弾生成
+	CBoss_Bullet::CreateBullet(CHIN_POS, BULLET_ROT);
 }
 //=============================================================================
 // モーション処理関数
@@ -187,11 +249,42 @@ void CBoss_Shark::MotionUpdate(void)
 	if (m_MotionState == MOTION_STATE_IDLE)
 	{
 		// モーション設定
-		SetMotion(MOTION_STATE_IDLE);
+		SetMotion(m_MotionState);
 	}
 	if (m_MotionState == MOTION_STATE_BYTE)
 	{
 		// モーション設定
-		SetMotion(MOTION_STATE_BYTE);
+		SetMotion(m_MotionState);
+
+		// 位置取得
+		D3DXVECTOR3 pos = GetPos();
+
+		// モーション取得
+		CMotion *pMotion = GetMotion();
+
+		// キー取得
+		int nKey = pMotion->GetKey();
+
+		// フレーム取得
+		int nFrame = pMotion->GetCountMotion();
+		
+		// キーとカウントが最大になったら
+		if (nKey == BYTE_KEY_MAX && nFrame == BYTE_FRAME)
+		{
+			// 向き取得
+			D3DXVECTOR3 rot = GetRot();
+
+			// 向き加算
+			rot.y += ANGLE_180;
+
+			// 噛みつきエフェクト生成
+			CByte_Effect::CrateEffect(pos, BYTE_SIZE, rot);
+		}
+		// キーとカウントが最大になったら
+		if (nKey == BYTE_KEY_MAX && nFrame >= BYTE_FRAME_MAX - 1)
+		{
+			// アイドルモーションに
+			m_MotionState = MOTION_STATE_IDLE;
+		}
 	}
 }

@@ -34,28 +34,28 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 左の水かき
 		PARENT = 0					# (親)船
-		POS = -350.0 282.0 -5.00
+		POS = -450.0 282.0 -5.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 2					# 右の水かき
 		PARENT = 0					# (親)船
-		POS = 350.0 282.0 -5.00
+		POS = 450.0 282.0 -5.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 3					# 砲台
 		PARENT = 0					# (親)船
-		POS = -50.0 550.0 -560.00
+		POS = -75.0 680.0 -700.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 4					# 砲台
 		PARENT = 0					# (親)船
-		POS = 50.0 550.0 -560.00
+		POS = 75.0 680.0 -700.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET

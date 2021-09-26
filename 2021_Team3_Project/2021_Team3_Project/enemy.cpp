@@ -17,6 +17,9 @@
 #include "game.h"
 #include "fade.h"
 #include "resource_manager.h"
+#include "character_box.h"
+#include "enemy_life.h"
+#include "boss_life.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
@@ -37,7 +40,9 @@ CEnemy::CEnemy(PRIORITY Priority) : CCharacter(Priority)
 {
 	m_Attack_Decision_Type	= ATTACK_DECISION_FAN;
 	m_bAttack_Decision		= false;
-	m_AttackCount = 0;
+	m_AttackCount			= ZERO_INT;
+	m_Type					= TYPE_NORMAL;
+	m_bHit					= false;
 }
 
 //=============================================================================
@@ -73,6 +78,21 @@ HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 初期化処理
 	CCharacter::Init(pos, rot);			// 座標、角度
 
+	// ボックス生成
+	CCharacter_Box::Create(pos, rot, this);
+
+	// 通常敵の場合
+	if (m_Type == TYPE_NORMAL)
+	{
+		// ライフゲージ生成
+		CEnemy_Life::Create(pos, rot, this);
+	}
+	// 通常敵の場合
+	if (m_Type == TYPE_BOSS)
+	{
+		// ライフゲージ生成
+		CBoss_Life::Create(ZeroVector3, ZeroVector3, this);
+	}
 	return S_OK;
 }
 
@@ -192,13 +212,13 @@ void CEnemy::FanDecision(void)
 		if (Rot.y > ANGLE_90 && Rot.y < ANGLE_270 || Rot.y < ANGLE_90 && Rot.y > -ANGLE_90)
 		{
 			// 向き
- 			fRot = Rot.y - ANGLE_90;
+ 			fRot = Rot.y + ANGLE_90;
 		}
 		//右を向いてるか左を向いてるか
 		if (Rot.y > ANGLE_0 && Rot.y < ANGLE_360 || Rot.y < ANGLE_0 && Rot.y > -ANGLE_0)
 		{
 			// 向き
-			fRot = Rot.y + ANGLE_90;
+			fRot = Rot.y - ANGLE_90;
 		}
 
 		// 回転
@@ -274,6 +294,28 @@ void CEnemy::CircleDecision(void)
 		}
 	}
 }
+//=============================================================================
+// ヒット処理関数
+// Author : Sugawara Tsukasa
+//=============================================================================
+void CEnemy::Hit(int nDamage)
+{
+	// ライフ取得
+	int nLife = GetLife();
+
+	// ライフ減算
+	nLife -= nDamage;
+
+	// trueに
+	m_bHit = true;
+
+	// trueの場合
+	if (m_bHit == true)
+	{
+		// ライフ設定
+		SetLife(nLife);
+	}
+}
 
 //=============================================================================
 // 死んだときの処理
@@ -289,6 +331,7 @@ void CEnemy::Death(void)
 //=============================================================================
 void CEnemy::Attack(void)
 {
+	// インクリメント
 	m_AttackCount++;
 }
 

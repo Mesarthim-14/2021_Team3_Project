@@ -44,6 +44,7 @@ CXfile::CXfile()
 		{ "data/Model/Map/Map.x"},					// マップ
 		{ "data/Model/Map/TitleMap.x" },			// タイトルマップ
 		{ "data/Model/Map/sky.x" },			// タイトルマップ
+		{ "data/Model/Map/boss_map.x" },			// ボスマップ
 	};
 
 	m_aHierarchyXfileName =

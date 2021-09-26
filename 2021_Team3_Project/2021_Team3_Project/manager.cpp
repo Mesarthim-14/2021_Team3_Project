@@ -371,6 +371,5 @@ CModeBase * CManager::GetModePtr(void)
 	{
 		return pMode;
 	}
-
 	return nullptr;
 }
