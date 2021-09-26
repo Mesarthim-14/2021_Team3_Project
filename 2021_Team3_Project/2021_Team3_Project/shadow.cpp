@@ -89,14 +89,6 @@ void CShadow::Uninit(void)
 		delete m_pShadowVolume;
 		m_pShadowVolume = nullptr;
 	}
-
-	if (m_pPolygon)
-	{
-		// ƒ|ƒŠƒSƒ“I—¹ˆ—
-		m_pPolygon->Uninit();
-		m_pPolygon = nullptr;
-	}
-
 }
 
 //=============================================================================
@@ -160,8 +152,14 @@ void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
 }
 
 //=============================================================================
-// ‰e‚Ì•`‰æ
+// ƒ|ƒŠƒSƒ“‚ÌI—¹ˆ—
 //=============================================================================
-void CShadow::Draw(void)
+void CShadow::PolygonUninit(void)
 {
+	if (m_pPolygon)
+	{
+		// ƒ|ƒŠƒSƒ“I—¹ˆ—
+		m_pPolygon->Uninit();
+		m_pPolygon = nullptr;
+	}
 }

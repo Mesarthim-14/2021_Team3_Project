@@ -17,7 +17,7 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CBoss_Fade::CBoss_Fade(PRIORITY Priority = PRIORITY_FADE)
+CBoss_Fade::CBoss_Fade(PRIORITY Priority) : CScene2D(Priority)
 {
 	m_FadeMode	= FADE_MODE_NONE;
 	m_colorFade = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
@@ -89,7 +89,7 @@ void CBoss_Fade::Update(void)
 	CScene2D::Update();
 
 	// ゲーム取得
-	CGame *pGame = CManager::GetGame();
+	CGame *pGame = (CGame*)CManager::GetMode();
 
 	if (m_FadeMode != FADE_MODE_NONE)
 	{

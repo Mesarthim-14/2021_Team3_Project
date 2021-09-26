@@ -40,7 +40,7 @@
 #define SENTENCE_3_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 530.0f, 0.0f))
 #define SENTENCE_3_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))
 
-#define CREATE_SENTENCE_INTER		(180)
+#define CREATE_SENTENCE_INTER		(120)
 #define SENTENCE_FADE_OUT_NUM		(0.05f)
 
 //=============================================================================

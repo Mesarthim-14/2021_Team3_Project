@@ -285,6 +285,9 @@ void CManager::SetMode(MODE_TYPE mode)
 	//サウンドストップ
 	pSound->StopAll();
 
+	// 影の終了処理
+	CShadow::PolygonUninit();
+
 	// シーン情報のリリース
 	CScene::ReleaseAll();
 

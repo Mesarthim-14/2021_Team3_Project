@@ -18,7 +18,6 @@
 CTexture::CTexture()
 {
 	memset(m_apTexture, 0, sizeof(m_apTexture));
-
 }
 
 //=============================================================================

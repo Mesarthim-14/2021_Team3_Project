@@ -32,7 +32,7 @@
 //=============================================================================
 CBullet::CBullet(PRIORITY Priority) : CModel(Priority)
 {
-	m_XfileNum = CXfile::XFILE_NUM_NONE;
+	m_XfileNum = CXfile::XFILE_NUM_BULLET;
 }
 //=============================================================================
 // インクルードファイル
@@ -41,6 +41,7 @@ CBullet::CBullet(PRIORITY Priority) : CModel(Priority)
 CBullet::~CBullet()
 {
 }
+
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
@@ -85,7 +86,7 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		BindModel(model);
 
 		// 影の設定
-		SetShadowInfo(model);
+	//	SetShadowInfo(model);
 	}
 
 	// サイズ設定

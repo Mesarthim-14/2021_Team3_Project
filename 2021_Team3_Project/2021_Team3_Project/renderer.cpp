@@ -235,9 +235,6 @@ void CRenderer::Draw(void)
 
 		//オブジェクトクラスの全描画処理呼び出し
 		CScene::DrawAll();
-
-		// 影の生成
-		CShadow::Draw();
 		
 		// デバッグプロシージャ
 		CDebugProc *pDebugProc = CManager::GetDebugProc();
