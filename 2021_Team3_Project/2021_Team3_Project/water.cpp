@@ -26,8 +26,8 @@
 //=============================================================================
 #define WATER_WIDTH					(150)			// 分割数
 #define WATER_HEIGHT				(150)			// 分割数
-#define WATER_WIDTH_SIZE			(80000.0f)		// サイズ
-#define WATER_HEIGHT_SIZE			(80000.0f)		// サイズ
+#define WATER_WIDTH_SIZE			(120000.0f)		// サイズ
+#define WATER_HEIGHT_SIZE			(120000.0f)		// サイズ
 
 #define WATER_GRAVITY				(0.01f)			// 水に掛かる重力
 #define WAVE_TIME_INTER				(1.0f)			// 波の速度

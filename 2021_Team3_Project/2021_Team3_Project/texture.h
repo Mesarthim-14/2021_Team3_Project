@@ -38,12 +38,12 @@ public:
 		TEXTURE_NUM_ATTACK_ARROW,		// 攻撃地点の矢印
 		TEXTURE_NUM_BYTE,				// 噛みつき
 		TEXTURE_NUM_TITLE_LOGO,			// タイトルロゴ
-		TEXTURE_NUM_RESULT_BG,			// リザルト背景
 		TEXTURE_NUM_STORY_BG,			// ストーリーの背景
 		TEXTURE_NUM_STORY_SENTENCE0,	// ストーリーの文章
 		TEXTURE_NUM_STORY_SENTENCE1,	// ストーリーの文章
 		TEXTURE_NUM_STORY_SENTENCE2,	// ストーリーの文章
 		TEXTURE_NUM_STORY_SENTENCE3,	// ストーリーの文章
+		TEXTURE_NUM_RESULT_BG,			// リザルト
 		TEXTURE_NUM_MAX
 	};
 

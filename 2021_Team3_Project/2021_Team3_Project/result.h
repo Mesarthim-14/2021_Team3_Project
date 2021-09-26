@@ -23,15 +23,16 @@ class CScene2D;
 class CResult : public CModeBase
 {
 public:
-	CResult();				// コンストラクタ
-	~CResult();				// デストラクタ
+	CResult();					// コンストラクタ
+	~CResult();					// デストラクタ
 
-	HRESULT Init(void);		// 初期化処理
-	void Uninit(void);		// 終了処理
-	void Update(void);		// 更新処理
-	void Draw(void);		// 描画処理
+	HRESULT Init(void);			// 初期化処理
+	void Uninit(void);			// 終了処理
+	void Update(void);			// 更新処理
+	void Draw(void);			// 描画処理
 
+	void Create2DObject(void);	// 2Dオブジェクト生成
 private:
-	CScene2D* m_pScene2D;	// シーン2Dのポインタ
+	vector<CScene2D*> m_pObject2D;	// シーン2Dのポインタ
 };
 #endif
