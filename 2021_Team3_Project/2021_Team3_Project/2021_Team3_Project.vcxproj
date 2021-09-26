@@ -149,7 +149,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="boss_bullet.cpp" />
+    <ClCompile Include="boss_fade.cpp" />
+    <ClCompile Include="boss_life.cpp" />
+    <ClCompile Include="boss_life_back.cpp" />
+    <ClCompile Include="enemy_normal_bullet.cpp" />
     <ClCompile Include="boss_shark.cpp" />
+    <ClCompile Include="byte_attack_range.cpp" />
     <ClCompile Include="byte_effect.cpp" />
     <ClCompile Include="character_box.cpp" />
     <ClCompile Include="bullet.cpp" />
@@ -166,6 +172,7 @@
     <ClCompile Include="enemy_scaffolding.cpp" />
     <ClCompile Include="enemy_ship.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="gage_2d.cpp" />
     <ClCompile Include="gage_3d.cpp" />
     <ClCompile Include="gage_3d_back.cpp" />
     <ClCompile Include="game.cpp" />
@@ -209,7 +216,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="billboard.h" />
+    <ClInclude Include="boss_bullet.h" />
+    <ClInclude Include="boss_fade.h" />
+    <ClInclude Include="boss_life.h" />
+    <ClInclude Include="boss_life_back.h" />
     <ClInclude Include="boss_shark.h" />
+    <ClInclude Include="byte_attack_range.h" />
     <ClInclude Include="byte_effect.h" />
     <ClInclude Include="character_box.h" />
     <ClInclude Include="bullet.h" />
@@ -223,9 +235,11 @@
     <ClInclude Include="enemy_attack_point_polygon.h" />
     <ClInclude Include="enemy_bullet.h" />
     <ClInclude Include="enemy_life.h" />
+    <ClInclude Include="enemy_normal_bullet.h" />
     <ClInclude Include="enemy_scaffolding.h" />
     <ClInclude Include="enemy_ship.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="gage_2d.h" />
     <ClInclude Include="gage_3d.h" />
     <ClInclude Include="gage_3d_back.h" />
     <ClInclude Include="game.h" />

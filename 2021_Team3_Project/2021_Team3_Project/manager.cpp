@@ -373,6 +373,5 @@ CGame * CManager::GetGame(void)
 			}
 		}
 	}
-
 	return nullptr;
 }

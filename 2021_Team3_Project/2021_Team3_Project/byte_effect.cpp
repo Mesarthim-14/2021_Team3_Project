@@ -25,7 +25,7 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CByte_Effect::CByte_Effect(PRIORITY Priority) : CBillboard(Priority)
+CByte_Effect::CByte_Effect(PRIORITY Priority) : CScene3D(Priority)
 {
 	m_SavePos	= ZeroVector3;
 	m_Type		= TYPE_NONE;
@@ -42,7 +42,7 @@ CByte_Effect::~CByte_Effect()
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type)
+CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,TYPE type)
 {
 	// CByte_Effectのポインタ
 	CByte_Effect *pByte_Effect = nullptr;
@@ -61,6 +61,9 @@ CByte_Effect * CByte_Effect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type
 
 			// 初期化処理
 			pByte_Effect->Init(pos, size);
+
+			// 向き設定
+			pByte_Effect->SetRot(rot);
 		}
 	}
 	// ポインタを返す
@@ -89,7 +92,7 @@ HRESULT CByte_Effect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	}
 
 	// 初期化処理
-	CBillboard::Init(Pos, size);
+	CScene3D::Init(Pos, size);
 
 	// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
@@ -134,7 +137,7 @@ HRESULT CByte_Effect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 void CByte_Effect::Uninit(void)
 {
 	// 終了処理
-	CBillboard::Uninit();
+	CScene3D::Uninit();
 }
 //=============================================================================
 // 更新処理関数
@@ -143,7 +146,7 @@ void CByte_Effect::Uninit(void)
 void CByte_Effect::Update(void)
 {
 	// 更新処理
-	CBillboard::Update();
+	CScene3D::Update();
 
 	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
@@ -194,19 +197,19 @@ void CByte_Effect::Update(void)
 void CByte_Effect::Draw(void)
 {
 	// 描画処理
-	CBillboard::Draw();
+	CScene3D::Draw();
 }
 //=============================================================================
 // エフェクト生成処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CByte_Effect::CrateEffect(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+void CByte_Effect::CrateEffect(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot)
 {
 	// 上生成
-	Create(pos, size, TYPE_UP);
+	Create(pos, size, rot, TYPE_UP);
 
 	// 下生成
-	Create(pos, size, TYPE_DOWN);
+	Create(pos, size, rot, TYPE_DOWN);
 }
 //=============================================================================
 // 移動処理関数

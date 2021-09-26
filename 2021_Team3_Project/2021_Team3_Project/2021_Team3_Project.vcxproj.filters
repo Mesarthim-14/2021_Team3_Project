@@ -100,6 +100,12 @@
     <Filter Include="06_Effect\Enemy_Attack_Effect">
       <UniqueIdentifier>{e27775b7-3312-4ea1-a81c-21fbf3d0ad2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08_Ui\2D\Gage_2D">
+      <UniqueIdentifier>{ca248dc1-2188-42cb-b986-2cb8b90fdc13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06_Effect\Boss_Fade">
+      <UniqueIdentifier>{a3cf2459-0c63-48f8-a734-78262c876776}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -276,6 +282,27 @@
     <ClCompile Include="player.cpp">
       <Filter>04_Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="byte_attack_range.cpp">
+      <Filter>06_Effect\Byte_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_bullet.cpp">
+      <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_normal_bullet.cpp">
+      <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="gage_2d.cpp">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_life.cpp">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_life_back.cpp">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_fade.cpp">
+      <Filter>06_Effect\Boss_Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -451,6 +478,27 @@
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>04_Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="byte_attack_range.h">
+      <Filter>06_Effect\Byte_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_bullet.h">
+      <Filter>07_Model\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_normal_bullet.h">
+      <Filter>07_Model\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="gage_2d.h">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_life.h">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_life_back.h">
+      <Filter>08_Ui\2D\Gage_2D</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_fade.h">
+      <Filter>06_Effect\Boss_Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
