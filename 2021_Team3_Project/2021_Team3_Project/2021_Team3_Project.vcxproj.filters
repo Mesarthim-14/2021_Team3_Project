@@ -100,11 +100,11 @@
     <Filter Include="06_Effect\Enemy_Attack_Effect">
       <UniqueIdentifier>{e27775b7-3312-4ea1-a81c-21fbf3d0ad2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00_Important\Camera">
+      <UniqueIdentifier>{dbf05fc2-3ad2-4518-ab65-10b71fb030a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp">
-      <Filter>00_Important</Filter>
-    </ClCompile>
     <ClCompile Include="collision.cpp">
       <Filter>00_Important</Filter>
     </ClCompile>
@@ -276,11 +276,29 @@
     <ClCompile Include="player.cpp">
       <Filter>04_Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>00_Important\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="camera_game.cpp">
+      <Filter>00_Important\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="camera_title.cpp">
+      <Filter>00_Important\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow_polygon.cpp">
+      <Filter>06_Effect\Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="title_map.cpp">
+      <Filter>07_Model\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="title_story.cpp">
+      <Filter>03_Mode\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="title_sky.cpp">
+      <Filter>07_Model\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h">
-      <Filter>00_Important</Filter>
-    </ClInclude>
     <ClInclude Include="collision.h">
       <Filter>00_Important</Filter>
     </ClInclude>
@@ -451,6 +469,27 @@
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>04_Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>00_Important\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="camera_game.h">
+      <Filter>00_Important\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="camera_title.h">
+      <Filter>00_Important\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow_polygon.h">
+      <Filter>06_Effect\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="title_map.h">
+      <Filter>07_Model\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="title_story.h">
+      <Filter>03_Mode\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="title_sky.h">
+      <Filter>07_Model\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

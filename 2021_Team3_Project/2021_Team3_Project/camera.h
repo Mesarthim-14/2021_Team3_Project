@@ -21,32 +21,32 @@ public:
 	CCamera();					// コンストラクタ
 	~CCamera();					// デストラクタ
 
-	HRESULT Init(void);			// 初期化処理
-	void Uninit(void);			// 終了処理
-	void Update(void);			// 更新処理
-	void SetCamera(void);		// カメラの描画設定
+	HRESULT Init(void);									// 初期化処理
+	virtual void Uninit(void);							// 終了処理
+	virtual void Update(void);							// 更新処理
+	virtual void SetCamera(void);						// カメラの描画設定
+	virtual void NomalUpdate(D3DXVECTOR3 PlayerPos, D3DXVECTOR3 PlayerRot) = 0;
 
 	// Set関数
-	void SetTarget(bool Target) { m_bTarget = Target; }
+	void SetTarget(bool Target)				{ m_bTarget = Target; }
+	void SetDistance(float fDistance)		{ m_fDistance = fDistance; }
+	void SetVartical(float fVartical)		{ m_fVartical = fVartical; }
+	void SetHorizontal(float fHorizontal)	{ m_fHorizontal = fHorizontal; }
 
 	// Get関数
-	D3DXVECTOR3 GetposV(void)		{ return m_posV; }				// カメラ座標
-	D3DXVECTOR3 GetposR(void)		{	return m_posR;}				// カメラ角度
+	D3DXVECTOR3 &GetposV(void)		{ return m_posV; }				// カメラ座標
+	D3DXVECTOR3 &GetposR(void)		{ return m_posR; }				// カメラ角度
+	D3DXVECTOR3 &GetposU(void)		{ return m_posU; }				// 上方向ベクトル
+	D3DXVECTOR3 &GetposVDest(void)	{ return m_posVDest; }			// 目的の座標
+	D3DXVECTOR3 &GetposRDest(void)	{ return m_posRDest; }			// 目的の角度
 	D3DXMATRIX GetMtxView(void)		{ return m_mtxView; }			// マトリクスビュー
-	D3DXVECTOR3 GetposVDest(void)	{ return m_posVDest; }			// 目的の角度
 	D3DXMATRIX GetMtxProj(void)		{ return m_mtxProjection; }		// プロジェクト
 	bool GetTargetBool(void)		{ return m_bTarget; }			// ターゲットカメラのフラグ
 	float GetVartical(void)			{ return m_fVartical; }			// 縦の回転
-	float GetHorizontal(void)		{return m_fHorizontal;}			// 横の回転
-
-	static CCamera*Create(void);		// クリエイト
+	float GetHorizontal(void)		{ return m_fHorizontal; }		// 横の回転
+	float GetDistance(void)			{ return m_fDistance; }			// 距離
 
 private:
-	//=========================================================================
-	// プライベートメンバ関数宣言
-	//=========================================================================
-	void NomalUpdate(D3DXVECTOR3 PlayerPos, D3DXVECTOR3 PlayerRot);
-
 	//=========================================================================
 	// メンバ変数宣言
 	//=========================================================================

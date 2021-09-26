@@ -90,6 +90,19 @@ HRESULT CWater::LoadShaderFile(void)
 }
 
 //=============================================================================
+// シェーダファイルのアンロード
+//=============================================================================
+void CWater::UnLoadShaderFile(void)
+{
+	// シェーダエフェクト
+	if (m_pEffect)
+	{
+		m_pEffect->Release();
+		m_pEffect = nullptr;
+	}
+}
+
+//=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT CWater::Init(void)
@@ -127,27 +140,6 @@ HRESULT CWater::Init(void)
 //=============================================================================
 void CWater::Uninit(void)
 {
-	// ボリュームテクスチャ
-	if (m_pNoiseVolumeTexture)
-	{
-		m_pNoiseVolumeTexture->Release();
-		m_pNoiseVolumeTexture = nullptr;
-	}
-
-	// キューブテクスチャ
-	if (m_pEnvironmentTexture)
-	{
-		m_pEnvironmentTexture->Release();
-		m_pEnvironmentTexture = nullptr;
-	}
-
-	// シェーダエフェクト
-	if (m_pEffect)
-	{
-		m_pEffect->Release();
-		m_pEffect = nullptr;
-	}
-
 	// 波の揺れ
 	if (m_pWave)
 	{
@@ -193,17 +185,17 @@ void CWater::Draw(void)
 		m_pEffect->OnResetDevice();
 
 		// ライトの方向
-		D3DXVECTOR3 LightDir = CManager::GetGame()->GetLight()->GetLightDir();
+		D3DXVECTOR3 LightDir = CManager::GetModePtr()->GetLight()->GetLightDir();
 		m_pEffect->SetValue("lightDir1", (void*)(FLOAT*)&D3DXVECTOR3(0.577f, -0.577f, 0.577f), sizeof(D3DXVECTOR3));
 
 		// カメラ位置をセット
-		D3DXVECTOR3 CameraPos = CManager::GetGame()->GetCamera()->GetposV();
-		D3DXMATRIX matView = CManager::GetGame()->GetCamera()->GetMtxView();
-		D3DXMATRIX matProj = CManager::GetGame()->GetCamera()->GetMtxProj();
+		D3DXVECTOR3 CameraPos = CManager::GetModePtr()->GetCamera()->GetposV();
+		D3DXMATRIX matView = CManager::GetModePtr()->GetCamera()->GetMtxView();
+		D3DXMATRIX matProj = CManager::GetModePtr()->GetCamera()->GetMtxProj();
 		m_pEffect->SetValue("CameraPos", (void*)(FLOAT*)CameraPos, sizeof(D3DXVECTOR3));
 
 		// プライヤーの座標
-		D3DXVECTOR3 PlayerPos = CManager::GetGame()->GetPlayer()->GetPos();
+		D3DXVECTOR3 PlayerPos = CManager::GetModePtr()->GetPlayer()->GetPos();
 		m_pEffect->SetValue("PlayerPos", (void*)(FLOAT*)CameraPos, sizeof(D3DXVECTOR3));
 
 		D3DXMatrixIdentity(&matSuimen);

@@ -52,7 +52,7 @@ public:
 		D3DXVECTOR2 size;		// サイズ
 	};
 
-	CMesh3d(PRIORITY Priority = PRIORITY_EFFECT);	// コンストラクタ
+	CMesh3d(PRIORITY Priority = PRIORITY_0);	// コンストラクタ
 	~CMesh3d();										// デストラクタ
 
 	virtual HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size) = 0;	// 初期化処理

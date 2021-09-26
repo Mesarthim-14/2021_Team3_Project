@@ -15,12 +15,12 @@
 #include "game.h"
 #include "light.h"
 #include "shadow_volume.h"
-#include "polygon.h"
+#include "shadow_polygon.h"
 
 //=============================================================================
 // static初期化
 //=============================================================================
-CPolygon *CShadow::m_pPolygon = nullptr;
+CShadowPolygon *CShadow::m_pPolygon = nullptr;
 
 //=============================================================================
 // コンストラクタ
@@ -71,12 +71,7 @@ HRESULT CShadow::Init(LPD3DXMESH pSrcMesh)
 	// nullcheck
 	if (!m_pPolygon)
 	{
-		// インスタンス生成
-		m_pPolygon = CPolygon::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f),
-			D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
-
-		// 色の設定
-		m_pPolygon->SetColor(D3DCOLOR_RGBA(0, 0, 0, 0x7f));
+		m_pPolygon = CShadowPolygon::Create();
 	}
 
 	return S_OK;
@@ -94,6 +89,14 @@ void CShadow::Uninit(void)
 		delete m_pShadowVolume;
 		m_pShadowVolume = nullptr;
 	}
+
+	if (m_pPolygon)
+	{
+		// ポリゴン終了処理
+		m_pPolygon->Uninit();
+		m_pPolygon = nullptr;
+	}
+
 }
 
 //=============================================================================
@@ -123,20 +126,6 @@ void CShadow::VolumeDraw(void)
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xf);
-	}
-}
-
-//=============================================================================
-// ポリゴンのリリース
-//=============================================================================
-void CShadow::PolygonRelese(void)
-{
-	if (m_pPolygon)
-	{
-		// ポリゴン終了処理
-		m_pPolygon->Uninit();
-		delete m_pPolygon;
-		m_pPolygon = nullptr;
 	}
 }
 
@@ -175,18 +164,4 @@ void CShadow::CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld)
 //=============================================================================
 void CShadow::Draw(void)
 {
-	if (m_pPolygon)
-	{
-		// レンダラーポインタ取得
-		CRenderer *pRenderer = CManager::GetRenderer();
-
-		// ステンシルテスト
-		pRenderer->SetStencilTest();
-
-		// ポリゴンの描画
-		m_pPolygon->Draw();
-
-		// ステンシルリセット
-		pRenderer->ReSetStateStencil();
-	}
 }

@@ -34,7 +34,8 @@
 #include "debug_proc.h"
 #include "rock.h"
 #include "water.h"
-
+#include "camera_game.h"
+#include "player_life.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
@@ -45,6 +46,7 @@
 #define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
 #define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
+#define LIFE_POS					(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
 
 //=======================================================================================
 // コンストラクタ
@@ -81,7 +83,7 @@ HRESULT CGame::Init(void)
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
 	// カメラクラスのクリエイト
-	m_pCamera = CCamera::Create();
+	m_pCamera = CCameraGame::Create();
 
 	//ライトクラスの生成
 	m_pLight = new CLight;
@@ -166,6 +168,11 @@ void CGame::Update(void)
 		m_pCamera->Update();
 	}
 
+	if (m_pPlayer)
+	{
+		m_pPlayer->PlayerControl();
+	}
+
 	// ゲームの設定
 	SetGame();
 }
@@ -194,6 +201,7 @@ void CGame::CreatePlayer(void)
 	if (m_pPlayer == nullptr)
 	{
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
+		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
 	}
 }
 

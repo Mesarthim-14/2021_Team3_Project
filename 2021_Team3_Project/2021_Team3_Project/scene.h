@@ -37,6 +37,7 @@ public:
 		PRIORITY_MAP,		// マップ
 		PRIORITY_EFFECT,	// エフェクト
 		PRIORITY_PARTICLE,	// エフェクト
+		PRIORITY_SHADOW,	// 影
 		PRIORITY_3D_UI,		// UI
 		PRIORITY_UI,		// UI
 		PRIORITY_MAX		// 優先順位の最大数

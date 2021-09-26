@@ -82,7 +82,6 @@ public:
 	void KeyboardMove(void);									// キーボード移動
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
-	void RayCollision(void);									// レイの当たり判定
 
 	void CreateSmoke(void);										// 煙生成関数
 	void CreateWoodEP(void);									// 木材生成関数
@@ -91,13 +90,18 @@ public:
 	void CreateWave(void);										// 波生成関数
 
 	void Knock_Back(void);										// ノックバック処理
+	void PaddleRotateR(float fRotate);							// パドルの回転
+	void PaddleRotateL(float fRotate);							// パドルの回転
+	void PaddleRotFix(void);									// パドルの角度を補正
 
 	//ジョイスティックの回転
 	void SetAngle_L(float fangle_L);	//格納L
-	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
+	float GetAngle_L(void)	{ return m_fAngle_L; }		//取得L
 	void SetAngle_R(float fangle_R);	//格納R
-	float GetAngle_R(void) { return m_fAngle_R; }		//取得R
+	float GetAngle_R(void)	{ return m_fAngle_R; }		//取得R
 
+	void SetHitFlag(bool bHitFlag)	{ m_bHitFlag = bHitFlag; }
+	bool GetHitFlag(void)			{ return m_bHitFlag; }
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
@@ -110,6 +114,6 @@ private:
 	bool m_bKnock_Back;								// ノックバック
 	float m_fAngle_L;								//値保持
 	float m_fAngle_R;								//値保持
-
+	bool m_bHitFlag;								// ダメージを受けたフラグ
 };
 #endif

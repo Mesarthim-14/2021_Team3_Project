@@ -76,7 +76,6 @@
 // 砲台の位置
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
-#define LIFE_POS				(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
 
 //エフェクトの各数値
 //爆発
@@ -150,6 +149,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_PadType = PAD_TYPE_1P;
 	m_fAngle_L = 0;
 	m_fAngle_R = 0;
+	m_bHitFlag = false;
 }
 
 //=============================================================================
@@ -200,8 +200,6 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	{
 		m_PadType = PAD_TYPE_1P;
 	}
-	// ライフ生成
-	CPlayer_Life::Create(LIFE_POS, ZeroVector3);
 
 	// 影の使用
 	SetUseShadow();
@@ -214,6 +212,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// レイの情報設定
 	SetRay_Data(Ray_Data);
+
 	return S_OK;
 }
 
@@ -291,36 +290,38 @@ void CPlayer::UpdateState(void)
 //=============================================================================
 void CPlayer::PlayerControl()
 {
-	// 1Pの場合
-	if (m_PadType == PAD_TYPE_1P)
+	CManager::MODE_TYPE mode = CManager::GetMode();
+
+	if (mode == CManager::MODE_TYPE_GAME)
 	{
-		// プレイヤーの移動処理
-		Move();
+		// 1Pの場合
+		if (m_PadType == PAD_TYPE_1P)
+		{
+			// プレイヤーの移動処理
+			Move();
+
+			// 攻撃処理
+			Attack();
+		}
+		// 1Pの場合
+		if (m_PadType == PAD_TYPE_2P)
+		{
+			// プレイヤーの移動処理
+			Pad2Move();
+
+			// 攻撃処理
+			Pad2Attack();
+		}
+
+		// キーボード移動
+		KeyboardMove();
 
 		// 攻撃処理
 		Attack();
+
+		// 当たり判定
+		Collision();
 	}
-	// 1Pの場合
-	if (m_PadType == PAD_TYPE_2P)
-	{
-		// プレイヤーの移動処理
-		Pad2Move();
-
-		// 攻撃処理
-		Pad2Attack();
-	}
-
-	// キーボード移動
-	KeyboardMove();
-
-	// 攻撃処理
-	Attack();
-
-	// 当たり判定
-	Collision();
-
-	// マップとの当たり判定
-	//RayCollision();
 }
 
 //=============================================================================
@@ -377,16 +378,15 @@ void CPlayer::Move(void)
 	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
 	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
+	//// 左の歯車の情報取得
+	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	//// 向き取得
+	//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// 左の歯車の情報取得
-	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// 向き取得
-	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
-
-	// 右の歯車の情報取得
-	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// 向き取得
-	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+	//// 右の歯車の情報取得
+	//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	//// 向き取得
+	//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
 	//===========================================
 	// 右歯車
@@ -400,11 +400,8 @@ void CPlayer::Move(void)
 		// 左に移動
 		if (fAngle_R < disfAngle_R && fAngle_R + STICK_ANGLERANGE > disfAngle_R)
 		{
-			// 向き加算
-			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
-
-			// 向き設定
-			pGear_R->SetRot(Gear_R_rot);
+			// パドルの回転
+			PaddleRotateR(-GEAR_SPIN_ANGLE);
 
 			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
@@ -422,11 +419,8 @@ void CPlayer::Move(void)
 			// 右に移動
 			if (fAngle_R > disfAngle_R && fAngle_R - STICK_ANGLERANGE < disfAngle_R)
 			{
-				// 向き加算
-				Gear_R_rot.x += GEAR_SPIN_ANGLE;
-
-				// 向き設定
-				pGear_R->SetRot(Gear_R_rot);
+				// パドルの回転
+				PaddleRotateR(GEAR_SPIN_ANGLE);
 
 				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
@@ -455,11 +449,8 @@ void CPlayer::Move(void)
 		// 右に移動
 		if (fAngle_L < disfAngle_L && fAngle_L + STICK_ANGLERANGE > disfAngle_L)
 		{
-			// 向き加算
-			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
-
-			// 向き設定
-			pGear_L->SetRot(Gear_L_rot);
+			// パドルの回転
+			PaddleRotateL(-GEAR_SPIN_ANGLE);
 
 			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
@@ -477,11 +468,8 @@ void CPlayer::Move(void)
 			// 左に移動
 			if (fAngle_L > disfAngle_L && fAngle_L - STICK_ANGLERANGE < disfAngle_L)
 			{
-				// 向き加算
-				Gear_L_rot.x += GEAR_SPIN_ANGLE;
-
-				// 向き設定
-				pGear_L->SetRot(Gear_L_rot);
+				// パドルの回転
+				PaddleRotateL(GEAR_SPIN_ANGLE);
 
 				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
@@ -509,15 +497,9 @@ void CPlayer::Move(void)
 			// trueの場合
 			if (m_bBack == true)
 			{
-				// 向き加算
-				Gear_L_rot.x += GEAR_SPIN_ANGLE;
-				// 向き設定
-				pGear_L->SetRot(Gear_L_rot);
-
-				// 向き加算
-				Gear_R_rot.x += GEAR_SPIN_ANGLE;
-				// 向き設定
-				pGear_R->SetRot(Gear_R_rot);
+				// パドルの回転
+				PaddleRotateR(GEAR_SPIN_ANGLE);
+				PaddleRotateL(GEAR_SPIN_ANGLE);
 
 				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
@@ -532,23 +514,10 @@ void CPlayer::Move(void)
 			m_bBack = false;
 		}
 	}
-	// 角度が最大になった場合
-	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
-	{
-		// 0に戻す
-		Gear_L_rot.x = GEAR_DEF_ROT;
-		// 向き設定
-		pGear_L->SetRot(Gear_L_rot);
-	}
 
-	// 角度が最大になった場合
-	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
-	{
-		// 0に戻す
-		Gear_R_rot.x = GEAR_DEF_ROT;
-		// 向き設定
-		pGear_R->SetRot(Gear_R_rot);
-	}
+	// 角度の補正
+	PaddleRotFix();
+
 	// 向き
 	SetRot(rot);
 
@@ -739,6 +708,7 @@ void CPlayer::Pad2Move(void)
 			m_bBack = false;
 		}
 	}
+
 	// 角度が最大になった場合
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
@@ -1027,8 +997,6 @@ void CPlayer::KeyboardMove(void)
 
 		// falseに
 		m_bBack = false;
-
-
 	}
 	// falseの場合
 	if (m_bBack == false)
@@ -1391,39 +1359,7 @@ void CPlayer::CrossCollision(void)
 		}
 	}
 }
-//=============================================================================
-// レイ外積の当たり判定処理
-// Author : SugawaraTsukasa
-//=============================================================================
-void CPlayer::RayCollision(void)
-{
-	// モデルの情報取得
-	CModelAnime *pShip = GetModelAnime(SHIP_NUM);
 
-	// 位置取得
-	D3DXVECTOR3 pos = SHIP_POS;
-
-	// マップのポインタ取得
-	CMap *pMap = GET_MAP_PTR;
-
-	// レイの情報
-	CCollision::RAY_INFO Ray_Info;
-
-	// レイの当たり判定
-	Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, RAY_RADIUS, RAY_HIT_RANGE, RAY_NUM);
-
-	// trueの場合
-	if (Ray_Info.bHit == true)
-	{
-		// 戻す
-		pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
-
-		// 位置設定
-		SetPos(pos);
-
-		return;
-	}
-}
 //=======================================================================================
 // 煙生成関数
 // Author : Oguma Akira
@@ -1433,7 +1369,6 @@ void CPlayer::CreateSmoke(void)
 	// パーティクル生成
 	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
-
 }
 
 //=======================================================================================
@@ -1526,13 +1461,82 @@ void CPlayer::Knock_Back(void)
 }
 
 //=============================================================================
+// パドルの右回転
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotateR(float fRotate)
+{
+	// 右の歯車の情報取得
+	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+
+	// 角度加算
+	Gear_R_rot.x += fRotate;
+
+	// 向き設定
+	pGear_R->SetRot(Gear_R_rot);
+}
+
+//=============================================================================
+// パドルの左回転
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotateL(float fRotate)
+{
+	// 左の歯車の情報取得
+	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+
+	// 角度加算
+	Gear_L_rot.x += fRotate;
+
+	// 向き設定
+	pGear_L->SetRot(Gear_L_rot);
+}
+
+//=============================================================================
+// パドルの角度修正
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotFix(void)
+{
+	// 右の歯車の情報取得
+	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+	// 左の歯車の情報取得
+	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+
+	// 角度が最大になった場合
+	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
+	{
+		// 0に戻す
+		Gear_L_rot.x = GEAR_DEF_ROT;
+		// 向き設定
+		pGear_L->SetRot(Gear_L_rot);
+	}
+
+	// 角度が最大になった場合
+	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
+	{
+		// 0に戻す
+		Gear_R_rot.x = GEAR_DEF_ROT;
+		// 向き設定
+		pGear_R->SetRot(Gear_R_rot);
+	}
+}
+
+//=============================================================================
 // Lスティック角度値格納関数
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::SetAngle_L(float fangle_L)
 {
 	m_fAngle_L = fangle_L;
-
 }
 
 //=============================================================================
@@ -1542,5 +1546,4 @@ void CPlayer::SetAngle_L(float fangle_L)
 void CPlayer::SetAngle_R(float fangle_R)
 {
 	m_fAngle_R = fangle_R;
-
 }

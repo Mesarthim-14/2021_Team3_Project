@@ -151,6 +151,8 @@
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="boss_shark.cpp" />
     <ClCompile Include="byte_effect.cpp" />
+    <ClCompile Include="camera_game.cpp" />
+    <ClCompile Include="camera_title.cpp" />
     <ClCompile Include="character_box.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -197,10 +199,14 @@
     <ClCompile Include="scene3D.cpp" />
     <ClCompile Include="scene_base.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="shadow_polygon.cpp" />
     <ClCompile Include="shadow_volume.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="title_map.cpp" />
+    <ClCompile Include="title_sky.cpp" />
+    <ClCompile Include="title_story.cpp" />
     <ClCompile Include="torpedo.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="water.cpp" />
@@ -211,6 +217,8 @@
     <ClInclude Include="billboard.h" />
     <ClInclude Include="boss_shark.h" />
     <ClInclude Include="byte_effect.h" />
+    <ClInclude Include="camera_game.h" />
+    <ClInclude Include="camera_title.h" />
     <ClInclude Include="character_box.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
@@ -257,10 +265,14 @@
     <ClInclude Include="scene3D.h" />
     <ClInclude Include="scene_base.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="shadow_polygon.h" />
     <ClInclude Include="shadow_volume.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="title_map.h" />
+    <ClInclude Include="title_sky.h" />
+    <ClInclude Include="title_story.h" />
     <ClInclude Include="torpedo.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="water.h" />

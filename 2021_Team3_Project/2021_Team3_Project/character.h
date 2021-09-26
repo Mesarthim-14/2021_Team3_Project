@@ -67,7 +67,7 @@ public:
 	void Gravity(void);												// 重力
 	void Landing(float fHeight);									// 着地
 
-																	// 純粋仮想関数
+	// 純粋仮想関数
 	virtual void UpdateState(void) = 0;								// キャラクター状態
 	virtual void Attack(void) = 0;									// 攻撃の処理
 	virtual void Move(void) = 0;									// 移動関数
@@ -102,6 +102,7 @@ public:
 	bool GetArmor(void) { return m_bArmor; }										// 無敵時間
 	STATE GetState(void) { return m_State; }										// 状態取得
 	RAY_DATA GetRay_Data(void) { return m_RayData; }								// レイの情報取得
+
 private:
 	vector<CModelAnime*> m_apModelAnime;	// モデルパーツ用ポインタ
 	CMotion *m_pMotion;						// モーションクラスのポインタ

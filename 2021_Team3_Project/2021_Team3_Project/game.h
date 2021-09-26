@@ -21,6 +21,7 @@
 // 前方宣言
 //=======================================================================================
 class CCamera;
+class CCameraGame;
 class CLight;
 class CMeshField;
 class CBg;
@@ -67,7 +68,7 @@ public:
 	void RoadEnemyFile(string pEnemyFile);	// 敵の生成ファイル読み込み
 
 											// Get関数
-	CCamera *GetCamera(void) { return m_pCamera; }	// カメラのポインタ情報
+	CCamera *GetCamera(void) { return (CCamera*)m_pCamera; }	// カメラのポインタ情報
 	CLight *GetLight(void) { return m_pLight; }	// ライトのポインタ情報
 	CPlayer *GetPlayer(void) { return m_pPlayer; }	// プレイヤーのポインタ情報
 	CMap *GetMap(void) { return m_pMap; }		// マップのポインタ取得
@@ -76,7 +77,7 @@ private:
 	void DrawPlayerPos(void);				// プレイヤーの位置書き込み
 
 											// ポインタ
-	CCamera *m_pCamera;						// カメラのポインタ	
+	CCameraGame *m_pCamera;						// カメラのポインタ	
 	CLight *m_pLight;						// ライトのポインタ
 	CMeshField *m_pMeshField;				// メッシュフィールドのポインタ
 	CBg *m_pBg;								// 背景のポインタ

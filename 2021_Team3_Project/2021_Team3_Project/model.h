@@ -75,6 +75,7 @@ public:
 	void SetState(STATE state)						{ m_State = state; }				// 状態設定
 	void BindTexture(LPDIRECT3DTEXTURE9 *pTexture)	{ m_apTexture = pTexture; }			// テクスチャの設定
 	void SetRay_Data(RAY_DATA Ray_Info) { m_RayData = Ray_Info; }						// レイの情報設定
+
 	// Get関数
 	D3DXVECTOR3 &GetPos(void)			{ return m_pos; }				// 座標の情報
 	D3DXVECTOR3 &GetMove(void)			{ return m_move; }				// 移動量の情報

@@ -27,7 +27,7 @@ CResourceManager::CResourceManager()
 	m_pTexture = nullptr;	// テクスチャのポインタ
 	m_pXFile = nullptr;		// Xファイルのポインタ
 	m_pSound = nullptr;		// サウンドのポインタ
-	m_pEffect = nullptr;	//エフェクトのポインタ
+	m_pEffect = nullptr;	// エフェクトのポインタ
 }
 
 //=============================================================================

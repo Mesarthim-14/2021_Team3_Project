@@ -192,7 +192,7 @@ void CEnemy_Ship::Move(void)
 	if (pGame == nullptr)
 	{
 		// CGame‚Ìî•ñæ“¾
-		pGame = CManager::GetGame();
+		pGame = (CGame*)CManager::GetModePtr();
 
 		// !nullcheck
 		if (pGame != nullptr)

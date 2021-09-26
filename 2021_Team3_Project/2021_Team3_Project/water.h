@@ -33,6 +33,7 @@ public:
 	void SetMatrix(void);						// マトリクスの設定
 	static CWater*Create(void);					// インスタンス生成
 	static HRESULT LoadShaderFile(void);		// シェーダファイルの読み込み
+	static void UnLoadShaderFile(void);			// シェーダファイルの読み込み
 
 private:
 	D3DXMATRIX m_mtxWorld;			// ワールドマトリクス
