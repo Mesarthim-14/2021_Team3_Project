@@ -74,6 +74,7 @@ public:
 	void PlayerControl(void);									// プレイヤーの制御
 	void UpdateRot(void);										// 角度の更新処理
 
+	void Hit(int nDamage);										// ヒット処理関数
 	void Death(void);											// 死亡関数
 	void Move(void);											// 移動処理
 	void Pad2Move(void);										// 2コントローラーの移動
@@ -92,6 +93,12 @@ public:
 
 	void Knock_Back(void);										// ノックバック処理
 
+	//ジョイスティックの回転
+	void SetAngle_L(float fangle_L);	//格納L
+	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
+	void SetAngle_R(float fangle_R);	//格納R
+	float GetAngle_R(void) { return m_fAngle_R; }		//取得R
+
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
@@ -102,7 +109,8 @@ private:
 	bool m_bBack;									// 後ろに移動しているか
 	bool m_bMove;									// 歩いているフラグ
 	bool m_bKnock_Back;								// ノックバック
-	float m_fAngle_L;								// 前回の左角度
-	float m_fAngle_R;								// 前回の右角度
+	float m_fAngle_L;								//値保持
+	float m_fAngle_R;								//値保持
+
 };
 #endif
