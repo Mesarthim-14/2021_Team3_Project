@@ -71,6 +71,10 @@
 #define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
 #define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
 #define STICK_ANGLERANGE		(1.0f)									//スティックの角度範囲
+#define SINK_TIME				(120)									// 沈む時間
+#define SINK_MOVE				(3.0f)									// 沈む量
+#define SINK_ROTATE				(3.0f)									// 沈む角度
+
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -83,28 +87,28 @@
 #define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//大きさ
 #define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define EXPLOSION_LIFE		(70)													//体力
-																					
+
 //煙																				
 #define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//大きさ
 #define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//移動力
 #define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//色
 #define SMOKE_LIFE			(500)													//体力
-																					
+
 //水しぶき																			
 #define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//大きさ
 #define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動力
 #define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define SPLASH_LIFE			(200)													//体力
-																				
+
 //木材																			
 #define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//大きさ
 #define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//移動力
 #define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define WOOD_LIFE			(500)													//体力
-																					
+
 //波																				
 #define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//位置
 #define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//大きさ
@@ -149,7 +153,10 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_PadType = PAD_TYPE_1P;
 	m_fAngle_L = 0;
 	m_fAngle_R = 0;
+	m_nSinkCounter = 0;
 	m_bHitFlag = false;
+	m_bDeath = false;
+	m_bEnd = false;
 }
 
 //=============================================================================
@@ -244,18 +251,20 @@ void CPlayer::Update(void)
 	// プレイヤーの状態
 	UpdateState();
 
-	// プレイヤーの制御
-	PlayerControl();
+	// 体力が0になったら
+	if (!m_bDeath)
+	{
+		// プレイヤーの制御
+		PlayerControl();
+	}
+	else
+	{
+		// 沈んでいく処理
+		SinkEnd();
+	}
 
 	// 角度の更新処理
 	UpdateRot();
-
-	// 体力が0になったら
-	if (GetLife() <= MIN_LIFE)
-	{
-		// 死亡状態に設定
-		SetState(CCharacter::STATE_DEAD);
-	}
 }
 
 //=============================================================================
@@ -273,15 +282,7 @@ void CPlayer::Draw(void)
 //=============================================================================
 void CPlayer::UpdateState(void)
 {
-	// 状態取得
-	int nState = GetState();
 
-	// DEADの場合
-	if (nState == CCharacter::STATE_DEAD)
-	{
-		// 死亡処理
-		Death();
-	}
 }
 
 //=============================================================================
@@ -352,22 +353,28 @@ void CPlayer::UpdateRot(void)
 
 //=============================================================================
 // 敵の弾のヒット処理
-// Author : Sugawara Tsukasa
+// Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Hit(int nDamage)
 {
-	// ダメージ減算
-	SetLife(GetLife() - nDamage);
+	GetLife() = -nDamage;
+
+	// 0以下だったら
+	if (!m_bDeath && GetLife() <= 0)
+	{
+		// 死ぬ
+		Death();
+	}
 }
 
 //=============================================================================
 // 死んだときの処理
-// Author : Sugawara Tsukasa
+// Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Death(void)
 {
-	// 終了
-	Uninit();
+	m_bDeath = true;
+	SetGravityFlag(false);
 
 	return;
 }
@@ -388,20 +395,20 @@ void CPlayer::Move(void)
 	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
 	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
-	//// 左の歯車の情報取得
-	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	//// 向き取得
-	//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+																			//// 左の歯車の情報取得
+																			//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+																			//// 向き取得
+																			//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	//// 右の歯車の情報取得
-	//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	//// 向き取得
-	//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+																			//// 右の歯車の情報取得
+																			//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+																			//// 向き取得
+																			//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	//===========================================
-	// 右歯車
-	//===========================================
-	// 右スティックが入力されている場合
+																			//===========================================
+																			// 右歯車
+																			//===========================================
+																			// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
 		// コントローラーの角度
@@ -546,7 +553,7 @@ void CPlayer::Pad2Move(void)
 	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
 	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
-	// サウンドのポインタ
+																			// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
 	// 座標
@@ -1295,6 +1302,7 @@ void CPlayer::Collision(void)
 					// trueに
 					m_bKnock_Back = true;
 				}
+
 				// 次のポインタ取得
 				pScene = pSceneCur;
 			}
@@ -1357,6 +1365,27 @@ void CPlayer::CrossCollision(void)
 			}
 		}
 	}
+}
+
+//=======================================================================================
+// 沈む処理
+// Author : Konishi Yuuto
+//=======================================================================================
+void CPlayer::SinkEnd(void)
+{
+	if (!m_bEnd)
+	{
+		m_nSinkCounter++;
+
+		GetPos().y -= SINK_MOVE;
+
+		if (m_nSinkCounter >= SINK_TIME)
+		{
+			m_bEnd = true;
+			m_nSinkCounter = 0;
+		}
+	}
+	GetRot().x += D3DXToRadian(SINK_ROTATE);
 }
 
 //=======================================================================================

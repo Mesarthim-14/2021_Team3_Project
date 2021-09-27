@@ -36,6 +36,7 @@
 #include "camera_game.h"
 #include "collision.h"
 #include "player_life.h"
+#include "fade.h"
 
 //=======================================================================================
 // ƒ}ƒNƒ’è‹`
@@ -174,13 +175,13 @@ void CGame::Update(void)
 		// í‘JˆÚ”»’è
 		BossTransition();
 	}
-	if (m_pPlayer)
-	{
-		m_pPlayer->PlayerControl();
-	}
+
+	// ƒ‚[ƒh‘JˆÚ
+	ModeTransition();
 
 	// ƒQ[ƒ€‚ÌÝ’è
 	SetGame();
+
 }
 
 //=======================================================================================
@@ -457,6 +458,24 @@ void CGame::BossTransition(void)
 
 			// true‚É
 			m_bBossTransition = true;
+		}
+	}
+}
+
+//=======================================================================================
+// ƒ‚[ƒh‘JˆÚˆ—
+// Author : Konishi Yuuto
+//=======================================================================================
+void CGame::ModeTransition(void)
+{
+	if (m_pPlayer->GetEnd())
+	{
+		CFade::FADE_MODE mode = CManager::GetFade()->GetFade();
+
+		if (mode == CFade::FADE_MODE_NONE)
+		{
+			CFade *pFade = CManager::GetFade();
+			pFade->SetFade(CManager::MODE_TYPE_RESULT_FAILED);
 		}
 	}
 }

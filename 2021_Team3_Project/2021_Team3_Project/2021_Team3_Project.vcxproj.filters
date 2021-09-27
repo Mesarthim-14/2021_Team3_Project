@@ -153,9 +153,6 @@
     <ClCompile Include="keyboard.cpp">
       <Filter>02_Input</Filter>
     </ClCompile>
-    <ClCompile Include="result.cpp">
-      <Filter>03_Mode\Result</Filter>
-    </ClCompile>
     <ClCompile Include="title.cpp">
       <Filter>03_Mode\Title</Filter>
     </ClCompile>
@@ -324,6 +321,15 @@
     <ClCompile Include="boss_fade.cpp">
       <Filter>06_Effect\Boss_Fade</Filter>
     </ClCompile>
+    <ClCompile Include="result_clear.cpp">
+      <Filter>03_Mode\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="result_failed.cpp">
+      <Filter>03_Mode\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="result_story.cpp">
+      <Filter>03_Mode\Result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h">
@@ -367,9 +373,6 @@
     </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>02_Input</Filter>
-    </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>03_Mode\Result</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
       <Filter>03_Mode\Title</Filter>
@@ -538,6 +541,15 @@
     </ClInclude>
     <ClInclude Include="boss_fade.h">
       <Filter>06_Effect\Boss_Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="result_clear.h">
+      <Filter>03_Mode\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="result_failed.h">
+      <Filter>03_Mode\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="result_story.h">
+      <Filter>03_Mode\Result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

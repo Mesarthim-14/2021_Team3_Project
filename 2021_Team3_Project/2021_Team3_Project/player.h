@@ -83,6 +83,7 @@ public:
 	void KeyboardMove(void);									// キーボード移動
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
+	void SinkEnd(void);											// 船が沈む処理
 
 	void CreateSmoke(void);										// 煙生成関数
 	void CreateWoodEP(void);									// 木材生成関数
@@ -95,19 +96,21 @@ public:
 	void PaddleRotateL(float fRotate);							// パドルの回転
 	void PaddleRotFix(void);									// パドルの角度を補正
 
-	//ジョイスティックの回転
+																//ジョイスティックの回転
 	void SetAngle_L(float fangle_L);	//格納L
-	float GetAngle_L(void)	{ return m_fAngle_L; }		//取得L
+	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
 	void SetAngle_R(float fangle_R);	//格納R
-	float GetAngle_R(void)	{ return m_fAngle_R; }		//取得R
+	float GetAngle_R(void) { return m_fAngle_R; }		//取得R
 
-	void SetHitFlag(bool bHitFlag)	{ m_bHitFlag = bHitFlag; }
-	bool GetHitFlag(void)			{ return m_bHitFlag; }
+	void SetHitFlag(bool bHitFlag) { m_bHitFlag = bHitFlag; }
+	bool GetHitFlag(void) { return m_bHitFlag; }
+	bool GetEnd(void) { return m_bEnd; }
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
 	int m_nAttackCount_L;							// 左攻撃カウント
 	int m_nRockHitCount;							// 岩にヒットしたカウント
+	int m_nSinkCounter;								// 沈むときのカウント
 	PAD_TYPE m_PadType;								// パッドタイプ
 	D3DXVECTOR3 m_Reflection_Vec;					// 反射ベクトル
 	bool m_bBack;									// 後ろに移動しているか
@@ -116,5 +119,7 @@ private:
 	float m_fAngle_L;								//値保持
 	float m_fAngle_R;								//値保持
 	bool m_bHitFlag;								// ダメージを受けたフラグ
+	bool m_bDeath;									// 死亡フラグ
+	bool m_bEnd;									// プレイヤー終了のフラグ
 };
 #endif
