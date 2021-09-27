@@ -18,7 +18,6 @@
 CTexture::CTexture()
 {
 	memset(m_apTexture, 0, sizeof(m_apTexture));
-
 }
 
 //=============================================================================
@@ -59,10 +58,17 @@ HRESULT CTexture::SetTextureName(void)
 	// 通常テクスチャ
 	m_aTexFileName[TEXTURE_TYPE_NUM_NORMAL] =
 	{
-		{ "data/Texture/floor.jpg" },	// 床
-		{ "data/Texture/target.png" },	// 的
-		{ "data/Texture/arrow.png" },	// 矢印
-		{ "data/Texture/byte.png" },	// 嚙みつき	
+		{ "data/Texture/floor.jpg" },					// 床
+		{ "data/Texture/target.png" },					// 的
+		{ "data/Texture/arrow.png" },					// 矢印
+		{ "data/Texture/byte.png" },					// 嚙みつき	
+		{ "data/Texture/TitleLogo.png" },				// タイトル
+		{ "data/Texture/game_explanation_paper.png" },	// ストーリーの背景
+		{ "data/Texture/game_explanation1.png" },		// ストーリーの文章
+		{ "data/Texture/game_explanation2.png" },		// ストーリーの文章
+		{ "data/Texture/game_explanation3.png" },		// ストーリーの文章
+		{ "data/Texture/game_explanation4.png" },		// ストーリーの文章
+		{ "data/Texture/ResultBg.png" },				// リザルト
 	};
 
 	// 分割テクスチャ

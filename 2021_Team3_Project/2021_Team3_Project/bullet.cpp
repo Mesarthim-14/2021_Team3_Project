@@ -32,6 +32,7 @@
 //=============================================================================
 CBullet::CBullet(PRIORITY Priority) : CModel(Priority)
 {
+	m_XfileNum = CXfile::XFILE_NUM_BULLET;
 }
 //=============================================================================
 // インクルードファイル
@@ -40,6 +41,7 @@ CBullet::CBullet(PRIORITY Priority) : CModel(Priority)
 CBullet::~CBullet()
 {
 }
+
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
@@ -78,20 +80,20 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	if (pXfile != nullptr)
 	{
 		// モデル情報取得
-		CXfile::MODEL model = pXfile->GetXfile(CXfile::XFILE_NUM_BULLET);
+		CXfile::MODEL model = pXfile->GetXfile(m_XfileNum);
 
 		// モデルの情報を渡す
 		BindModel(model);
 
 		// 影の設定
-		SetShadowInfo(model);
+	//	SetShadowInfo(model);
 	}
 
 	// サイズ設定
 	SetSize(SIZE);
 
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }

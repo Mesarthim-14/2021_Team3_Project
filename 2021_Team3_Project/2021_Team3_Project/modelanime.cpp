@@ -115,7 +115,7 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	//Œü‚«‚ð”½‰f
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y + m_rotAnime.y, m_rot.x + m_rotAnime.x, m_rot.z + m_rotAnime.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	//ˆÊ’u‚ð”½‰f

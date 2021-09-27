@@ -89,6 +89,10 @@ HRESULT CPlayer_Life::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
 		// 向きの設定
 		m_apScene2d[nCnt]->SetRotation(ROT);
+
+		// 位置
+		m_apScene2d[nCnt]->SetCol(RED);
+
 	}
 	return S_OK;
 }
@@ -127,24 +131,31 @@ void CPlayer_Life::Update(void)
 	// !nullcheck
 	if (pPlayer != nullptr)
 	{
-		// ライフ取得
-		int nLife = pPlayer->GetLife();
-
-		// 最大数分繰り返す
-		for (int nCnt = MIN_LIFE; nCnt < MAX_LIFE; nCnt++)
+		// ダメージを食らっていたら
+		if (pPlayer->GetHitFlag())
 		{
-			// nLife以下の場合
-			if (nCnt <= nLife)
+			// ライフ取得
+			int nLife = pPlayer->GetLife();
+
+			// 最大数分繰り返す
+			for (int nCnt = MIN_LIFE; nCnt < MAX_LIFE; nCnt++)
 			{
-				// 位置
-				m_apScene2d[nCnt]->SetCol(RED);
+				// nLife以下の場合
+				if (nCnt <= nLife)
+				{
+					// 位置
+					m_apScene2d[nCnt]->SetCol(RED);
+				}
+				// nLifeより大きい場合
+				if (nCnt > nLife)
+				{
+					// 位置
+					m_apScene2d[nCnt]->SetCol(BLACK);
+				}
 			}
-			// nLifeより大きい場合
-			if (nCnt > nLife)
-			{
-				// 位置
-				m_apScene2d[nCnt]->SetCol(BLACK);
-			}
+
+			// プレイヤーのフラグ変更
+			pPlayer->SetHitFlag(false);
 		}
 	}
 }

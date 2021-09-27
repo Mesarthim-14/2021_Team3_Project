@@ -51,6 +51,9 @@ public:
 		XFILE_NUM_ROCK,					// 岩モデル
 		XFILE_NUM_TORPEDO,				// 魚雷モデル
 		XFILE_NUM_MAP,					// マップ
+		XFILE_NUM_TITLE_MAP,			// タイトルマップ
+		XFILE_NUM_TITLE_SKY,			// スカイ
+		XFILE_NUM_BOSS_MAP,				// ボスマップ
 		XFILE_NUM_MAX
 	};
 

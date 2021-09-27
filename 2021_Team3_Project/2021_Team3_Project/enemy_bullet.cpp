@@ -1,5 +1,5 @@
 //=============================================================================
-// 敵の弾 [player_bullet.cpp]
+// 敵の弾 [enemy_bullet.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
@@ -70,12 +70,6 @@ CEnemy_Bullet * CEnemy_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pEnemy_Bullet->Init(pos, rot);
-
-			// 箱生成
-			CModel_Box::Create(pos, rot, pEnemy_Bullet);
-
-			// 攻撃地点生成
-			pEnemy_Bullet->AttackPoint_Crate(pEnemy_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -93,15 +87,12 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 代入
 	m_StartPos = pos;
 
-	// プレイヤーのポインタ取得
-	CPlayer *pPlayer = GET_PLAYER_PTR;
+	// 箱生成
+	CModel_Box::Create(pos, rot, this);
 
-	// !nullcheck
-	if (pPlayer != nullptr)
-	{
-		// 位置座標取得
-		m_TargetPos = pPlayer->GetPos();
-	}
+	// 攻撃地点生成
+	AttackPoint_Crate(this);
+
 	return S_OK;
 }
 //=============================================================================
@@ -121,12 +112,6 @@ void CEnemy_Bullet::Update(void)
 {
 	// 更新処理
 	CBullet::Update();
-
-	// 移動処理
-	Projectile_motion();
-
-	// 当たり判定
-	Collision();
 }
 //=============================================================================
 // 描画処理関数
@@ -230,13 +215,13 @@ void CEnemy_Bullet::Collision(void)
 // 攻撃地点生成
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Bullet::AttackPoint_Crate(CEnemy_Bullet * pEnemyBullet)
+void CEnemy_Bullet::AttackPoint_Crate(CBullet * pBullet)
 {
 	// 矢印生成
-	CEnemy_Attack_Arrow_Polygon::Create(m_TargetPos, ARROW_SIZE, pEnemyBullet);
+	CEnemy_Attack_Arrow_Polygon::Create(m_TargetPos, ARROW_SIZE, pBullet);
 
 	// 攻撃地点生成
-	CEnemy_Attack_Point_Polygon::Create(m_TargetPos, POINT_SIZE, pEnemyBullet);
+	CEnemy_Attack_Point_Polygon::Create(m_TargetPos, POINT_SIZE, pBullet);
 }
 //=============================================================================
 // 斜方投射処理

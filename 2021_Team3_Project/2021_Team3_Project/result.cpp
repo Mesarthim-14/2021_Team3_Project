@@ -17,13 +17,20 @@
 #include "keyboard.h"
 #include "joypad.h"
 #include "resource_manager.h"
+#include "texture.h"
+
+//=============================================================================
+// マクロ定義
+//=============================================================================
+#define RESULT_BG_POS						(HALF_SCREEN_POS)
+#define RESULT_BG_SIZE						(SCREEN_SIZE)
 
 //=============================================================================
 // コンストラクタ
 //=============================================================================
 CResult::CResult()
 {
-	m_pScene2D = nullptr;
+	m_pObject2D.clear();
 }
 
 //=============================================================================
@@ -40,9 +47,6 @@ CResult::~CResult()
 //=============================================================================
 HRESULT CResult::Init(void)
 {
-	//2Dオブジェクトの生成
-	m_pScene2D = CScene2D::Create(
-		D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
 	
 	return S_OK;
 }
@@ -52,13 +56,12 @@ HRESULT CResult::Init(void)
 //=============================================================================
 void CResult::Uninit(void)
 {
-	// !nullcheck
-	if (m_pScene2D != nullptr)
+	for (auto apObject : m_pObject2D)
 	{
 		// 終了処理
-		m_pScene2D->Uninit();
-		m_pScene2D = nullptr;
+		apObject->Uninit();
 	}
+	m_pObject2D.clear();
 }
 
 //=============================================================================
@@ -83,4 +86,20 @@ void CResult::Update(void)
 //=============================================================================
 void CResult::Draw(void)
 {
+}
+
+//=============================================================================
+// 2Dオブジェクト生成
+//=============================================================================
+void CResult::Create2DObject(void)
+{
+	// テクスチャのポイン取得
+	CTexture *pTexture = GET_TEXTURE_PTR;
+
+	// メモリ確保
+	CScene2D *pResultLogo = CScene2D::Create(RESULT_BG_POS, RESULT_BG_SIZE);
+	pResultLogo->BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_RESULT_BG));
+
+	// オブジェクト追加
+	m_pObject2D.push_back(pResultLogo);
 }

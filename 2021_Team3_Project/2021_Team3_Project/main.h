@@ -64,12 +64,14 @@
 #define NUM_POLYGON		(2)															// ポリゴン数
 
 // 初期化用マクロ変数
-#define ZeroVector2		(D3DXVECTOR2(0.0f, 0.0f))
-#define ZeroVector3		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-#define WhiteColor		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
-#define BlackColor		(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f))
-#define ZERO_INT		(0)			
-#define ZERO_FLOAT		(0.0f)
+#define ZeroVector2			(D3DXVECTOR2(0.0f, 0.0f))
+#define ZeroVector3			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+#define WhiteColor			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
+#define BlackColor			(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f))
+#define HALF_SCREEN_POS		(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f))
+#define SCREEN_SIZE			(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f))
+#define ZERO_INT			(0)			
+#define ZERO_FLOAT			(0.0f)
 
 #define DIVIDE_2		(2)
 // 名前の省略

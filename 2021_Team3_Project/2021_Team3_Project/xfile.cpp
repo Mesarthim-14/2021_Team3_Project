@@ -42,6 +42,9 @@ CXfile::CXfile()
 		{ "data/Model/Obstacle/Rock.x"},			// 岩
 		{ "data/Model/Enemy/Torpedo/Torpedo.x" },	// 魚雷
 		{ "data/Model/Map/Map.x"},					// マップ
+		{ "data/Model/Map/TitleMap.x" },			// タイトルマップ
+		{ "data/Model/Map/sky.x" },			// タイトルマップ
+		{ "data/Model/Map/boss_map.x" },			// ボスマップ
 	};
 
 	m_aHierarchyXfileName =

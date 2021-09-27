@@ -16,7 +16,7 @@
 // 前方宣言
 //=========================================================================
 class CShadowVolume;
-class CPolygon;
+class CShadowPolygon;
 
 //=========================================================================
 // クラス定義
@@ -33,12 +33,11 @@ public:
 	void VolumeDraw(void);																// 影描画処理
 	void CreateShadow(D3DXVECTOR3 rot, D3DXVECTOR3 ShipRot, D3DXMATRIX ModelMtxWorld);	// 影の生成
 	void CreateShadow(D3DXVECTOR3 rot, D3DXMATRIX ModelMtxWorld);						// 影の生成
-	static void Draw(void);																// 描画処理
-	static void PolygonRelese(void);													// ポリゴンのリリース
+	static void PolygonUninit(void);													// 描画処理
 
 private:
 	CShadowVolume *m_pShadowVolume;		// シャドウボリュームのポインタ
 	D3DXMATRIX m_ModelMtxWorld;			// モデルのワールド座標取得
-	static CPolygon *m_pPolygon;		// ポリゴンのポインタ
+	static CShadowPolygon *m_pPolygon;	// ポリゴンのポインタ
 };
 #endif

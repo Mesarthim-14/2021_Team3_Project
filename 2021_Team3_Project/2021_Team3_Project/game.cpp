@@ -29,11 +29,13 @@
 #include "rock.h"
 #include "map.h"
 #include "boss_shark.h"
-#include "byte_effect.h"
 #include "library.h"
 #include "debug_proc.h"
 #include "rock.h"
 #include "water.h"
+#include "camera_game.h"
+#include "collision.h"
+#include "player_life.h"
 
 //=======================================================================================
 // マクロ定義
@@ -45,7 +47,10 @@
 #define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
 #define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
+#define LIFE_POS					(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
 
+#define BOSS_TRANSITION_POS			(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス戦遷移判定位置
+#define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス遷移判定サイズ
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -61,6 +66,8 @@ CGame::CGame()
 	m_nEnemyNum = ZERO_INT;
 	m_pEnemyFileData = nullptr;
 	m_pFont = nullptr;
+	m_bBossTransition = false;
+	m_bBoss = true;
 }
 
 //=======================================================================================
@@ -77,11 +84,8 @@ CGame::~CGame()
 //=======================================================================================
 HRESULT CGame::Init(void)
 {
-	// キーボード情報
-	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
-
 	// カメラクラスのクリエイト
-	m_pCamera = CCamera::Create();
+	m_pCamera = CCameraGame::Create();
 
 	//ライトクラスの生成
 	m_pLight = new CLight;
@@ -94,12 +98,11 @@ HRESULT CGame::Init(void)
 			return -1;
 		}
 	}
-
 	// プレイヤーの生成
 	CreatePlayer();
 
 	// 敵生成
-	CreateEnemy_Obstacle();
+	CreateEnemy_Obstacle(ENEMY_OBSTACLE_CREATE_TEXT);
 
 	// マップの生成
 	CreateMap();
@@ -165,6 +168,16 @@ void CGame::Update(void)
 		//カメラクラスの更新処理
 		m_pCamera->Update();
 	}
+	// ボス戦遷移判定
+	if (m_bBossTransition == false)
+	{
+		// 戦遷移判定
+		BossTransition();
+	}
+	if (m_pPlayer)
+	{
+		m_pPlayer->PlayerControl();
+	}
 
 	// ゲームの設定
 	SetGame();
@@ -194,6 +207,7 @@ void CGame::CreatePlayer(void)
 	if (m_pPlayer == nullptr)
 	{
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
+		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
 	}
 }
 
@@ -206,7 +220,7 @@ void CGame::CreateMap(void)
 	CreateGround();
 
 	// マップ生成
-	m_pMap = CMap::Create(ZeroVector3, ZeroVector3);
+	m_pMap = CMap::Create(ZeroVector3, ZeroVector3, CMap::TYPE_NORMAL);
 }
 
 //=======================================================================================
@@ -326,10 +340,10 @@ void CGame::RoadEnemyFile(string pEnemyFile)
 // 敵生成関数
 // Author : Sugawara Tsukasa
 //=======================================================================================
-void CGame::CreateEnemy_Obstacle(void)
+void CGame::CreateEnemy_Obstacle(string pEnemyFile)
 {
 	// 敵のテキストファイル読み込み
-	RoadEnemyFile(ENEMY_OBSTACLE_CREATE_TEXT);
+	RoadEnemyFile(pEnemyFile);
 
 	// !nullcheck
 	if (m_pEnemyFileData != nullptr)
@@ -388,4 +402,61 @@ void CGame::DrawPlayerPos(void)
 
 	// 書き込み
 	CDebugProc::Print("POS:X%.1f Y%.1f Z%.1f", PlayerPos.x, PlayerPos.y, PlayerPos.z);
+}
+//=======================================================================================
+// ボスマップ生成
+// Author : SugawaraTsukasa
+//=======================================================================================
+void CGame::CreateBossMap(void)
+{
+	// !nullcheck
+	if (m_pMap != nullptr)
+	{
+		// 終了処理
+		m_pMap->Uninit();
+
+		// nullptrに
+		m_pMap = nullptr;
+	}
+	// nullptrの場合
+	if (m_pMap == nullptr)
+	{
+		// マップ生成
+		m_pMap = CMap::Create(ZeroVector3, ZeroVector3, CMap::TYPE_BOSS);
+
+		// ボス生成
+		CBoss_Shark::Create(ENEMY_POS, ENEMY_ROT);
+
+		// 位置変更
+		m_pPlayer->SetPos(ZeroVector3);
+
+		// trueに
+		m_bBoss = true;
+	}
+}
+//=======================================================================================
+// ボス遷移処理
+// Author : SugawaraTsukasa
+//=======================================================================================
+void CGame::BossTransition(void)
+{
+	// !nullcheck
+	if (m_pPlayer != nullptr)
+	{
+		// 位置取得
+		D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
+
+		// 位置取得
+		D3DXVECTOR3 PlayerSize = m_pPlayer->GetSize();
+
+		// 位置
+		if (CCollision::CollisionRectangleAndRectangle(PlayerPos, BOSS_TRANSITION_POS, PlayerSize, BOSS_TARNSITION_SIZE) == true)
+		{
+			// ボス生成
+			CreateBossMap();
+
+			// trueに
+			m_bBossTransition = true;
+		}
+	}
 }

@@ -32,11 +32,18 @@ public:
 	// テクスチャの番号の列挙型
 	enum TEXTURE_TYPE
 	{
-		TEXTURE_NUM_NONE = -1,		// 初期値
-		TEXTURE_NUM_FLOOR,			// 地面
-		TEXTURE_NUM_ATTACK_POINT,	// 攻撃地点
-		TEXTURE_NUM_ATTACK_ARROW,	// 攻撃地点の矢印
-		TEXTURE_NUM_BYTE,			// 噛みつき
+		TEXTURE_NUM_NONE = -1,			// 初期値
+		TEXTURE_NUM_FLOOR,				// 地面
+		TEXTURE_NUM_ATTACK_POINT,		// 攻撃地点
+		TEXTURE_NUM_ATTACK_ARROW,		// 攻撃地点の矢印
+		TEXTURE_NUM_BYTE,				// 噛みつき
+		TEXTURE_NUM_TITLE_LOGO,			// タイトルロゴ
+		TEXTURE_NUM_STORY_BG,			// ストーリーの背景
+		TEXTURE_NUM_STORY_SENTENCE0,	// ストーリーの文章
+		TEXTURE_NUM_STORY_SENTENCE1,	// ストーリーの文章
+		TEXTURE_NUM_STORY_SENTENCE2,	// ストーリーの文章
+		TEXTURE_NUM_STORY_SENTENCE3,	// ストーリーの文章
+		TEXTURE_NUM_RESULT_BG,			// リザルト
 		TEXTURE_NUM_MAX
 	};
 
@@ -109,6 +116,7 @@ private:
 	{
 		nullptr, CTexture::SEPARATE_TEX_SHARP, D3DXVECTOR2(5, 5), false,
 	};
+
 	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ボリュームテクスチャ
 	LPDIRECT3DCUBETEXTURE9 m_pCubeTexture[CUBE_TEX_MAX];					// キューブテクスチャ
 	vector<string> m_aTexFileName[TEXTURE_TYPE_NUM_MAX];					// テクスチャの名前

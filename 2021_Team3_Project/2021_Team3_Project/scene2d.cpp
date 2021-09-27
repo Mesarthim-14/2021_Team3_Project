@@ -30,8 +30,10 @@ CScene2D::CScene2D(PRIORITY Priority) : CSceneBase(Priority)
 	m_fScaleNum = 0.0f;
 	m_fSubFlashNum = 0.0f;
 	m_fSubNum = 0.0f;
+	m_fFadeSpeedNum = 0.0f;
 	m_nFlashFlame = 0;
 	m_bDisappearFlag = false;
+	m_bFadeOut = false;
 }
 
 //=======================================================================================
@@ -53,6 +55,29 @@ CScene2D* CScene2D::Create(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	// !nullcheck
 	if (pScene != nullptr)
 	{
+		// 初期化処理
+		pScene->Init(pos, size);
+	}
+
+	return pScene;
+}
+
+//=======================================================================================
+// Sceneクラスの生成 (Fade有り)
+//=======================================================================================
+CScene2D * CScene2D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFadeNum)
+{
+	// オブジェクトを生成
+	CScene2D* pScene = new CScene2D();
+
+	// !nullcheck
+	if (pScene != nullptr)
+	{
+		pScene->m_fFadeSpeedNum = fFadeNum;
+		pScene->m_fSubFlashNum = 0.0f;
+		pScene->GetColor().a = 0.0f;
+		pScene->m_bFadeOut = true;
+
 		// 初期化処理
 		pScene->Init(pos, size);
 	}
@@ -89,6 +114,10 @@ void CScene2D::Uninit(void)
 //=======================================================================================
 void CScene2D::Update(void)
 {
+	if (m_bFadeOut)
+	{
+		FadeOut(m_fFadeSpeedNum);
+	}
 }
 
 //=======================================================================================
@@ -173,6 +202,7 @@ void CScene2D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
 	// 頂点情報を設定
 	VERTEX_2D *pVtx = nullptr;
+	D3DXCOLOR color = GetColor();
 
 	// 頂点データをロックする
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -184,10 +214,10 @@ void CScene2D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(pos.x - size.x, pos.y - size.y, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(pos.x + size.x, pos.y - size.y, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(pos.x - size.x, pos.y + size.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(pos.x + size.x, pos.y + size.y, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(pos.x - size.x / 2, pos.y - size.y / 2, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(pos.x + size.x / 2, pos.y - size.y / 2, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(pos.x - size.x / 2, pos.y + size.y / 2, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(pos.x + size.x / 2, pos.y + size.y / 2, 0.0f);
 
 	// rhwの設定
 	pVtx[0].rhw = 1.0f;
@@ -196,10 +226,10 @@ void CScene2D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pVtx[3].rhw = 1.0f;
 
 	// 頂点カラーの設定
-	pVtx[0].col = WhiteColor;
-	pVtx[1].col = WhiteColor;
-	pVtx[2].col = WhiteColor;
-	pVtx[3].col = WhiteColor;
+	pVtx[0].col = color;
+	pVtx[1].col = color;
+	pVtx[2].col = color;
+	pVtx[3].col = color;
 
 	// 頂点データをアンロックする
 	pVtxBuff->Unlock();
@@ -340,10 +370,10 @@ void CScene2D::ScaleUp(float fScaleUp)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(pos.x - (size.x * m_fScaleNum), pos.y - (size.y * m_fScaleNum), 0.0f);	
-	pVtx[1].pos = D3DXVECTOR3(pos.x + (size.x * m_fScaleNum), pos.y - (size.y * m_fScaleNum), 0.0f);	
-	pVtx[2].pos = D3DXVECTOR3(pos.x - (size.x * m_fScaleNum), pos.y + (size.y * m_fScaleNum), 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(pos.x + (size.x * m_fScaleNum), pos.y + (size.y * m_fScaleNum), 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(pos.x - (size.x / 2 * m_fScaleNum), pos.y - (size.y / 2 * m_fScaleNum), 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(pos.x + (size.x / 2 * m_fScaleNum), pos.y - (size.y / 2 * m_fScaleNum), 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(pos.x - (size.x / 2 * m_fScaleNum), pos.y + (size.y / 2 * m_fScaleNum), 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(pos.x + (size.x / 2 * m_fScaleNum), pos.y + (size.y / 2 * m_fScaleNum), 0.0f);
 
 	//頂点データをアンロック
 	pVtxBuff->Unlock();
@@ -451,4 +481,42 @@ void CScene2D::FlashPolygon(int nFlashFlame)
 
 	// 頂点バッファをアンロックする
 	pVtxBuff->Unlock();
+}
+
+//====================================================================
+// フェードアウト
+//====================================================================
+void CScene2D::FadeOut(float fSpeed)
+{
+	// 頂点情報を設定
+	VERTEX_2D *pVtx = nullptr;
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();
+
+	// 透明度の値
+	m_fSubFlashNum += fSpeed;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// α値を足す
+	GetColor().a = m_fSubFlashNum;
+
+	// カラー情報の更新
+	D3DXCOLOR color = GetColor();
+
+	// 頂点カラーの設定
+	pVtx[0].col = D3DXCOLOR(color.r, color.g, color.b, color.a);	// 左上頂点の色	透明度255
+	pVtx[1].col = D3DXCOLOR(color.r, color.g, color.b, color.a);	// 右上頂点の色	透明度255
+	pVtx[2].col = D3DXCOLOR(color.r, color.g, color.b, color.a);	// 左下頂点の色	透明度255
+	pVtx[3].col = D3DXCOLOR(color.r, color.g, color.b, color.a);	// 右下頂点の色	透明度255
+
+	// 頂点バッファをアンロックする
+	pVtxBuff->Unlock();
+
+	// 引く値が無くなったら
+	if (m_fSubFlashNum > 1.0f)
+	{
+		m_fSubFlashNum = 1.0;
+		m_bFadeOut = false;
+	}
 }

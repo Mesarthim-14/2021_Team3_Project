@@ -31,7 +31,8 @@ public:
 	enum MOTION_STATE
 	{
 		MOTION_STATE_IDLE = 0,
-		MOTION_STATE_BYTE
+		MOTION_STATE_BYTE,
+		MOTION_STATE_SHARK_BULLET
 	};
 	CBoss_Shark(PRIORITY Priority = PRIORITY_ENEMY);				// コンストラクタ
 	~CBoss_Shark();													// デストラクタ
@@ -42,10 +43,11 @@ public:
 	void Draw(void);												// 描画処理
 private:
 	void Attack(void)override;										// 攻撃処理
+	void Death(void)override;										// 死亡処理
 	void ByteAttack(void);											// 噛みつき攻撃
+	void SharkBulletAttack(void);									// サメの弾攻撃
 	void MotionUpdate(void);										// モーション処理
 
-	int m_nAttackCount;			// 攻撃カウント
 	MOTION_STATE m_MotionState;	// モーションの状態
 };
 #endif

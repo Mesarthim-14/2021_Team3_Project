@@ -31,6 +31,7 @@
 #include "shadow.h"
 #include "debug_proc.h"
 #include "water.h"
+#include "title_story.h"
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -124,6 +125,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
+	CWater::UnLoadShaderFile();
+
 	// !nullcheck
 	if (m_pDebugProc != nullptr)
 	{
@@ -186,9 +189,6 @@ void CManager::Uninit(void)
 		m_pModeBase.reset();
 		m_pModeBase = nullptr;
 	}
-
-	// シャドウポリゴンのリリース
-	CShadow::PolygonRelese();
 
 	// シーン情報のリリース
 	CScene::ReleaseAll();
@@ -285,6 +285,9 @@ void CManager::SetMode(MODE_TYPE mode)
 	//サウンドストップ
 	pSound->StopAll();
 
+	// 影の終了処理
+	CShadow::PolygonUninit();
+
 	// シーン情報のリリース
 	CScene::ReleaseAll();
 
@@ -298,6 +301,12 @@ void CManager::SetMode(MODE_TYPE mode)
 	case MODE_TYPE_TITLE:
 		// タイトル生成
 		m_pModeBase.reset(new CTitle);
+		break;
+
+		// タイトル
+	case MODE_TYPE_TITLE_STORY:
+		// タイトル生成
+		m_pModeBase.reset(new CTitleStory);
 		break;
 
 		// チュートリアル
@@ -355,24 +364,15 @@ CModeBase * CManager::GetModeBase(void)
 //=============================================================================
 // ゲーム情報
 //=============================================================================
-CGame * CManager::GetGame(void)
+CModeBase * CManager::GetModePtr(void)
 {
-	//ゲーム中かどうか
-	if (m_mode == MODE_TYPE_GAME)
+	//キャスト
+	CModeBase *pMode = ((CModeBase*)m_pModeBase.get());
+
+	// !nullcheck
+	if (pMode != nullptr)
 	{
-		//nullcheck
-		if (m_pModeBase)
-		{
-			//キャスト
-			CGame *pGame = ((CGame*)m_pModeBase.get());
-
-			// !nullcheck
-			if (pGame != nullptr)
-			{
-				return pGame;
-			}
-		}
+		return pMode;
 	}
-
 	return nullptr;
 }

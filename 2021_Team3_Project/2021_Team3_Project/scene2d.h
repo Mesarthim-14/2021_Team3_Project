@@ -18,10 +18,12 @@
 class CScene2D : public CSceneBase
 {
 public:
-	CScene2D(PRIORITY Priority = PRIORITY_UI);							// コンストラクタ
-	~CScene2D();														// デストラクタ
+	CScene2D(PRIORITY Priority = PRIORITY_UI);									// コンストラクタ
+	~CScene2D();																// デストラクタ
 
-	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// インスタンス生成
+	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// インスタンス生成
+	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFadeNum);	// インスタンス生成
+
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 初期化処理
 	void Uninit(void);													// 終了処理
 	void Update(void);													// 更新処理
@@ -34,6 +36,7 @@ public:
 	void UpdateScroll(void);											// 画像スクロールの更新
 	void ScaleUp(float fScaleUp);										// 拡大関数
 	void FlashPolygon(int nFlashFlame);									// ポリゴンの点滅
+	void FadeOut(float fSpeed);											// フェードアウト
 
 	// Set関数
 	void SetCol(D3DXCOLOR col);											// 色の設定
@@ -57,8 +60,10 @@ private:
 	float m_fScaleNum;			// 拡大用変数
 	float m_fSubFlashNum;		// ポリゴンの点灯用
 	float m_fSubNum;			// ポリゴンの点灯用
+	float m_fFadeSpeedNum;		// フェードのスピード
 	int m_nFlashFlame;			// 点灯用のカウンター
 	bool m_bDisappearFlag;		// 点滅用のフラグ
+	bool m_bFadeOut;				// フェードのフラグ
 };
 
 #endif // !_SCENE2D_H_

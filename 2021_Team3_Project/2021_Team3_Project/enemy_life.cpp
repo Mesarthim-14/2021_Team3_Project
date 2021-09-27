@@ -121,6 +121,20 @@ void CEnemy_Life::Update(void)
 	// 位置設定
 	SetPosition(POS);
 
+	// ヒット判定取得
+	bool bHit = m_pEnemy->GetHit();
+	// trueの場合
+	if (bHit == true)
+	{
+		// ライフ取得
+		int nLife = m_pEnemy->GetLife();
+
+		// ゲージの値設定
+		SetGageNum(nLife);
+
+		// ヒット設定
+		m_pEnemy->SetHit(false);
+	}
 	// 死亡状態の場合
 	if (m_pEnemy->GetState() == CEnemy::STATE_DEAD)
 	{

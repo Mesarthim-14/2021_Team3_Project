@@ -141,6 +141,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	material.Ambient.a = 1.0f;
 	m_pD3DDevice->SetMaterial(&material);
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x44444444);
+
 	return S_OK;
 }
 
@@ -220,10 +221,10 @@ void CRenderer::Draw(void)
 		D3DXMATRIX matProj, matView, matWorld;
 		D3DXMATRIX trans;
 
-		if (CManager::GetGame() != nullptr)
+		if (CManager::GetModePtr() != nullptr)
 		{
 			// カメラのポインタ取得
-			CCamera *pCamera = CManager::GetGame()->GetCamera();
+			CCamera *pCamera = CManager::GetModePtr()->GetCamera();
 
 			// カメラが使われていたら
 			if (pCamera != nullptr)
@@ -234,10 +235,6 @@ void CRenderer::Draw(void)
 
 		//オブジェクトクラスの全描画処理呼び出し
 		CScene::DrawAll();
-
-
-		// 影の生成
-		CShadow::Draw();
 		
 		// デバッグプロシージャ
 		CDebugProc *pDebugProc = CManager::GetDebugProc();

@@ -70,7 +70,7 @@ HRESULT CShadowVolume::Init(LPD3DXMESH pSrcMesh)
 	m_pSrcMesh = pSrcMesh;
 
 	m_dwNumFaces = m_pSrcMesh->GetNumFaces();
-	m_LightPos = CManager::GetGame()->GetLight()->GetPos();					// ライトの座標設定
+	m_LightPos = CManager::GetModePtr()->GetLight()->GetPos();					// ライトの座標設定
 
 																			// エッジのメモリ確保
 	m_pEdges = new WORD[m_dwNumFaces * 6];
