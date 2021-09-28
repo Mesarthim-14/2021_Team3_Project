@@ -454,7 +454,7 @@ void CGame::BossTransition(void)
 		if (CCollision::CollisionRectangleAndRectangle(PlayerPos, BOSS_TRANSITION_POS, PlayerSize, BOSS_TARNSITION_SIZE) == true)
 		{
 			// É{ÉXê∂ê¨
-			CreateBossMap();
+			//CreateBossMap();
 
 			// trueÇ…
 			m_bBossTransition = true;
