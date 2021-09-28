@@ -101,7 +101,7 @@ HRESULT CTorpedo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	//CModel_Box::Create(pos, rot, this);
 
 	// ‰Šú‰»ˆ—
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }
