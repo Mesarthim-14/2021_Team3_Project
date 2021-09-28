@@ -37,6 +37,8 @@
 #include "collision.h"
 #include "player_life.h"
 #include "fade.h"
+#include "rotate_ui.h"
+#include "attack_ui.h"
 
 //=======================================================================================
 // マクロ定義
@@ -52,6 +54,7 @@
 
 #define BOSS_TRANSITION_POS			(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス戦遷移判定位置
 #define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス遷移判定サイズ
+
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -209,6 +212,11 @@ void CGame::CreatePlayer(void)
 	{
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
 		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
+
+		// 操作方法
+		CRotateUi::Create(m_pPlayer->GetRightPaddle());
+		CRotateUi::Create(m_pPlayer->GetLeftPaddle());
+		CAttackUi::Create(m_pPlayer->GetShip());
 	}
 }
 

@@ -71,12 +71,13 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/ResultBg.png" },				// リザルト
 		{ "data/Texture/gameclear_story.png" },			// リザルトストーリー
 		{ "data/Texture/blackback.png" },				// リザルトストーリー
+		{ "data/Texture/L1.png" },						// L1
 	};
 
 	// 分割テクスチャ
 	m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE] =
 	{
-		{ "data/Texture/sharp_effect.png" }
+		{ "data/Texture/Move_Ui.png" },					// 移動のUi
 	};
 
 	// ボリュームテクスチャ

@@ -1627,3 +1627,30 @@ void CPlayer::RStickAngle(float fangle_R)
 		m_fdisAngle_R += D3DXToRadian(360);
 	}
 }
+
+//=============================================================================
+// 本体のポインタ
+// Author : Konishi Yuuto
+//=============================================================================
+CModelAnime * CPlayer::GetShip(void)
+{
+	return GetModelAnime(SHIP_NUM);
+}
+
+//=============================================================================
+// 右の車輪のポインタ
+// Author : Konishi Yuuto
+//=============================================================================
+CModelAnime * CPlayer::GetRightPaddle(void)
+{
+	return GetModelAnime(GEAR_R_NUM);
+}
+
+//=============================================================================
+// 左の車輪のポインタ
+// Author : Konishi Yuuto
+//=============================================================================
+CModelAnime * CPlayer::GetLeftPaddle(void)
+{
+	return GetModelAnime(GEAR_L_NUM);
+}

@@ -46,6 +46,7 @@ public:
 		TEXTURE_NUM_RESULT_BG,			// リザルト
 		TEXTURE_NUM_RESULT_STORY,		// リザルトのストーリー
 		TEXTURE_NUM_RESULT_STORY_BACK,	// リザルトのストーリー
+		TEXTURE_NUM_L1,					// L1のUI
 		TEXTURE_NUM_MAX
 	};
 
@@ -53,7 +54,7 @@ public:
 	enum SEPARATE_TEX_TYPE
 	{
 		SEPARATE_TEX_NONE = -1,			// 初期値
-		SEPARATE_TEX_SHARP,				// 鋭いエフェクト
+		SEPARATE_TEX_MOVE_UI,			// 移動のUI
 		SEPARATE_TEX_MAX				// 最大値
 	};
 
@@ -90,24 +91,24 @@ public:
 	void LoadAll(void);														// 全てのロード
 	void UnLoadAll(void);													// 全てのアンロード
 
-																			// 通常テクスチャ
+	// 通常テクスチャ
 	HRESULT NormalTexLoad(void);											// テクスチャロード
 	void NormalTexUnLoad(void);												// テクスチャアンロード
 	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);					// テクスチャの情報
 
-																			// 分割テクスチャ
+	// 分割テクスチャ
 	HRESULT SeparateTexLoad(void);											// 分割テクスチャロード
 	void SeparateTexUnLoad(void);											// 分割テクスチャアンロード
 	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);	// 分割テクスチャ情報
 	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);			// 分割テクスチャ　UVの枚数取得
 	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);					// ループするか
 
-																			// ボリュームテクスチャ
+	// ボリュームテクスチャ
 	HRESULT VolumeTexLoad(void);											// ボリュームテクスチャロード
 	void VolumeTexUnLoad(void);												// ボリュームテクスチャアンロード
 	LPDIRECT3DVOLUMETEXTURE9 GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type);	// ボリュームテクスチャの情報
 
-																			// キューブテクスチャ
+	// キューブテクスチャ
 	HRESULT CubeTexLoad(void);												// キューブテクスチャロード
 	void CubeTexUnLoad(void);												// キューブテクスチャアンロード
 	LPDIRECT3DCUBETEXTURE9 GetCubeTexture(CUBE_TEX_TYPE Tex_Type);			// キューブテクスチャの情報
@@ -116,7 +117,7 @@ private:
 	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];						// テクスチャのポインタ
 	SEPARATE_TEX_INFO m_apSeparateTexture[SEPARATE_TEX_MAX] =
 	{
-		nullptr, CTexture::SEPARATE_TEX_SHARP, D3DXVECTOR2(5, 5), false,
+		nullptr, CTexture::SEPARATE_TEX_MOVE_UI, D3DXVECTOR2(8, 5), true,
 	};
 
 	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ボリュームテクスチャ
