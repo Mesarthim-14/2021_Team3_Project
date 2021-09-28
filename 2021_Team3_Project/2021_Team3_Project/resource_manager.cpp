@@ -12,7 +12,6 @@
 #include "texture.h"
 #include "xfile.h"
 #include "sound.h"
-#include "effect.h"
 
 //=============================================================================
 // static初期化宣言
@@ -27,7 +26,6 @@ CResourceManager::CResourceManager()
 	m_pTexture = nullptr;	// テクスチャのポインタ
 	m_pXFile = nullptr;		// Xファイルのポインタ
 	m_pSound = nullptr;		// サウンドのポインタ
-	m_pEffect = nullptr;	// エフェクトのポインタ
 }
 
 //=============================================================================
@@ -93,16 +91,6 @@ void CResourceManager::LoadAll(void)
 	m_pXFile->HierarchyModelLoad();
 
 	}
-
-	// nullcheck
-	if (m_pEffect != nullptr)
-	{
-		// パーティクル読み込み
-		m_pEffect->Load();
-	}
-
-	// 読み込み
-	CEffect::Load();
 }
 
 //=============================================================================
@@ -137,17 +125,6 @@ void CResourceManager::UnLoadAll(void)
 		delete m_pSound;
 		m_pSound = nullptr;
 	}
-
-	// nullcheck
-	if (m_pEffect != nullptr)
-	{
-		m_pEffect->Unload();
-		delete m_pEffect;
-		m_pEffect = nullptr;
-	}
-
-	// 読み込み
-	CEffect::Unload();
 }
 
 //=============================================================================
