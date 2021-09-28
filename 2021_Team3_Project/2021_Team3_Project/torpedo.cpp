@@ -21,7 +21,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define SIZE			(D3DXVECTOR3(1000.0f,800.0f,1000.0f))		// サイズ
+#define SIZE			(D3DXVECTOR3(1000.0f,1000.0f,1000.0f))		// サイズ
 #define ROT				(D3DXVECTOR3(rot.x,rot.y + m_fAngle,rot.z))	// 向き
 #define MOVE_VALUE		(10.0f)										// 移動量
 #define DECISION_LENGTH	(5000.0f)									// 扇の長さ
