@@ -16,7 +16,7 @@
 // Author : Sugawara Tsukasa
 //=============================================================================
 #define MOVE_VALUE	(D3DXVECTOR3(0.0f,30.0f,0.0f))					// 移動量
-#define COL			(D3DXCOLOR(1.0f,0.3f,0.0f,1.0f))				// 色
+#define COL			(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))				// 色
 #define UP_POS		(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
 #define DOWN_POS	(D3DXVECTOR3(pos.x,pos.y - size.y,pos.z))		// 位置
 #define UP_ROT		(D3DXVECTOR3(0.0f,0.0f,D3DXToRadian(0.0f)))		// 向き

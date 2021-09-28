@@ -53,7 +53,7 @@ CBoss_Life_Back * CBoss_Life_Back::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CEn
 			pBoss_Life_Back->m_pEnemy = pEnemy;
 
 			// ‰Šú‰»ˆ—
-			pBoss_Life_Back->Init(pos, (size / DIVIDE_2) );
+			pBoss_Life_Back->Init(pos, size);
 		}
 	}
 	// ƒ|ƒCƒ“ƒ^‚ð•Ô‚·

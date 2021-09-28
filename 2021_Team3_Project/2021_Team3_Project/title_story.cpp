@@ -156,7 +156,7 @@ void CTitleStory::SkipSentence(void)
 
 	// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
 	if (CManager::GetJoypad()->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_B, 0)
-		|| pKey->GetTrigger(DIK_B))
+		|| pKey->GetTrigger(DIK_B) || pKey->GetTrigger(DIK_RETURN))
 	{
 		while (!m_bEnd)
 		{
