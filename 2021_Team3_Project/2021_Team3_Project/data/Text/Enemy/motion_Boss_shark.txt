@@ -33,21 +33,21 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 頭
 		PARENT = 0					# (親)体
-		POS = 0.0 10.0 410.0
+		POS = 0.0 220.0 4230.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 2					# 顎
 		PARENT = 1					# (親)頭
-		POS = 0.0 -140.0 155.0
+		POS = 0.0 -1500.0 1050.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 3					# 下半身
 		PARENT = 0					# (親)体
-		POS = 3.0 50.0 300.00
+		POS = 30.0 500.0 3000.00
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET

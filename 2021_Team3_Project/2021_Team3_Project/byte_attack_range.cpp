@@ -143,11 +143,10 @@ void CByte_Attack_Range::Update(void)
 	if (m_nCount >= ATTACK_KEY)
 	{
 		// 当たり判定処理
-		//Collision();
+		Collision();
 
 		// 終了
 		Uninit();
-
 		return;
 	}
 }
@@ -180,13 +179,17 @@ void CByte_Attack_Range::Collision(void)
 	{
 		// 位置取得
 		D3DXVECTOR3 PlayerPos = GetPos();
+
 		// サイズ取得
 		D3DXVECTOR3 PlayerSize = GetSize();
 
-		// 当たり判定
-		if (CCollision::CollisionRectangleAndRectangle(pos, PlayerPos, size, PlayerSize) == true)
+		// 矩形判定
+		if (pos.x - size.x / DIVIDE_2 < PlayerPos.x + PlayerSize.x / DIVIDE_2 &&
+			pos.x + size.x / DIVIDE_2 > PlayerPos.x - PlayerSize.x / DIVIDE_2 &&
+			pos.z - size.z / DIVIDE_2 < PlayerPos.z + PlayerSize.z / DIVIDE_2 &&
+			pos.z + size.z / DIVIDE_2 > PlayerPos.z - PlayerSize.z / DIVIDE_2)
 		{
-			// ヒット処理
+			// ヒット
 			pPlayer->Hit(DAMAGE);
 		}
 	}

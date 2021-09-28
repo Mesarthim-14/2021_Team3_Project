@@ -41,13 +41,17 @@ public:
 	void Uninit(void);												// 終了処理
 	void Update(void);												// 更新処理
 	void Draw(void);												// 描画処理
+
+	bool GetEnd(void) { return m_bEnd; }							// 終了取得
 private:
 	void Attack(void)override;										// 攻撃処理
 	void Death(void)override;										// 死亡処理
 	void ByteAttack(void);											// 噛みつき攻撃
 	void SharkBulletAttack(void);									// サメの弾攻撃
 	void MotionUpdate(void);										// モーション処理
+	void UpdateRot(void);											// 向き更新
 
 	MOTION_STATE m_MotionState;	// モーションの状態
+	bool m_bEnd;				// 終了
 };
 #endif

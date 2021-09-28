@@ -36,7 +36,6 @@ public:
 	void Draw(void);												// 描画処理
 	
 private:
-	D3DXCOLOR m_colorFade;						//フェード色
 	FADE_MODE m_FadeMode;						//フェードモード判定用
 };
 #endif

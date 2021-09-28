@@ -47,7 +47,6 @@ public:
 
 	// Get関数
 	float GetScale(void) { return m_fScaleNum; }						// 拡大の値情報
-
 private:
 	int m_nCountAnim;			// アニメーションテクスチャ
 	int m_nCountAnimPattern;	// アニメーションのパターン

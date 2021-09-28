@@ -17,9 +17,9 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE	(40.0f)								// 移動量
+#define MOVE_VALUE	(50.0f)								// 移動量
 #define PARENT_NUM	(0)									// 親のナンバー
-#define DAMAGE		(100)								// ダメージ
+#define DAMAGE		(25)								// ダメージ
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -54,9 +54,6 @@ CPlayer_Bullet * CPlayer_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pPlayer_Bullet->Init(pos, rot);
-
-			// 箱生成
-			//CModel_Box::Create(pos, rot, pPlayer_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -84,8 +81,6 @@ HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 移動量設定
 	SetMove(move);
 
-	// 箱生成
-	//CModel_Box::Create(pos, rot, this);
 	return S_OK;
 }
 //=============================================================================

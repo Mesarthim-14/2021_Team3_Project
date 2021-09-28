@@ -11,8 +11,12 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define FADE_RATE (0.02f)	// α値変動係数
-
+#define FADE_RATE	(0.01f)												// α値変動係数
+#define POS			(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,0.0f))	// 位置
+#define SIZE		(D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT,0.0f))			// サイズ
+#define COL			(D3DXCOLOR(0.0f,0.0f,0.0f,0.0f))						// 色
+#define αMIN		(0.0f)													// α値の最小
+#define αMAX		(1.0f)													// α値の最大
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -20,7 +24,6 @@
 CBoss_Fade::CBoss_Fade(PRIORITY Priority) : CScene2D(Priority)
 {
 	m_FadeMode	= FADE_MODE_NONE;
-	m_colorFade = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 //=============================================================================
@@ -63,9 +66,13 @@ CBoss_Fade * CBoss_Fade::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 HRESULT CBoss_Fade::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// フェードアウト状態
-	m_FadeMode = FADE_MODE_OUT;
+	m_FadeMode = FADE_MODE_IN;
 
-	CScene2D::Init(pos, size);
+	CScene2D::Init(POS, SIZE);
+
+	// 色設定
+	SetCol(COL);
+
 	return S_OK;
 }
 
@@ -89,23 +96,30 @@ void CBoss_Fade::Update(void)
 	CScene2D::Update();
 
 	// ゲーム取得
-	CGame *pGame = (CGame*)CManager::GetMode();
+	CGame *pGame = (CGame*)CManager::GetModePtr();
+
+	// 色取得
+	D3DXCOLOR col = GetColor();
 
 	if (m_FadeMode != FADE_MODE_NONE)
 	{
 		//フェードイン処理
-		if (m_FadeMode == FADE_MODE_IN)
+		if (m_FadeMode == FADE_MODE_OUT)
 		{
 			//α値の減算
-			m_colorFade.a -= FADE_RATE;
+			col.a -= FADE_RATE;
 
 			//α値が0.0fより小さくなったらフェード更新終了
-			if (m_colorFade.a <= 0.0f)
+			if (col.a <= αMIN)
 			{
-				m_colorFade.a = 0.0f;
+				// 0.0fに
+				col.a = αMIN;
 
-				// falseに
-				pGame->SetbBoss(false);
+				// ボス戦の判定設定
+				pGame->SetbBossTransition(false);
+
+				// ボス戦の判定設定
+				pGame->SetbBoss(true);
 
 				// 終了
 				Uninit();
@@ -115,29 +129,26 @@ void CBoss_Fade::Update(void)
 		}
 
 		//フェードアウト処理
-		else if (m_FadeMode == FADE_MODE_OUT)
+		else if (m_FadeMode == FADE_MODE_IN)
 		{
 			//α値の加算
-			m_colorFade.a += FADE_RATE;
+			col.a += FADE_RATE;
 
 			//α値が1.0fより大きくなったらフェードインへ移行
-			if (m_colorFade.a >= 1.0f)
+			if (col.a >= αMAX)
 			{
-				m_colorFade.a = 1.0f;
+				// ボス戦の判定設定
+				pGame->CreateBossMap();
 
-				// ボス戦か取得
-				bool bBoss = pGame->GetbBoss();
+				// 1.0fに
+				col.a = αMAX;
 
-				// trueの場合
-				if (bBoss == true)
-				{
-					m_FadeMode = FADE_MODE_IN;
-				}
+				// OUTに
+				m_FadeMode = FADE_MODE_OUT;
 			}
 		}
-
-		//透明度の設定
-		SetColor(m_colorFade);
+		// 透明度の設定
+		SetCol(col);
 	}
 }
 

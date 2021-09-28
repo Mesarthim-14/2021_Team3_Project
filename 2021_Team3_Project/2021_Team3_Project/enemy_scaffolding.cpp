@@ -13,6 +13,7 @@
 #include "player.h"
 #include "enemy_bullet.h"
 #include "character_box.h"
+#include "enemy_normal_bullet.h"
 #include "enemy_life.h"
 #include "enemy_scaffolding.h"
 //=============================================================================
@@ -24,7 +25,7 @@
 #define ROT_SPEED		(0.01f)									// 旋回速度
 #define ANGLE_180		(180)									// 180度
 #define ANGLE_360		(360)									// 360度
-#define SIZE			(D3DXVECTOR3 (700.0f,1200.0f,700.0f))	// サイズ
+#define SIZE			(D3DXVECTOR3 (1500.0f,6000.0f,1500.0f))	// サイズ
 #define ATTACK_COUNT	(120)									// 攻撃間隔
 
 // 砲台の位置
@@ -164,7 +165,7 @@ void CEnemy_Scaffolding::Attack(void)
 			CModelAnime *pBattery = GetModelAnime(PARTS_BATTERY);
 
 			// 弾生成
-			CEnemy_Bullet::Create(BATTERY_POS, ZeroVector3);
+			CEnemy_Normal_Bullet::Create(BATTERY_POS, ZeroVector3);
 
 			// 0に
 			GetAttackCount() = ZERO_INT;
