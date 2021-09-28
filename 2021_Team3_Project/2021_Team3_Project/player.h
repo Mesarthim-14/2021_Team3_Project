@@ -95,14 +95,12 @@ public:
 	void PaddleRotateL(float fRotate);							// パドルの回転
 	void PaddleRotFix(void);									// パドルの角度を補正
 
-	//ジョイスティックの回転
-	void SetAngle_L(float fangle_L);	//格納L
-	float GetAngle_L(void)	{ return m_fAngle_L; }		//取得L
-	void SetAngle_R(float fangle_R);	//格納R
-	float GetAngle_R(void)	{ return m_fAngle_R; }		//取得R
-
 	void SetHitFlag(bool bHitFlag)	{ m_bHitFlag = bHitFlag; }
 	bool GetHitFlag(void)			{ return m_bHitFlag; }
+
+	void LStickAngle(float fangle_L);							//Lスティックの最短距離
+	void RStickAngle(float fangle_R);							//Rスティックの最短距離
+
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント

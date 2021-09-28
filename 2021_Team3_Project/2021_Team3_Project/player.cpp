@@ -385,8 +385,6 @@ void CPlayer::Move(void)
 	float fSpeed = GetSpeed();												// スピード
 	float fAngle_R = ZERO_FLOAT;											// 右角度
 	float fAngle_L = ZERO_FLOAT;											// 左角度
-	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
-	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
 	//// 左の歯車の情報取得
 	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
@@ -403,12 +401,15 @@ void CPlayer::Move(void)
 	//===========================================
 	// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
-	{
+	{	
 		// コントローラーの角度
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
+		//スティックの最短距離
+		RStickAngle(fAngle_R);
+
 		// 左に移動
-		if (fAngle_R < disfAngle_R && fAngle_R + STICK_ANGLERANGE > disfAngle_R)
+		if (fAngle_R < m_fAngle_R)
 		{
 			// パドルの回転
 			PaddleRotateR(-GEAR_SPIN_ANGLE);
@@ -427,7 +428,7 @@ void CPlayer::Move(void)
 		else if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > disfAngle_R && fAngle_R - STICK_ANGLERANGE < disfAngle_R)
+			if (fAngle_R > m_fAngle_R)
 			{
 				// パドルの回転
 				PaddleRotateR(GEAR_SPIN_ANGLE);
@@ -445,7 +446,6 @@ void CPlayer::Move(void)
 		}
 		//波エフェクト
 		CreateWave();
-		SetAngle_R(fAngle_R);
 	}
 	//===========================================
 	// 左歯車
@@ -456,8 +456,11 @@ void CPlayer::Move(void)
 		// コントローラーの角度
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
+		//スティックの最短距離
+		LStickAngle(fAngle_L);
+
 		// 右に移動
-		if (fAngle_L < disfAngle_L && fAngle_L + STICK_ANGLERANGE > disfAngle_L)
+		if (fAngle_L < m_fAngle_L)
 		{
 			// パドルの回転
 			PaddleRotateL(-GEAR_SPIN_ANGLE);
@@ -476,7 +479,7 @@ void CPlayer::Move(void)
 		else if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > disfAngle_L && fAngle_L - STICK_ANGLERANGE < disfAngle_L)
+			if (fAngle_L > m_fAngle_L)
 			{
 				// パドルの回転
 				PaddleRotateL(GEAR_SPIN_ANGLE);
@@ -494,13 +497,20 @@ void CPlayer::Move(void)
 		}
 		//波エフェクト
 		CreateWave();
-		SetAngle_L(fAngle_L);
 	}
 	// 入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
+		// コントローラーの角度
+		fAngle_L = atan2f((float)js.lY, (float)js.lX);
+		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
+
+		//スティックの最短距離
+		LStickAngle(fAngle_L);
+		RStickAngle(fAngle_R);
+
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > disfAngle_L && fAngle_R > disfAngle_R)
+		if (fAngle_L > m_fAngle_L && fAngle_R > m_fAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -514,7 +524,6 @@ void CPlayer::Move(void)
 				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
-
 			}
 		}
 		// 右スティックと左スティックが下に倒されていない場合
@@ -533,6 +542,11 @@ void CPlayer::Move(void)
 
 	// 位置設定
 	SetPos(pos);
+
+	//前回のスティック角度
+	m_fAngle_R = fAngle_R;
+	m_fAngle_L = fAngle_L;
+
 }
 //=============================================================================
 // 2パッドの移動処理関数
@@ -543,8 +557,9 @@ void CPlayer::Pad2Move(void)
 	// ジョイパッドの取得
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
-	float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
-	float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
+
+	float fAngle_R = ZERO_FLOAT;	// 右角度
+	float fAngle_L = ZERO_FLOAT;	// 左角度
 
 	// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
@@ -558,11 +573,6 @@ void CPlayer::Pad2Move(void)
 	// スピード
 	float fSpeed = GetSpeed();
 
-	// 右角度
-	float fAngle_R = ZERO_FLOAT;
-
-	// 左角度
-	float fAngle_L = ZERO_FLOAT;
 
 	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
@@ -584,7 +594,7 @@ void CPlayer::Pad2Move(void)
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 
 		// 右に移動
-		if (fAngle_L < disfAngle_L)
+		if (fAngle_L < m_fAngle_L)
 		{
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
@@ -606,7 +616,7 @@ void CPlayer::Pad2Move(void)
 		if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > disfAngle_L)
+			if (fAngle_L > m_fAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -627,7 +637,6 @@ void CPlayer::Pad2Move(void)
 		}
 		//波エフェクト
 		CreateWave();
-		SetAngle_L(fAngle_L);
 	}
 	//===========================================
 	// 右歯車 ※2Player
@@ -639,7 +648,7 @@ void CPlayer::Pad2Move(void)
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
 		// 左に移動
-		if (fAngle_R < disfAngle_R)
+		if (fAngle_R < m_fAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -661,7 +670,7 @@ void CPlayer::Pad2Move(void)
 		if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > disfAngle_R)
+			if (fAngle_R > m_fAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -682,14 +691,13 @@ void CPlayer::Pad2Move(void)
 		}
 		//波エフェクト
 		CreateWave();
-		//格納
-		SetAngle_R(fAngle_R);
+
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > disfAngle_L && fAngle_R > disfAngle_R)
+		if (fAngle_L > m_fAngle_L && fAngle_R > m_fAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -741,6 +749,11 @@ void CPlayer::Pad2Move(void)
 
 	// 位置設定
 	SetPos(pos);
+
+	//格納
+	m_fAngle_R = fAngle_R;
+	m_fAngle_L = fAngle_L;
+
 }
 
 //=============================================================================
@@ -1529,20 +1542,26 @@ void CPlayer::PaddleRotFix(void)
 	}
 }
 
-//=============================================================================
-// Lスティック角度値格納関数
-// Author : SugawaraTsukasa
-//=============================================================================
-void CPlayer::SetAngle_L(float fangle_L)
+void CPlayer::LStickAngle(float fangle_L)
 {
-	m_fAngle_L = fangle_L;
+	if (m_fAngle_L - fangle_L > D3DXToRadian(180))
+	{
+		m_fAngle_L -= D3DXToRadian(360);
+	}
+	else if (m_fAngle_L - fangle_L < D3DXToRadian(-180))
+	{
+		m_fAngle_L += D3DXToRadian(360);
+	}
 }
 
-//=============================================================================
-// Rスティック角度値格納関数
-// Author : SugawaraTsukasa
-//=============================================================================
-void CPlayer::SetAngle_R(float fangle_R)
+void CPlayer::RStickAngle(float fangle_R)
 {
-	m_fAngle_R = fangle_R;
+	if (m_fAngle_R - fangle_R > D3DXToRadian(180))
+	{
+		m_fAngle_R -= D3DXToRadian(360);
+	}
+	else if (m_fAngle_R - fangle_R < D3DXToRadian(-180))
+	{
+		m_fAngle_R += D3DXToRadian(360);
+	}
 }
