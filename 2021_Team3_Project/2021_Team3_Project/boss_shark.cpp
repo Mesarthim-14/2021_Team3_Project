@@ -37,7 +37,7 @@
 #define BULLET_ROT			(D3DXVECTOR3(D3DXToRadian(90.0f),0.0f,D3DXToRadian(180.0f)))// 向き
 #define MUT_2				(2)															// 2倍
 #define RANGE_LENGTH		(10000.0f)													// 攻撃範囲位置算出用
-#define RANGE_Y				(100.0f)														// 範囲のY座標
+#define RANGE_Y				(100.0f)													// 範囲のY座標
 #define BYTE_LENGTH			(8000.0f)													// 長さ
 #define BULLET_CNT			(2000)														// 弾発射カウント
 #define BULLET_KEY_MAX		(3)															// 弾発射キー最大
