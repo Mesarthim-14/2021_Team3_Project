@@ -96,15 +96,19 @@ public:
 	void PaddleRotateL(float fRotate);							// パドルの回転
 	void PaddleRotFix(void);									// パドルの角度を補正
 
-																//ジョイスティックの回転
-	void SetAngle_L(float fangle_L);	//格納L
-	float GetAngle_L(void) { return m_fAngle_L; }		//取得L
-	void SetAngle_R(float fangle_R);	//格納R
-	float GetAngle_R(void) { return m_fAngle_R; }		//取得R
+	//ジョイスティックの最短角度距離
+	void LStickAngle(float fangle_L);
+	void RStickAngle(float fangle_R);
 
 	void SetHitFlag(bool bHitFlag) { m_bHitFlag = bHitFlag; }
 	bool GetHitFlag(void) { return m_bHitFlag; }
 	bool GetEnd(void) { return m_bEnd; }
+
+	CModelAnime* GetShip(void);
+	CModelAnime* GetRightPaddle(void);
+	CModelAnime* GetLeftPaddle(void);
+
+
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
@@ -116,8 +120,8 @@ private:
 	bool m_bBack;									// 後ろに移動しているか
 	bool m_bMove;									// 歩いているフラグ
 	bool m_bKnock_Back;								// ノックバック
-	float m_fAngle_L;								//値保持
-	float m_fAngle_R;								//値保持
+	float m_fdisAngle_L;							// Lスティック過去値
+	float m_fdisAngle_R;							// Rスティック過去値
 	bool m_bHitFlag;								// ダメージを受けたフラグ
 	bool m_bDeath;									// 死亡フラグ
 	bool m_bEnd;									// プレイヤー終了のフラグ

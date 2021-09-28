@@ -39,7 +39,7 @@ public:
 	void HasPtrDelete(void);												// 保持ポインタの開放処理
 	void ShadowDraw(D3DXVECTOR3 rot);										// 影の描画
 
-																			// Set関数
+	// Set関数
 	void SetParent(CModelAnime *pParent);									// 親の設定
 	void SetRot(const D3DXVECTOR3 rot);										// 向き設定
 	void SetPosAnime(const D3DXVECTOR3 posAnime);							// アニメーションパーツの座標
@@ -48,11 +48,12 @@ public:
 	D3DXMATRIX SetShadowInfo(D3DXVECTOR3 rot, D3DXMATRIX pParent);          // 影の情報の設定
 	void SetRotCalculation(bool bFlag) { m_bRotCalculation = bFlag; }		// 角度の計算フラグの設定
 
-																			// Get情報
+	// Get情報
 	D3DXVECTOR3 GetPos(void)const;											// 座標情報
 	D3DXVECTOR3 GetPosAnime(void)const;										// アニメーション座標情報
 	D3DXVECTOR3 GetRot(void)const;											// 角度の情報
 	D3DXVECTOR3 GetRotAnime(void)const;										// アニメーション角度情報
+	D3DXVECTOR3 GetMtxPos(void);											// マトリクス座標
 	D3DXMATRIX GetMtxWorld(void);											// ワールドマトリクス情報
 	D3DXMATRIX GetOldMtxWorld(void);										// 古いワールドマトリクスの情報
 	LPD3DXMESH GetMesh(void) { return m_model.pMesh; }						// モデル情報取得
