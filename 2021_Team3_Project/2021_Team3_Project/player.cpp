@@ -430,6 +430,9 @@ void CPlayer::Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
+
+			//波エフェクト
+			CreateWave();
 		}
 		// falseの場合
 		else if (m_bBack == false)
@@ -449,10 +452,11 @@ void CPlayer::Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				//波エフェクト
+				CreateWave();
 			}
 		}
-		//波エフェクト
-		CreateWave();
 	}
 	//===========================================
 	// 左歯車
@@ -481,6 +485,9 @@ void CPlayer::Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
+
+			//波エフェクト
+			CreateWave();
 		}
 		// falseの場合
 		else if (m_bBack == false)
@@ -500,10 +507,11 @@ void CPlayer::Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				//波エフェクト
+				CreateWave();
 			}
 		}
-		//波エフェクト
-		CreateWave();
 	}
 	// 入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
@@ -564,7 +572,6 @@ void CPlayer::Pad2Move(void)
 	// ジョイパッドの取得
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
-
 	float fAngle_R = ZERO_FLOAT;	// 右角度
 	float fAngle_L = ZERO_FLOAT;	// 左角度
 
@@ -599,9 +606,10 @@ void CPlayer::Pad2Move(void)
 	{
 		// コントローラーの角度
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-
+		//スティックの最短距離
+		LStickAngle(fAngle_L);
 		// 右に移動
-		if (fAngle_L < m_fdisAngle_L)
+		if (fAngle_L > m_fdisAngle_L)
 		{
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
@@ -618,12 +626,15 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
+
+			//波エフェクト
+			CreateWave();
 		}
 		// falseの場合
 		if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > m_fdisAngle_L)
+			if (fAngle_L < m_fdisAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -640,10 +651,11 @@ void CPlayer::Pad2Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				//波エフェクト
+				CreateWave();
 			}
 		}
-		//波エフェクト
-		CreateWave();
 	}
 	//===========================================
 	// 右歯車 ※2Player
@@ -653,9 +665,10 @@ void CPlayer::Pad2Move(void)
 	{
 		// コントローラーの角度
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-
+		//スティックの最短距離
+		RStickAngle(fAngle_R);
 		// 左に移動
-		if (fAngle_R < m_fdisAngle_R)
+		if (fAngle_R > m_fdisAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -672,12 +685,15 @@ void CPlayer::Pad2Move(void)
 
 			// 目的の向き
 			m_rotDest.y = rot.y;
+
+			//波エフェクト
+			CreateWave();
 		}
 		// falseの場合
 		if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > m_fdisAngle_R)
+			if (fAngle_R < m_fdisAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -694,18 +710,27 @@ void CPlayer::Pad2Move(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				//波エフェクト
+				CreateWave();
 			}
 		}
-		//波エフェクト
-		CreateWave();
+
 
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
+		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
+			// コントローラーの角度
+			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
+			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
+
+			//スティックの最短距離
+			LStickAngle(fAngle_L);
+			RStickAngle(fAngle_R);
 			// trueに
 			m_bBack = true;
 			// trueの場合
