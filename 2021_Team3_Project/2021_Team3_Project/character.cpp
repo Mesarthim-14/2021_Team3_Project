@@ -46,6 +46,7 @@ CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 	m_State = STATE_NORMAL;
 	m_bUseShadow = false;
 	m_RayData = { ZERO_FLOAT,ZERO_FLOAT,ZERO_INT };
+	m_bGravity = true;
 }
 
 //=============================================================================

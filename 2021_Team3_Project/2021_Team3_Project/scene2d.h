@@ -18,7 +18,7 @@
 class CScene2D : public CSceneBase
 {
 public:
-	CScene2D(PRIORITY Priority = PRIORITY_UI);									// コンストラクタ
+	CScene2D(PRIORITY Priority = PRIORITY_0);									// コンストラクタ
 	~CScene2D();																// デストラクタ
 
 	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// インスタンス生成
@@ -30,6 +30,7 @@ public:
 	void Draw(void);													// 描画処理
 
 	void CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size);				// 頂点の生成
+	void SetVertex(void);												// 頂点の設定
 	void InitAnimation(int nCounterAnim, int nPatternAnim, int nLoop);	// アニメーション情報初期化
 	void InitScroll(int nSpeed, float fDivision);						// 画像スクロールの設定
 	void UpdateAnimation(void);											// アニメーションの更新

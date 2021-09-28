@@ -70,11 +70,13 @@ public:
 	void DrawPlayerPos(void);						// プレイヤーの位置書き込み
 	void CreateBossMap(void);						// ボスマップ生成
 	void BossTransition(void);						// ボス戦遷移
-	// Set関数
-	void SetbBoss(bool bBoss) { m_bBoss = bBoss;	}		// ボス戦遷移
+	void ModeTransition(void);						// モード遷移
+
+													// Set関数
+	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }		// ボス戦遷移
 
 
-	// Get関数
+														// Get関数
 
 	CCamera *GetCamera(void) { return (CCamera*)m_pCamera; }	// カメラのポインタ情報
 

@@ -199,7 +199,9 @@
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
-    <ClCompile Include="result.cpp" />
+    <ClCompile Include="result_clear.cpp" />
+    <ClCompile Include="result_failed.cpp" />
+    <ClCompile Include="result_story.cpp" />
     <ClCompile Include="rock.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
@@ -272,7 +274,9 @@
     <ClInclude Include="polygon.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />
-    <ClInclude Include="result.h" />
+    <ClInclude Include="result_clear.h" />
+    <ClInclude Include="result_failed.h" />
+    <ClInclude Include="result_story.h" />
     <ClInclude Include="rock.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />

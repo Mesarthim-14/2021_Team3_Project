@@ -20,7 +20,7 @@
 #include "player.h"
 #include "renderer.h"
 #include "resource_manager.h"
-#include "result.h"
+#include "result_failed.h"
 #include "scene3D.h"
 #include "sound.h"
 #include "texture.h"
@@ -32,6 +32,7 @@
 #include "debug_proc.h"
 #include "water.h"
 #include "title_story.h"
+#include "result_clear.h"
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -45,6 +46,7 @@ unique_ptr<CScene> CManager::m_pScene = nullptr;
 unique_ptr<CResourceManager> CManager::m_pResourceManager = nullptr;
 unique_ptr<CModeBase> CManager::m_pModeBase = nullptr;
 unique_ptr<CDebugProc> CManager::m_pDebugProc = nullptr;
+
 //=============================================================================
 // コンストラクタ
 //=============================================================================
@@ -177,7 +179,7 @@ void CManager::Uninit(void)
 
 	//メモリ開放
 	if (m_pRenderer != nullptr)
-	{	
+	{
 		// 描画クラス
 		m_pRenderer.reset();
 		m_pRenderer = nullptr;
@@ -322,10 +324,16 @@ void CManager::SetMode(MODE_TYPE mode)
 		break;
 
 		// リザルト
-	case MODE_TYPE_RESULT:
+	case MODE_TYPE_RESULT_FAILED:
 		// リザルト生成
-		m_pModeBase.reset(new CResult);
+		m_pModeBase.reset(new CResultFailed);
 		break;
+		// リザルト
+	case MODE_TYPE_RESULT_CLEAR:
+		// リザルト生成
+		m_pModeBase.reset(new CResultClear);
+		break;
+
 	default:
 		break;
 	}

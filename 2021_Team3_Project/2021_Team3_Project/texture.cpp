@@ -69,6 +69,8 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/game_explanation3.png" },		// ストーリーの文章
 		{ "data/Texture/game_explanation4.png" },		// ストーリーの文章
 		{ "data/Texture/ResultBg.png" },				// リザルト
+		{ "data/Texture/gameclear_story.png" },			// リザルトストーリー
+		{ "data/Texture/blackback.png" },				// リザルトストーリー
 	};
 
 	// 分割テクスチャ

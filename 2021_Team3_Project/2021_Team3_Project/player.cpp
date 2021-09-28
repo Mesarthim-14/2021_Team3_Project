@@ -71,6 +71,10 @@
 #define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
 #define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
 #define STICK_ANGLERANGE		(1.0f)									//スティックの角度範囲
+#define SINK_TIME				(120)									// 沈む時間
+#define SINK_MOVE				(3.0f)									// 沈む量
+#define SINK_ROTATE				(3.0f)									// 沈む角度
+
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -83,28 +87,28 @@
 #define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//大きさ
 #define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define EXPLOSION_LIFE		(70)													//体力
-																					
+
 //煙																				
 #define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//大きさ
 #define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//移動力
 #define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//色
 #define SMOKE_LIFE			(500)													//体力
-																					
+
 //水しぶき																			
 #define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//大きさ
 #define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動力
 #define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define SPLASH_LIFE			(200)													//体力
-																				
+
 //木材																			
 #define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//大きさ
 #define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//移動力
 #define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define WOOD_LIFE			(500)													//体力
-																					
+
 //波																				
 #define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//位置
 #define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//大きさ
@@ -147,9 +151,12 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_nAttackCount_R = ZERO_INT;
 	m_nAttackCount_L = ZERO_INT;
 	m_PadType = PAD_TYPE_1P;
-	m_fAngle_L = 0;
-	m_fAngle_R = 0;
+	m_fdisAngle_L = 0;
+	m_fdisAngle_R = 0;
+	m_nSinkCounter = 0;
 	m_bHitFlag = false;
+	m_bDeath = false;
+	m_bEnd = false;
 }
 
 //=============================================================================
@@ -244,18 +251,20 @@ void CPlayer::Update(void)
 	// プレイヤーの状態
 	UpdateState();
 
-	// プレイヤーの制御
-	PlayerControl();
+	// 体力が0になったら
+	if (!m_bDeath)
+	{
+		// プレイヤーの制御
+		PlayerControl();
+	}
+	else
+	{
+		// 沈んでいく処理
+		SinkEnd();
+	}
 
 	// 角度の更新処理
 	UpdateRot();
-
-	// 体力が0になったら
-	if (GetLife() <= MIN_LIFE)
-	{
-		// 死亡状態に設定
-		SetState(CCharacter::STATE_DEAD);
-	}
 }
 
 //=============================================================================
@@ -273,15 +282,7 @@ void CPlayer::Draw(void)
 //=============================================================================
 void CPlayer::UpdateState(void)
 {
-	// 状態取得
-	int nState = GetState();
 
-	// DEADの場合
-	if (nState == CCharacter::STATE_DEAD)
-	{
-		// 死亡処理
-		Death();
-	}
 }
 
 //=============================================================================
@@ -352,22 +353,28 @@ void CPlayer::UpdateRot(void)
 
 //=============================================================================
 // 敵の弾のヒット処理
-// Author : Sugawara Tsukasa
+// Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Hit(int nDamage)
 {
-	// ダメージ減算
-	SetLife(GetLife() - nDamage);
+	GetLife() = -nDamage;
+
+	// 0以下だったら
+	if (!m_bDeath && GetLife() <= 0)
+	{
+		// 死ぬ
+		Death();
+	}
 }
 
 //=============================================================================
 // 死んだときの処理
-// Author : Sugawara Tsukasa
+// Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Death(void)
 {
-	// 終了
-	Uninit();
+	m_bDeath = true;
+	SetGravityFlag(false);
 
 	return;
 }
@@ -409,7 +416,7 @@ void CPlayer::Move(void)
 		RStickAngle(fAngle_R);
 
 		// 左に移動
-		if (fAngle_R < m_fAngle_R)
+		if (fAngle_R < m_fdisAngle_R)
 		{
 			// パドルの回転
 			PaddleRotateR(-GEAR_SPIN_ANGLE);
@@ -428,7 +435,7 @@ void CPlayer::Move(void)
 		else if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > m_fAngle_R)
+			if (fAngle_R > m_fdisAngle_R)
 			{
 				// パドルの回転
 				PaddleRotateR(GEAR_SPIN_ANGLE);
@@ -460,7 +467,7 @@ void CPlayer::Move(void)
 		LStickAngle(fAngle_L);
 
 		// 右に移動
-		if (fAngle_L < m_fAngle_L)
+		if (fAngle_L < m_fdisAngle_L)
 		{
 			// パドルの回転
 			PaddleRotateL(-GEAR_SPIN_ANGLE);
@@ -479,7 +486,7 @@ void CPlayer::Move(void)
 		else if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > m_fAngle_L)
+			if (fAngle_L > m_fdisAngle_L)
 			{
 				// パドルの回転
 				PaddleRotateL(GEAR_SPIN_ANGLE);
@@ -510,7 +517,7 @@ void CPlayer::Move(void)
 		RStickAngle(fAngle_R);
 
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > m_fAngle_L && fAngle_R > m_fAngle_R)
+		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -544,8 +551,8 @@ void CPlayer::Move(void)
 	SetPos(pos);
 
 	//前回のスティック角度
-	m_fAngle_R = fAngle_R;
-	m_fAngle_L = fAngle_L;
+	m_fdisAngle_R = fAngle_R;
+	m_fdisAngle_L = fAngle_L;
 
 }
 //=============================================================================
@@ -561,7 +568,7 @@ void CPlayer::Pad2Move(void)
 	float fAngle_R = ZERO_FLOAT;	// 右角度
 	float fAngle_L = ZERO_FLOAT;	// 左角度
 
-	// サウンドのポインタ
+																			// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
 	// 座標
@@ -594,7 +601,7 @@ void CPlayer::Pad2Move(void)
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 
 		// 右に移動
-		if (fAngle_L < m_fAngle_L)
+		if (fAngle_L < m_fdisAngle_L)
 		{
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
@@ -616,7 +623,7 @@ void CPlayer::Pad2Move(void)
 		if (m_bBack == false)
 		{
 			// 左に移動
-			if (fAngle_L > m_fAngle_L)
+			if (fAngle_L > m_fdisAngle_L)
 			{
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
@@ -648,7 +655,7 @@ void CPlayer::Pad2Move(void)
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
 		// 左に移動
-		if (fAngle_R < m_fAngle_R)
+		if (fAngle_R < m_fdisAngle_R)
 		{
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
@@ -670,7 +677,7 @@ void CPlayer::Pad2Move(void)
 		if (m_bBack == false)
 		{
 			// 右に移動
-			if (fAngle_R > m_fAngle_R)
+			if (fAngle_R > m_fdisAngle_R)
 			{
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
@@ -697,7 +704,7 @@ void CPlayer::Pad2Move(void)
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
 		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > m_fAngle_L && fAngle_R > m_fAngle_R)
+		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
 			// trueに
 			m_bBack = true;
@@ -751,8 +758,8 @@ void CPlayer::Pad2Move(void)
 	SetPos(pos);
 
 	//格納
-	m_fAngle_R = fAngle_R;
-	m_fAngle_L = fAngle_L;
+	m_fdisAngle_R = fAngle_R;
+	m_fdisAngle_L = fAngle_L;
 
 }
 
@@ -1308,6 +1315,7 @@ void CPlayer::Collision(void)
 					// trueに
 					m_bKnock_Back = true;
 				}
+
 				// 次のポインタ取得
 				pScene = pSceneCur;
 			}
@@ -1370,6 +1378,27 @@ void CPlayer::CrossCollision(void)
 			}
 		}
 	}
+}
+
+//=======================================================================================
+// 沈む処理
+// Author : Konishi Yuuto
+//=======================================================================================
+void CPlayer::SinkEnd(void)
+{
+	if (!m_bEnd)
+	{
+		m_nSinkCounter++;
+
+		GetPos().y -= SINK_MOVE;
+
+		if (m_nSinkCounter >= SINK_TIME)
+		{
+			m_bEnd = true;
+			m_nSinkCounter = 0;
+		}
+	}
+	GetRot().x += D3DXToRadian(SINK_ROTATE);
 }
 
 //=======================================================================================
@@ -1542,26 +1571,34 @@ void CPlayer::PaddleRotFix(void)
 	}
 }
 
+//=============================================================================
+// Lスティックの最短角度距離
+// Author : Oguma Akira
+//=============================================================================
 void CPlayer::LStickAngle(float fangle_L)
 {
-	if (m_fAngle_L - fangle_L > D3DXToRadian(180))
+	if (m_fdisAngle_L - fangle_L > D3DXToRadian(180))
 	{
-		m_fAngle_L -= D3DXToRadian(360);
+		m_fdisAngle_L -= D3DXToRadian(360);
 	}
-	else if (m_fAngle_L - fangle_L < D3DXToRadian(-180))
+	else if (m_fdisAngle_L - fangle_L < D3DXToRadian(-180))
 	{
-		m_fAngle_L += D3DXToRadian(360);
+		m_fdisAngle_L += D3DXToRadian(360);
 	}
 }
 
+//=============================================================================
+// Rスティックの最短角度距離
+// Author : Oguma Akira
+//=============================================================================
 void CPlayer::RStickAngle(float fangle_R)
 {
-	if (m_fAngle_R - fangle_R > D3DXToRadian(180))
+	if (m_fdisAngle_R - fangle_R > D3DXToRadian(180))
 	{
-		m_fAngle_R -= D3DXToRadian(360);
+		m_fdisAngle_R -= D3DXToRadian(360);
 	}
-	else if (m_fAngle_R - fangle_R < D3DXToRadian(-180))
+	else if (m_fdisAngle_R - fangle_R < D3DXToRadian(-180))
 	{
-		m_fAngle_R += D3DXToRadian(360);
+		m_fdisAngle_R += D3DXToRadian(360);
 	}
 }

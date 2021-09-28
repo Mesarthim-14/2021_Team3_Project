@@ -1,8 +1,8 @@
-#ifndef _RESULT_H_
-#define _RESULT_H_
+#ifndef _RESULT_CLEAR_H_
+#define _RESULT_CLEAR_H_
 //=============================================================================
 //
-// リザルトクラスヘッダー [result.h]
+// リザルトクラスヘッダー [result_clear.h]
 // Author : Konishi Yuuto
 //
 //=============================================================================
@@ -15,16 +15,16 @@
 //=============================================================================
 //前方宣言
 //=============================================================================
-class CScene2D;
+class CResultStory;
 
 //=============================================================================
 //リザルトクラス
 //=============================================================================
-class CResult : public CModeBase
+class CResultClear : public CModeBase
 {
 public:
-	CResult();					// コンストラクタ
-	~CResult();					// デストラクタ
+	CResultClear();					// コンストラクタ
+	~CResultClear();					// デストラクタ
 
 	HRESULT Init(void);			// 初期化処理
 	void Uninit(void);			// 終了処理
@@ -33,6 +33,6 @@ public:
 
 	void Create2DObject(void);	// 2Dオブジェクト生成
 private:
-	vector<CScene2D*> m_pObject2D;	// シーン2Dのポインタ
+	CResultStory* m_pObject2D;	// シーン2Dのポインタ
 };
 #endif

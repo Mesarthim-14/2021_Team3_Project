@@ -67,13 +67,13 @@ public:
 	void Gravity(void);												// 重力
 	void Landing(float fHeight);									// 着地
 
-	// 純粋仮想関数
+																	// 純粋仮想関数
 	virtual void UpdateState(void) = 0;								// キャラクター状態
 	virtual void Attack(void) = 0;									// 攻撃の処理
 	virtual void Move(void) = 0;									// 移動関数
 	virtual void Death(void) = 0;									// 死んだときの処理
 
-	// Set関数
+																	// Set関数
 	void SetPos(D3DXVECTOR3 &pos) { m_pos = pos; }					// 座標の設定
 	void SetPosOld(D3DXVECTOR3 &posOld) { m_posOld = posOld; }		// 座標の設定
 	void SetMove(D3DXVECTOR3 &move) { m_move = move; }				// 移動量の設定
@@ -87,7 +87,9 @@ public:
 	void SetUseShadow(void) { m_bUseShadow = true; }				// 影の使用判定
 	void SetShadowRotCalculation(void);
 	void SetRay_Data(RAY_DATA Ray_Info) { m_RayData = Ray_Info; }	// レイの情報設定
-	// Get関数
+	void SetGravityFlag(bool bFlag) { m_bGravity = bFlag; }			// 重力のフラグ
+
+																	// Get関数
 	D3DXVECTOR3 &GetPos(void) { return m_pos; }										// 現在の座標情報
 	D3DXVECTOR3 &GetOldPos(void) { return m_posOld; }								// 古い座標情報
 	D3DXVECTOR3 &GetRot(void) { return m_rot; }										// 角度情報
@@ -96,7 +98,7 @@ public:
 	CModelAnime *GetModelAnime(int nCount) { return m_apModelAnime.at(nCount); }	// モーションのカウント情報
 	int GetPartsNum(void) { return m_apModelAnime.size(); }							// パーツ数取得
 	CMotion *GetMotion(void) { return m_pMotion; }									// モーションのポインタ情報
-	int GetLife(void) { return m_nLife; }											// ライフの情報
+	int &GetLife(void) { return m_nLife; }											// ライフの情報
 	int GetStateCounter(void) { return m_nStateCounter; }							// 状態カウンターの情報
 	float GetSpeed(void) { return m_fSpeed; }										// スピードの情報
 	bool GetArmor(void) { return m_bArmor; }										// 無敵時間
@@ -121,5 +123,6 @@ private:
 	STATE m_State;							// 状態
 	bool m_bUseShadow;						// 影をつけるフラグ
 	RAY_DATA m_RayData;						// レイの情報
+	bool m_bGravity;						// 重力をかけるフラグ
 };
 #endif
