@@ -116,6 +116,9 @@ HRESULT CGame::Init(void)
 	// マップの生成
 	CreateMap();
 
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_GAME);
+
 	return S_OK;
 }
 //=======================================================================================
@@ -476,13 +479,17 @@ void CGame::BossTransition(void)
 			// フェード生成
 			CBoss_Fade::Create(ZeroVector3, ZeroVector3);
 
+			CSound *pSound = GET_SOUND_PTR;
+			pSound->Stop(CSound::SOUND_BGM_GAME);
+			pSound->Play(CSound::SOUND_BGM_BOSS);
+
 		}
 	}
 }
 
 //=======================================================================================
 // モード遷移処理
-// Author : Konishi Yuuto
+// Author : 
 //=======================================================================================
 void CGame::ModeTransition(void)
 {

@@ -69,6 +69,10 @@ HRESULT CTitle::Init(void)
 	// 2Dオブジェクト生成
 	Create2DObject();
 
+	// 音の設定
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_TITLE);
+
 	return S_OK;
 }
 
@@ -135,6 +139,10 @@ void CTitle::Update(void)
 	if (CManager::GetJoypad()->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_START, 0) && mode == CFade::FADE_MODE_NONE
 		|| pKey->GetTrigger(DIK_RETURN) && mode == CFade::FADE_MODE_NONE)
 	{
+		// 音の設定
+		CSound *pSound = GET_SOUND_PTR;
+		pSound->Play(CSound::SOUND_SE_BUTTON);
+
 		CFade *pFade = CManager::GetFade();
 		pFade->SetFade(CManager::MODE_TYPE_TITLE_STORY);
 	}

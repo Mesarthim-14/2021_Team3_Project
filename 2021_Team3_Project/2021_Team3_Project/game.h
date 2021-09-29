@@ -28,6 +28,7 @@ class CBg;
 class CPlayer;
 class CMap;
 class CBoss_Shark;
+
 //=======================================================================================
 // ゲームクラス
 //=======================================================================================
@@ -55,7 +56,6 @@ public:
 
 	CGame();		// コンストラクタ
 	~CGame();		// デストラクタ
-
 
 	HRESULT Init(void);								// 初期化処理
 	void Uninit(void);								// 終了処理
@@ -89,9 +89,6 @@ public:
 	bool GetbBossTransition(void) { return m_bBossTransition; }	// ボス遷移判定取得
 
 private:
-
-	// ポインタ
-
 	CCameraGame *m_pCamera;					// カメラのポインタ	
 	CLight *m_pLight;						// ライトのポインタ
 	CMeshField *m_pMeshField;				// メッシュフィールドのポインタ
