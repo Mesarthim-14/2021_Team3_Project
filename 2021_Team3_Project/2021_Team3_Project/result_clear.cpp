@@ -19,6 +19,7 @@
 #include "resource_manager.h"
 #include "texture.h"
 #include "result_story.h"
+#include "sound.h"
 
 //=============================================================================
 // コンストラクタ
@@ -44,6 +45,9 @@ HRESULT CResultClear::Init(void)
 {
 	// オブジェクト生成
 	Create2DObject();
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_RESULT_CLEAR);
 
 	return S_OK;
 }

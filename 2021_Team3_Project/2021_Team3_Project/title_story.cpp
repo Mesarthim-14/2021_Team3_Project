@@ -75,6 +75,10 @@ HRESULT CTitleStory::Init(void)
 	// ”wŒi‚Ì¶¬
 	CreateBg();
 
+	// ‰¹‚ÌÝ’è
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_TITLE);
+
 	return S_OK;
 }
 
@@ -142,6 +146,10 @@ void CTitleStory::ModeTransition(void)
 	if (CManager::GetJoypad()->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_START, 0) && mode == CFade::FADE_MODE_NONE
 		|| pKey->GetTrigger(DIK_RETURN) && mode == CFade::FADE_MODE_NONE)
 	{
+		// ‰¹‚ÌÝ’è
+		CSound *pSound = GET_SOUND_PTR;
+		pSound->Play(CSound::SOUND_SE_BUTTON);
+
 		CFade *pFade = CManager::GetFade();
 		pFade->SetFade(CManager::MODE_TYPE_GAME);
 	}

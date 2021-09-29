@@ -18,6 +18,7 @@
 #include "joypad.h"
 #include "resource_manager.h"
 #include "texture.h"
+#include "sound.h"
 
 //=============================================================================
 // マクロ定義
@@ -49,6 +50,9 @@ HRESULT CResultFailed::Init(void)
 {
 	// オブジェクト生成
 	Create2DObject();
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_RESULT_OVER);
 
 	return S_OK;
 }

@@ -155,6 +155,7 @@
     <ClCompile Include="boss_life.cpp" />
     <ClCompile Include="boss_life_back.cpp" />
     <ClCompile Include="control_ui.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy_normal_bullet.cpp" />
     <ClCompile Include="boss_shark.cpp" />
     <ClCompile Include="byte_attack_range.cpp" />
@@ -167,7 +168,6 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_proc.cpp" />
-    <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_attack_arrow_polygon.cpp" />
     <ClCompile Include="enemy_attack_point_polygon.cpp" />

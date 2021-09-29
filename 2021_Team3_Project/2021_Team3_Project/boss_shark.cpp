@@ -273,6 +273,10 @@ void CBoss_Shark::ByteAttack(void)
 {
 	// Šš‚Ý‚Â‚«ƒ‚[ƒVƒ‡ƒ“
 	m_MotionState = MOTION_STATE_BYTE;
+
+	CSound *pSound = GET_SOUND_PTR;
+//	pSound->Play(CSound::SOUND_BGM_RESULT);
+
 }
 //=============================================================================
 // ƒTƒ‚Ì’eUŒ‚ˆ—ŠÖ”

@@ -11,8 +11,12 @@
 //=============================================================================
 #include "effect.h"
 #include "manager.h"
+#include "resource_manager.h"
+#include "texture.h"
 #include "renderer.h"
 #include "player.h"
+#include "sound.h"
+#include "resource_manager.h"
 
 //=============================================================================
 //マクロ定義
@@ -124,27 +128,34 @@ void CEffect::Smoke(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOL
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//角度計算
+																									// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+
+	//角度計算
 	float fAngle = ANGLE_RADIAN;
+
 	//半径
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
 	//慣性角度
-	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
-	ActualMove.y = ((float)cos(fr * 400))*move.y;
-	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
+	ActualMove.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = (cosf(fr * FR_SIZE_VALUE))*move.y;
+	ActualMove.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.z;
 
 	//位置
-	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
-	CreatePos.y = ((float)cos(fr * 400))*pos.y;
-	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
+	CreatePos.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = (cosf(fr * FR_SIZE_VALUE))*pos.y;
+	CreatePos.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.z;
 
 	//大きさ
-	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
-	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
+	RandomSize.x = (MinSize.x) + (int)(rand() *((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
+	RandomSize.y = (MinSize.y) + (int)(rand() *((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 	m_bLoop = true;	//アニメーションループ
-	BindTexture(m_apTexture[EFFECT_TEXTURE_1]);//テクスチャ情報を格納
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_SMOKE));//テクスチャ情報を格納
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
 }
 
@@ -160,28 +171,39 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//角度計算
+																									// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+
+	//角度計算
 	float fAngle = ANGLE_RADIAN;
+
 	//半径
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
 	//慣性角度
-	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
-	ActualMove.y = ((float)cos(fr* FR_SIZE_VALUE))*move.y;
-	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
+	ActualMove.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = (cosf(fr* FR_SIZE_VALUE))*move.y;
+	ActualMove.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.z;
 
 	//位置
-	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
-	CreatePos.y = ((float)cos(fr* FR_SIZE_VALUE))*pos.y;
-	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
+	CreatePos.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = (cosf(fr* FR_SIZE_VALUE))*pos.y;
+	CreatePos.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.z;
 
 	//大きさ
 	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 	m_bLoop = true;
-	BindTexture(m_apTexture[EFFECT_TEXTURE_4]);//テクスチャ情報を格納
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WOOD));//テクスチャ情報を格納
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_BREAK);
+
 }
 
 //=============================================================================
@@ -189,8 +211,17 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 //=============================================================================
 void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
+	// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+
 	Init(pos, size, ZeroVector3, type, col, Life);
-	BindTexture(m_apTexture[EFFECT_TEXTURE_2]);//テクスチャ情報を格納
+
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_EXPLOSION));//テクスチャ情報を格納
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_EXPLOSION);
 }
 
 //=============================================================================
@@ -200,27 +231,33 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 {
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
-	//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//角度計算
+																									// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+
+	//角度計算
 	float fAngle = ANGLE_RADIAN;
 	//半径
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
 	//慣性角度
-	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
-	ActualMove.y = ((float)sin(fr + FR_SIZE_VALUE))*move.y;
-	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
+	ActualMove.x = (cos(fAngle) * cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = (sin(fr + FR_SIZE_VALUE))*move.y;
+	ActualMove.z = (sin(fAngle) * cos(fr* FR_SIZE_VALUE))*move.z;
 
 	//大きさ
 	//RandomSize.x = (MinSize.x) + (int)(rand()*(MaxSize.x - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	//RandomSize.y = (MinSize.y) + (int)(rand()*(MaxSize.y - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 	m_bLoop = true;//アニメーションループ
-	BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//テクスチャ情報を格納
 	Init(pos, size, ActualMove, type, col, Life);
 }
 
@@ -232,62 +269,38 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
 	D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//角度計算
+																									// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+
+	//角度計算
 	float fAngle = ANGLE_RADIAN;
 	//半径
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
 	//慣性角度
-	ActualMove.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.x;
-	ActualMove.y = ((float)cos(fr* FR_SIZE_VALUE))*move.y;
-	ActualMove.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*move.z;
+	ActualMove.x = (cosf(fAngle) * cos(fr* FR_SIZE_VALUE))*move.x;
+	ActualMove.y = (cosf(fr* FR_SIZE_VALUE))*move.y;
+	ActualMove.z = (sinf(fAngle) * cos(fr* FR_SIZE_VALUE))*move.z;
 
 	//位置
-	CreatePos.x = ((float)cos(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.x;
-	CreatePos.y = ((float)cos(fr* FR_SIZE_VALUE))*pos.y;
-	CreatePos.z = ((float)sin(fAngle)* (float)cos(fr* FR_SIZE_VALUE))*pos.z;
+	CreatePos.x = (cos(fAngle) * cos(fr* FR_SIZE_VALUE))*pos.x;
+	CreatePos.y = (cos(fr* FR_SIZE_VALUE))*pos.y;
+	CreatePos.z = (sin(fAngle) * cos(fr* FR_SIZE_VALUE))*pos.z;
 
 	//大きさ
 	//RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	//RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 	m_bLoop = true;//アニメーションループ
-	BindTexture(m_apTexture[EFFECT_TEXTURE_3]);//テクスチャ情報を格納
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//テクスチャ情報を格納
 	Init(pos, size, ActualMove, type, col, Life);
-}
-
-//=============================================================================
-//テクスチャの読み込み関数
-//=============================================================================
-HRESULT CEffect::Load(void)
-{
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-
-	D3DXCreateTextureFromFile(pDevice, PARTICLE_TEXTURE_SOMKE, &m_apTexture[EFFECT_TEXTURE_1]);
-	D3DXCreateTextureFromFile(pDevice, PARTICLE_TEXTURE_EXPLOSION, &m_apTexture[EFFECT_TEXTURE_2]);
-	D3DXCreateTextureFromFile(pDevice, PARTICLE_TEXTURE_WAVE, &m_apTexture[EFFECT_TEXTURE_3]);
-	D3DXCreateTextureFromFile(pDevice, PARTICLE_TEXTURE_WOOD_EP, &m_apTexture[EFFECT_TEXTURE_4]);
-
-	return S_OK;
-}
-
-//=============================================================================
-//テクスチャの破棄関数
-//=============================================================================
-void CEffect::Unload(void)
-{
-	for (int nCount = 0; nCount < EFFECT_TEXTURE_MAX; nCount++)
-	{
-		if (m_apTexture[nCount] != NULL)
-		{
-			m_apTexture[nCount]->Release();
-			m_apTexture[nCount] = NULL;
-		}
-	}
 }
 
 //=============================================================================
@@ -387,7 +400,6 @@ void CEffect::Update(void)
 	if (GetPos().y < 0)
 	{
 		Uninit();
-
 		return;
 	}
 	SetColor(D3DXCOLOR(GetColor().r, GetColor().g, GetColor().b, GetColor().a -= ALPHA_VALUE_DECREASE));
