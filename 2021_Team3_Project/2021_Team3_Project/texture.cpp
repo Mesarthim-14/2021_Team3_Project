@@ -72,6 +72,7 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/gameclear_story.png" },			// リザルトストーリー
 		{ "data/Texture/blackback.png" },				// リザルトストーリー
 		{ "data/Texture/L1.png" },						// L1
+		{ "data/Texture/Red.png" },						// L1
 	};
 
 	// 分割テクスチャ

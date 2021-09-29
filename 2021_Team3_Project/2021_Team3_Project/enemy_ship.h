@@ -37,6 +37,5 @@ public:
 private:
 	void Move(void);												// ˆÚ“®ˆ—
 	void Attack(void) override;										// UŒ‚ˆ—
-	void RayCollision(void);										// ƒŒƒC‚Ì“–‚½‚è”»’èˆ—
 };
 #endif

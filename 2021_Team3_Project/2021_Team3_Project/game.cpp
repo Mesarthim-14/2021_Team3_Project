@@ -45,13 +45,14 @@
 // マクロ定義
 //=======================================================================================
 #define ENEMY_OBSTACLE_CREATE_TEXT	("data/Text/Enemy/Enemy_Obstacle_Create.txt")	// 敵生成テキスト
+#define BOSS_ENEMY_CREATE_TEXT		("data/Text/Enemy/boss_enemy.txt")				// 敵生成テキスト
 #define ENEMY_POS					(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// 敵の位置
-#define BOSS_POS					(D3DXVECTOR3(-10600.0f,0.0f,-5700.0f))			// ボスの位置
-#define BOSS_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))			// ボスの位置
+#define BOSS_POS					(D3DXVECTOR3(500.0f,0.0f,-17000.0f))			// ボスの位置
+#define BOSS_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// ボスの位置
 #define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// 敵の位置
 #define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
 #define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
-#define BOSS_PLAYER_POS				(D3DXVECTOR3(-10000.0f,0.0f,13000.0f))			// プレイヤーの位置
+#define BOSS_PLAYER_POS				(D3DXVECTOR3(0.0f,0.0f,0.0f))					// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
 #define PLAYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
 #define BOSS_PLAYER_ROT				(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// プレイヤーの向き
@@ -215,7 +216,7 @@ void CGame::CreatePlayer(void)
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
 	{
-		//m_pPlayer = CPlayer::Create(BOSS_TRT_POS, PLAYER_ROT);
+		//m_pPlayer = CPlayer::Create(BOSS_TRT_POS, BOSS_PLAYER_ROT);
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PLAYER_ROT);
 		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
 
@@ -511,4 +512,13 @@ void CGame::ModeTransition(void)
 			}
 		}
 	}
+}
+//=======================================================================================
+// ボス戦敵生成
+// Author : Konishi Yuuto
+//=======================================================================================
+void CGame::Boss_Enemy_Create(void)
+{
+	// 敵生成
+	CreateEnemy_Obstacle(BOSS_ENEMY_CREATE_TEXT);
 }

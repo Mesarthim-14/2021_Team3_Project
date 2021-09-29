@@ -33,7 +33,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -155,6 +155,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_bHitFlag = false;
 	m_bDeath = false;
 	m_bEnd = false;
+	m_bKnock_Back = false;
 }
 
 //=============================================================================
@@ -334,9 +335,6 @@ void CPlayer::PlayerControl()
 
 					// キーボード移動
 					KeyboardMove();
-
-					// 攻撃処理
-					Attack();
 				}
 				// trueの場合
 				if (m_bKnock_Back == true)
@@ -347,6 +345,9 @@ void CPlayer::PlayerControl()
 
 				// 当たり判定
 				Collision();
+
+				// レイの当たり判定
+				RayCollision();
 			}
 		}
 	}
@@ -424,23 +425,23 @@ void CPlayer::Move(void)
 	float fAngle_R = ZERO_FLOAT;											// 右角度
 	float fAngle_L = ZERO_FLOAT;											// 左角度
 
-																			//float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
-																			//float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
+	//float disfAngle_R = GetAngle_R();										//前のコントローラーの角度を取得
+	//float disfAngle_L = GetAngle_L();										//前のコントローラーの角度を取得
 
-																			//// 左の歯車の情報取得
-																			//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-																			//// 向き取得
-																			//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+	//// 左の歯車の情報取得
+	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	//// 向き取得
+	//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-																			//// 右の歯車の情報取得
-																			//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-																			//// 向き取得
-																			//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+	//// 右の歯車の情報取得
+	//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	//// 向き取得
+	//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-																			//===========================================
-																			// 右歯車
-																			//===========================================
-																			// 右スティックが入力されている場合
+	//===========================================
+	// 右歯車
+	//===========================================
+	// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
 		// コントローラーの角度

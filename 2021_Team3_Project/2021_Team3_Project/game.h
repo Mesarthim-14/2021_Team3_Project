@@ -72,7 +72,7 @@ public:
 	void CreateBossMap(void);						// ボスマップ生成
 	void BossTransition(void);						// ボス戦遷移
 	void ModeTransition(void);						// モード遷移
-
+	void Boss_Enemy_Create(void);					// ボス戦敵生成
 	// Set関数
 	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }		// ボス戦の判定
 	void SetbBossTransition(bool bBossTransition) { m_bBossTransition = bBossTransition; }	// ボス戦遷移の判定
@@ -91,7 +91,6 @@ public:
 private:
 
 	// ポインタ
-
 	CCameraGame *m_pCamera;					// カメラのポインタ	
 	CLight *m_pLight;						// ライトのポインタ
 	CMeshField *m_pMeshField;				// メッシュフィールドのポインタ

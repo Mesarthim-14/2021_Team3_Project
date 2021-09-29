@@ -47,6 +47,7 @@ public:
 		TEXTURE_NUM_RESULT_STORY,		// リザルトのストーリー
 		TEXTURE_NUM_RESULT_STORY_BACK,	// リザルトのストーリー
 		TEXTURE_NUM_L1,					// L1のUI
+		TEXTURE_NUM_RED,				// 赤
 		TEXTURE_NUM_MAX
 	};
 

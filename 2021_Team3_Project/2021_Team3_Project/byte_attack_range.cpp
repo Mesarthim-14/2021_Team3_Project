@@ -74,9 +74,18 @@ HRESULT CByte_Attack_Range::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// 初期化
 	CScene3D::Init(pos, size);
 
+	// Rendererクラスからデバイスを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// テクスチャの設定
+	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_RED));
+
 	// 色設定
 	SetColor(COL);
 
+	// 透過値設定
+	SetAlpha(true);
 	return S_OK;
 }
 //=============================================================================
@@ -94,9 +103,6 @@ void CByte_Attack_Range::Uninit(void)
 //=============================================================================
 void CByte_Attack_Range::Update(void)
 {
-	// 更新処理
-	CScene3D::Update();
-
 	// インクリメント
 	m_nCount++;
 
@@ -178,16 +184,16 @@ void CByte_Attack_Range::Collision(void)
 	if (pPlayer != nullptr)
 	{
 		// 位置取得
-		D3DXVECTOR3 PlayerPos = GetPos();
+		D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
 
 		// サイズ取得
-		D3DXVECTOR3 PlayerSize = GetSize();
+		D3DXVECTOR3 PlayerSize = pPlayer->GetSize();
 
 		// 矩形判定
-		if (pos.x - size.x / DIVIDE_2 < PlayerPos.x + PlayerSize.x / DIVIDE_2 &&
-			pos.x + size.x / DIVIDE_2 > PlayerPos.x - PlayerSize.x / DIVIDE_2 &&
-			pos.z - size.z / DIVIDE_2 < PlayerPos.z + PlayerSize.z / DIVIDE_2 &&
-			pos.z + size.z / DIVIDE_2 > PlayerPos.z - PlayerSize.z / DIVIDE_2)
+		if (PlayerPos.x - (PlayerSize.x / 2) < pos.x + (size.x / 2) &&
+			PlayerPos.x + (PlayerSize.x / 2) > pos.x - (size.x / 2) &&
+			PlayerPos.z - (PlayerSize.z / 2) < pos.z + (size.z / 2) &&
+			PlayerPos.z + (PlayerSize.z / 2) > pos.z - (size.z / 2))
 		{
 			// ヒット
 			pPlayer->Hit(DAMAGE);

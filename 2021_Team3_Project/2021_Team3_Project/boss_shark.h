@@ -50,8 +50,11 @@ private:
 	void SharkBulletAttack(void);									// サメの弾攻撃
 	void MotionUpdate(void);										// モーション処理
 	void UpdateRot(void);											// 向き更新
+	void Enemy_Create(void);										// 敵生成処理
 
 	MOTION_STATE m_MotionState;	// モーションの状態
 	bool m_bEnd;				// 終了
+	bool m_bEnemyCreate;		// 敵生成
+	bool m_bRot;				// 向き判定
 };
 #endif

@@ -12,14 +12,17 @@
 #include "collision.h"
 #include "model_box.h"
 #include "enemy.h"
+#include "torpedo.h"
 #include "player_bullet.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE	(50.0f)								// 移動量
-#define PARENT_NUM	(0)									// 親のナンバー
-#define DAMAGE		(25)								// ダメージ
+#define MOVE_VALUE	(50.0f)	 // 移動量
+#define PARENT_NUM	(0)		 // 親のナンバー
+#define DAMAGE		(25)	 // ダメージ
+#define RAY_RANGE	(100.0f) // レイの範囲
+#define RAY_NUM		(1)		 // レイの本数
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -81,6 +84,11 @@ HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 移動量設定
 	SetMove(move);
 
+	// レイデータ
+	RAY_DATA Ray_Data = { rot.y , RAY_RANGE , RAY_NUM };
+
+	// レイデータ設定
+	SetRay_Data(Ray_Data);
 	return S_OK;
 }
 //=============================================================================
@@ -103,6 +111,14 @@ void CPlayer_Bullet::Update(void)
 
 	// 当たり判定
 	Collision();
+
+	// trueの場合
+	if (RayCollision() == true)
+	{
+		// 終了
+		Uninit();
+		return;
+	}
 }
 //=============================================================================
 // 描画処理関数
@@ -159,6 +175,44 @@ void CPlayer_Bullet::Collision(void)
 				{
 					// ライフ設定
 					((CEnemy*)pScene)->Hit(DAMAGE);
+
+					// 終了
+					Uninit();
+
+					return;
+				}
+
+				// 次に代入
+				pScene = pSceneCur;
+			}
+		}
+	}
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_TORPEDO);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) 	// nullptrになるまで回す
+			{
+				// トップ代入
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置取得
+				D3DXVECTOR3 TorpedoPos = ((CTorpedo*)pScene)->GetPos();
+
+				// サイズ取得
+				D3DXVECTOR3 TorpedoSize = ((CTorpedo*)pScene)->GetSize();
+
+				// 判定
+				if (CCollision::CollisionRectangleAndRectangle(pos, TorpedoPos, size, TorpedoSize) == true)
+				{
+					// 終了
+					((CTorpedo*)pScene)->Uninit();
 
 					// 終了
 					Uninit();
