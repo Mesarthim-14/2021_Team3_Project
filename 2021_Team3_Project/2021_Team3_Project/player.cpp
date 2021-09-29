@@ -33,7 +33,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
