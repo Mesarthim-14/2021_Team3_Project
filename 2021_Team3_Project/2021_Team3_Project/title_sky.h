@@ -18,7 +18,7 @@
 class CTitleSky : public CModel
 {
 public:
-	CTitleSky(PRIORITY Priority = PRIORITY_MAP);				// コンストラクタ
+	CTitleSky(PRIORITY Priority = PRIORITY_MODEL);				// コンストラクタ
 	~CTitleSky();												// デストラクタ
 	static CTitleSky *Create(void);								// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);				// 初期化処理

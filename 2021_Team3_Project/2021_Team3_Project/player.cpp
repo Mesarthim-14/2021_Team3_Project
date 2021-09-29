@@ -75,6 +75,7 @@
 #define SINK_TIME				(120)									// 沈む時間
 #define SINK_MOVE				(3.0f)									// 沈む量
 #define SINK_ROTATE				(3.0f)									// 沈む角度
+#define SOUND_INTER_TIME		(10)									// 移動の音の間隔
 
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
@@ -155,6 +156,9 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_bHitFlag = false;
 	m_bDeath = false;
 	m_bEnd = false;
+	m_bKnock_Back = false;
+	m_nSoundCounter = 0;
+	m_bMoveSound = false;
 }
 
 //=============================================================================
@@ -263,6 +267,9 @@ void CPlayer::Update(void)
 		// 沈んでいく処理
 		SinkEnd();
 	}
+
+	// 移動のサウンド
+	MoveSound();
 
 	// 角度の更新処理
 	UpdateRot();
@@ -576,6 +583,8 @@ void CPlayer::Move(void)
 				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
+
+				m_bMoveSound = true;
 			}
 		}
 		// 右スティックと左スティックが下に倒されていない場合
@@ -612,7 +621,7 @@ void CPlayer::Pad2Move(void)
 	float fAngle_R = ZERO_FLOAT;	// 右角度
 	float fAngle_L = ZERO_FLOAT;	// 左角度
 
-									// サウンドのポインタ
+	// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
 	// 座標
@@ -1044,6 +1053,7 @@ void CPlayer::KeyboardMove(void)
 
 			// falseに
 			m_bBack = false;
+			m_bMoveSound = true;
 		}
 	}
 	// falseの場合
@@ -1070,6 +1080,8 @@ void CPlayer::KeyboardMove(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				m_bMoveSound = true;
 			}
 		}
 	}
@@ -1100,6 +1112,8 @@ void CPlayer::KeyboardMove(void)
 
 			// falseに
 			m_bBack = false;
+
+			m_bMoveSound = true;
 		}
 	}
 	// falseの場合
@@ -1126,6 +1140,8 @@ void CPlayer::KeyboardMove(void)
 
 				// 目的の向き
 				m_rotDest.y = rot.y;
+
+				m_bMoveSound = true;
 			}
 		}
 	}
@@ -1151,6 +1167,8 @@ void CPlayer::KeyboardMove(void)
 			// 移動
 			pos.x += sinf(rot.y)*fSpeed;
 			pos.z += cosf(rot.y)*fSpeed;
+
+			m_bMoveSound = true;
 		}
 	}
 	// 後ろ移動
@@ -1161,6 +1179,8 @@ void CPlayer::KeyboardMove(void)
 		{
 			// falseに
 			m_bBack = false;
+
+			m_bMoveSound = true;
 		}
 	}
 
@@ -1508,6 +1528,30 @@ void CPlayer::SinkEnd(void)
 		}
 	}
 	GetRot().x += D3DXToRadian(SINK_ROTATE);
+}
+
+//=======================================================================================
+// 移動の音
+// Author : Konishi Yuuto
+//=======================================================================================
+void CPlayer::MoveSound(void)
+{
+	// 移動したとき
+	if (m_bMoveSound)
+	{
+		// 一定の間隔で
+		if (m_nSoundCounter >= SOUND_INTER_TIME)
+		{
+			// 音を鳴らす
+			CSound *pSound = GET_SOUND_PTR;
+			pSound->Play(CSound::SOUND_SE_MOVE);
+
+			m_nSoundCounter = 0;
+		}
+
+		m_nSoundCounter++;
+		m_bMoveSound = false;
+	}
 }
 
 //=======================================================================================
