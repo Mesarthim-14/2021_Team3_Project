@@ -82,7 +82,6 @@ public:
 	void Pad2Attack(void);										// 2コントローラーの攻撃
 	void KeyboardMove(void);									// キーボード移動
 	void Collision(void);										// 当たり判定
-	void CrossCollision(void);									// 外積当たり判定
 	void SinkEnd(void);											// 船が沈む処理
 	void MoveSound(void);										// 移動のサウンド
 
@@ -97,7 +96,7 @@ public:
 	void PaddleRotateL(float fRotate);							// パドルの回転
 	void PaddleRotFix(void);									// パドルの角度を補正
 
-	//ジョイスティックの最短角度距離
+																//ジョイスティックの最短角度距離
 	void LStickAngle(float fangle_L);
 	void RStickAngle(float fangle_R);
 

@@ -1,13 +1,13 @@
 //=============================================================================
 //
-// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«å‡¦ç† [particle.cpp]
+// ƒp[ƒeƒBƒNƒ‹ˆ— [particle.cpp]
 // Author : oguma akira
-// æ›´æ–°æ—¥ : 2021/08/31
+// XV“ú : 2021/08/31
 //
 //=============================================================================
 
 //=============================================================================
-//ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+//ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 //=============================================================================
 #include "effect.h"
 #include "manager.h"
@@ -19,45 +19,45 @@
 #include "resource_manager.h"
 
 //=============================================================================
-//ãƒã‚¯ãƒ­å®šç¾©
+//ƒ}ƒNƒ’è‹`
 //=============================================================================
-#define ANGLE_RADIAN					(D3DXToRadian((float)(rand() % 180)))	//ãƒ©ã‚¸ã‚¢ãƒ³ã®è§’åº¦
-#define PARTICLE_TEXTURE_SOMKE			("data/Texture/Smoke.png")				//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-#define PARTICLE_TEXTURE_EXPLOSION		("data/Texture/Explosion_Animation.png")//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-#define PARTICLE_TEXTURE_WAVE			("data/Texture/Wave_Effect.png")		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-#define PARTICLE_TEXTURE_WOOD_EP		("data/Texture/Wood_Animation.png")		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-#define ALPHA_VALUE_DECREASE			(0.001f)								//ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã®æ¸›å°‘å€¤
-#define MAX_GRAVITY_COUNTER_EXPLOSION	(30000)									//çˆ†ç™ºã®é«˜ã•ã®æœ€å¤§å€¤
-#define MAX_GRAVITY_COUNTER_SPLASH		(10000)									//æ°´ã—ã¶ãã®é«˜ã•ã®æœ€å¤§å€¤
-#define MAX_GRAVITY_COUNTER_WAVE		(3000)									//æ³¢ã®é«˜ã•ã®æœ€å¤§å€¤
-#define MAX_TEXTURE_SIZE				(5.0f)									//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚ºã®å€ç‡æœ€å¤§å€¤
-#define MIN_TEXTURE_SIZE				(0.5f)									//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚ºã®å€ç‡æœ€å°å€¤
-#define FR_SIZE_VALUE					(400)									//åŠå¾„ã®å¤§ãã•ã®å€¤
-#define ANIMETION_DEFAULT				(D3DXVECTOR2(1, 1))						//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç„¡ã—
-#define ANIMETION_EXPLOSION				(D3DXVECTOR2(16, 4))					//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çˆ†ç™º
-#define ANIMETION_WOOD					(D3DXVECTOR2(8, 4))						//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æœ¨æ
+#define ANGLE_RADIAN					(D3DXToRadian((float)(rand() % 180)))	//ƒ‰ƒWƒAƒ“‚ÌŠp“x
+#define PARTICLE_TEXTURE_SOMKE			("data/Texture/Smoke.png")				//ƒp[ƒeƒBƒNƒ‹‚ÌƒeƒNƒXƒ`ƒƒ
+#define PARTICLE_TEXTURE_EXPLOSION		("data/Texture/Explosion_Animation.png")//ƒp[ƒeƒBƒNƒ‹‚ÌƒeƒNƒXƒ`ƒƒ
+#define PARTICLE_TEXTURE_WAVE			("data/Texture/Wave_Effect.png")		//ƒp[ƒeƒBƒNƒ‹‚ÌƒeƒNƒXƒ`ƒƒ
+#define PARTICLE_TEXTURE_WOOD_EP		("data/Texture/Wood_Animation.png")		//ƒp[ƒeƒBƒNƒ‹‚ÌƒeƒNƒXƒ`ƒƒ
+#define ALPHA_VALUE_DECREASE			(0.001f)								//ƒAƒ‹ƒtƒ@’l‚ÌŒ¸­’l
+#define MAX_GRAVITY_COUNTER_EXPLOSION	(30000)									//”š”­‚Ì‚‚³‚ÌÅ‘å’l
+#define MAX_GRAVITY_COUNTER_SPLASH		(10000)									//…‚µ‚Ô‚«‚Ì‚‚³‚ÌÅ‘å’l
+#define MAX_GRAVITY_COUNTER_WAVE		(3000)									//”g‚Ì‚‚³‚ÌÅ‘å’l
+#define MAX_TEXTURE_SIZE				(5.0f)									//ƒeƒNƒXƒ`ƒƒƒTƒCƒY‚Ì”{—¦Å‘å’l
+#define MIN_TEXTURE_SIZE				(0.5f)									//ƒeƒNƒXƒ`ƒƒƒTƒCƒY‚Ì”{—¦Å¬’l
+#define FR_SIZE_VALUE					(400)									//”¼Œa‚Ì‘å‚«‚³‚Ì’l
+#define ANIMETION_DEFAULT				(D3DXVECTOR2(1, 1))						//ƒAƒjƒ[ƒVƒ‡ƒ“–³‚µ
+#define ANIMETION_EXPLOSION				(D3DXVECTOR2(16, 4))					//ƒAƒjƒ[ƒVƒ‡ƒ“”š”­
+#define ANIMETION_WOOD					(D3DXVECTOR2(8, 4))						//ƒAƒjƒ[ƒVƒ‡ƒ“–ØŞ
 
-//è½ä¸‹æ•°å€¤
-#define EFFECT_FALL_EXPLOSION			(D3DXVECTOR3(GetMove().x, -GetMove().y*0.5f, GetMove().z))	//çˆ†ç™º
-#define EFFECT_FALL_WAVE				(D3DXVECTOR3(0.0f, -GetMove().y, 0.0f))						//æ³¢
-#define EFFECT_FALL_SPLASH				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//æ°´ã—ã¶ã
-#define EFFECT_FALL_WOOD				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//æœ¨æ
+//—‰º”’l
+#define EFFECT_FALL_EXPLOSION			(D3DXVECTOR3(GetMove().x, -GetMove().y*0.5f, GetMove().z))	//”š”­
+#define EFFECT_FALL_WAVE				(D3DXVECTOR3(0.0f, -GetMove().y, 0.0f))						//”g
+#define EFFECT_FALL_SPLASH				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//…‚µ‚Ô‚«
+#define EFFECT_FALL_WOOD				(D3DXVECTOR3(GetMove().x, -GetMove().y, GetMove().z))		//–ØŞ
 
 //=============================================================================
-//é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€
+//Ã“Iƒƒ“ƒo•Ï”éŒ¾
 //===================================w==========================================
 LPDIRECT3DTEXTURE9	CEffect::m_apTexture[EFFECT_TEXTURE_MAX] = {};
 
 //=============================================================================
-//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CEffect::CEffect(PRIORITY Prioity) : CBillboard(Prioity)
 {
-	m_bLoop = false;//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—
+	m_bLoop = false;//ƒAƒjƒ[ƒVƒ‡ƒ“ƒ‹[ƒv
 }
 
 //=============================================================================
-//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//ƒfƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CEffect::~CEffect()
 {
@@ -65,40 +65,40 @@ CEffect::~CEffect()
 }
 
 //=============================================================================
-//ã‚¯ãƒªã‚¨ã‚¤ãƒˆé–¢æ•°
+//ƒNƒŠƒGƒCƒgŠÖ”
 //=============================================================================
 CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
-	CEffect *m_pEffect = NULL;	//ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	CEffect *m_pEffect = NULL;	//ƒƒ‚ƒŠŠm•Û
 
-	//NULLãƒã‚§ãƒƒã‚¯
+								//NULLƒ`ƒFƒbƒN
 	if (m_pEffect == NULL)
 	{
-		//ãƒ¡ãƒ¢ãƒªç¢ºä¿
+		//ƒƒ‚ƒŠŠm•Û
 		m_pEffect = new CEffect;
 		switch (type)
 		{
-			//ç…™
+			//‰Œ
 		case EFFECT_TYPE::EFFECT_TYPE_1:
 			m_pEffect->Smoke(pos, size, move, col, type, Life);
 			break;
 
-			//çˆ†ç™º
+			//”š”­
 		case EFFECT_TYPE::EFFECT_TYPE_2:
 			m_pEffect->Explosion(pos, size, col, type, Life);
 			break;
 
-			//æ³¢
+			//”g
 		case EFFECT_TYPE::EFFECT_TYPE_3:
 			m_pEffect->Wave(pos, size, move, col, type, Life);
 			break;
 
-			//æ°´ã—ã¶ã
+			//…‚µ‚Ô‚«
 		case EFFECT_TYPE::EFFECT_TYPE_4:
 			m_pEffect->Splash(pos, size, move, col, type, Life);
 			break;
 
-			//æœ¨æ
+			//–ØŞ
 		case EFFECT_TYPE::EFFECT_TYPE_5:
 			m_pEffect->WoodExplosion(pos, size, move, col, type, Life);
 			break;
@@ -109,7 +109,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 	}
 	else
 	{
-		//ã‚¨ãƒ©ãƒ¼ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸BOX
+		//ƒGƒ‰[‚ÌƒƒbƒZ[ƒWBOX
 		MessageBox(NULL, TEXT("Error in effect.cpp"),
 			TEXT("Could not check for NULL."), MB_OK);
 	}
@@ -117,88 +117,88 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 }
 
 //=============================================================================
-//ç…™ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®é–¢æ•°
+//‰ŒƒGƒtƒFƒNƒg‚ÌŠÖ”
 //=============================================================================
 void CEffect::Smoke(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
-	//å¤‰æ•°å®£è¨€
-	D3DXVECTOR3 ActualMove = ZeroVector3;									//ç§»å‹•é‡
-	D3DXVECTOR3 CreatePos = ZeroVector3;									//ç”Ÿæˆä½ç½®
-	D3DXVECTOR3 RandomSize = ZeroVector3;									//ç”»åƒã®ãƒ©ãƒ³ãƒ€ãƒ ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//æœ€å¤§ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//æœ€å°ã‚µã‚¤ã‚º
+	//•Ï”éŒ¾
+	D3DXVECTOR3 ActualMove = ZeroVector3;									//ˆÚ“®—Ê
+	D3DXVECTOR3 CreatePos = ZeroVector3;									//¶¬ˆÊ’u
+	D3DXVECTOR3 RandomSize = ZeroVector3;									//‰æ‘œ‚Ìƒ‰ƒ“ƒ_ƒ€ƒTƒCƒY
+	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//Å‘åƒTƒCƒY
+	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//Å¬ƒTƒCƒY
 
-	// Rendererã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+																									// RendererƒNƒ‰ƒX‚©‚çƒfƒoƒCƒX‚ğæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
-	//è§’åº¦è¨ˆç®—
+	//Šp“xŒvZ
 	float fAngle = ANGLE_RADIAN;
 
-	//åŠå¾„
+	//”¼Œa
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-	//æ…£æ€§è§’åº¦
+	//Šµ«Šp“x
 	ActualMove.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.x;
 	ActualMove.y = (cosf(fr * FR_SIZE_VALUE))*move.y;
 	ActualMove.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.z;
 
-	//ä½ç½®
+	//ˆÊ’u
 	CreatePos.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.x;
 	CreatePos.y = (cosf(fr * FR_SIZE_VALUE))*pos.y;
 	CreatePos.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.z;
 
-	//å¤§ãã•
+	//‘å‚«‚³
 	RandomSize.x = (MinSize.x) + (int)(rand() *((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	RandomSize.y = (MinSize.y) + (int)(rand() *((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-	m_bLoop = true;	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_SMOKE));//ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’æ ¼ç´
+	m_bLoop = true;	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒ‹[ƒv
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_SMOKE));//ƒeƒNƒXƒ`ƒƒî•ñ‚ğŠi”[
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
 }
 
 //=============================================================================
-//æœ¨æã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®é–¢æ•°
+//–ØŞƒGƒtƒFƒNƒg‚ÌŠÖ”
 //=============================================================================
 void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
-	//å¤‰æ•°å®£è¨€
-	D3DXVECTOR3 ActualMove = ZeroVector3;									//ç§»å‹•é‡
-	D3DXVECTOR3 CreatePos = ZeroVector3;									//ç”Ÿæˆä½ç½®
-	D3DXVECTOR3 RandomSize = ZeroVector3;									//ç”»åƒã®ãƒ©ãƒ³ãƒ€ãƒ ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//æœ€å¤§ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//æœ€å°ã‚µã‚¤ã‚º
+	//•Ï”éŒ¾
+	D3DXVECTOR3 ActualMove = ZeroVector3;									//ˆÚ“®—Ê
+	D3DXVECTOR3 CreatePos = ZeroVector3;									//¶¬ˆÊ’u
+	D3DXVECTOR3 RandomSize = ZeroVector3;									//‰æ‘œ‚Ìƒ‰ƒ“ƒ_ƒ€ƒTƒCƒY
+	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//Å‘åƒTƒCƒY
+	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//Å¬ƒTƒCƒY
 
-	// Rendererã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+																									// RendererƒNƒ‰ƒX‚©‚çƒfƒoƒCƒX‚ğæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
-	//è§’åº¦è¨ˆç®—
+	//Šp“xŒvZ
 	float fAngle = ANGLE_RADIAN;
 
-	//åŠå¾„
+	//”¼Œa
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-	//æ…£æ€§è§’åº¦
+	//Šµ«Šp“x
 	ActualMove.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.x;
 	ActualMove.y = (cosf(fr* FR_SIZE_VALUE))*move.y;
 	ActualMove.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*move.z;
 
-	//ä½ç½®
+	//ˆÊ’u
 	CreatePos.x = (cosf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.x;
 	CreatePos.y = (cosf(fr* FR_SIZE_VALUE))*pos.y;
 	CreatePos.z = (sinf(fAngle) * cosf(fr* FR_SIZE_VALUE))*pos.z;
 
-	//å¤§ãã•
+	//‘å‚«‚³
 	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
 	m_bLoop = true;
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WOOD));//ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’æ ¼ç´
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WOOD));//ƒeƒNƒXƒ`ƒƒî•ñ‚ğŠi”[
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
 
 	CSound *pSound = GET_SOUND_PTR;
@@ -207,137 +207,137 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 }
 
 //=============================================================================
-//çˆ†ç™ºã‚¨ãƒ•ã‚§ã‚¯ãƒˆé–¢æ•°
+//”š”­ƒGƒtƒFƒNƒgŠÖ”
 //=============================================================================
 void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT_TYPE type, int Life)
-{	
-	// Rendererã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+{
+	// RendererƒNƒ‰ƒX‚©‚çƒfƒoƒCƒX‚ğæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
 	Init(pos, size, ZeroVector3, type, col, Life);
-  
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_EXPLOSION));//ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’æ ¼ç´
+
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_EXPLOSION));//ƒeƒNƒXƒ`ƒƒî•ñ‚ğŠi”[
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_EXPLOSION);
 }
 
 //=============================================================================
-//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆé–¢æ•°
+//”gƒGƒtƒFƒNƒgŠÖ”
 //=============================================================================
 void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
-	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ç§»å‹•è§’åº¦
-	D3DXVECTOR3 ActualMove = ZeroVector3;									//ç§»å‹•é‡
-	//D3DXVECTOR3 CreatePos = ZeroVector3;									//ç”Ÿæˆä½ç½®
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//ç”»åƒã®ãƒ©ãƒ³ãƒ€ãƒ ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//æœ€å¤§ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//æœ€å°ã‚µã‚¤ã‚º
+	//ƒp[ƒeƒBƒNƒ‹‚ÌˆÚ“®Šp“x
+	D3DXVECTOR3 ActualMove = ZeroVector3;									//ˆÚ“®—Ê
+																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//¶¬ˆÊ’u
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//‰æ‘œ‚Ìƒ‰ƒ“ƒ_ƒ€ƒTƒCƒY
+	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//Å‘åƒTƒCƒY
+	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//Å¬ƒTƒCƒY
 
-	// Rendererã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+																									// RendererƒNƒ‰ƒX‚©‚çƒfƒoƒCƒX‚ğæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
-	//è§’åº¦è¨ˆç®—
+	//Šp“xŒvZ
 	float fAngle = ANGLE_RADIAN;
-	//åŠå¾„
+	//”¼Œa
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-	//æ…£æ€§è§’åº¦
+	//Šµ«Šp“x
 	ActualMove.x = (cos(fAngle) * cos(fr* FR_SIZE_VALUE))*move.x;
 	ActualMove.y = (sin(fr + FR_SIZE_VALUE))*move.y;
 	ActualMove.z = (sin(fAngle) * cos(fr* FR_SIZE_VALUE))*move.z;
 
-	//å¤§ãã•
+	//‘å‚«‚³
 	//RandomSize.x = (MinSize.x) + (int)(rand()*(MaxSize.x - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	//RandomSize.y = (MinSize.y) + (int)(rand()*(MaxSize.y - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-	m_bLoop = true;//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’æ ¼ç´
+	m_bLoop = true;//ƒAƒjƒ[ƒVƒ‡ƒ“ƒ‹[ƒv
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//ƒeƒNƒXƒ`ƒƒî•ñ‚ğŠi”[
 	Init(pos, size, ActualMove, type, col, Life);
 }
 
 //=============================================================================
-//æ°´ã—ã¶ãã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®é–¢æ•°
+//…‚µ‚Ô‚«ƒGƒtƒFƒNƒg‚ÌŠÖ”
 //=============================================================================
 void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLOR col, EFFECT_TYPE type, int Life)
 {
-	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®ç§»å‹•è§’åº¦
-	D3DXVECTOR3 ActualMove = ZeroVector3;									//ç§»å‹•é‡
-	D3DXVECTOR3 CreatePos = ZeroVector3;									//ç”Ÿæˆä½ç½®
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//ç”»åƒã®ãƒ©ãƒ³ãƒ€ãƒ ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//æœ€å¤§ã‚µã‚¤ã‚º
-	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//æœ€å°ã‚µã‚¤ã‚º
+	//ƒp[ƒeƒBƒNƒ‹‚ÌˆÚ“®Šp“x
+	D3DXVECTOR3 ActualMove = ZeroVector3;									//ˆÚ“®—Ê
+	D3DXVECTOR3 CreatePos = ZeroVector3;									//¶¬ˆÊ’u
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//‰æ‘œ‚Ìƒ‰ƒ“ƒ_ƒ€ƒTƒCƒY
+	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//Å‘åƒTƒCƒY
+	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//Å¬ƒTƒCƒY
 
-	// Rendererã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+																									// RendererƒNƒ‰ƒX‚©‚çƒfƒoƒCƒX‚ğæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
-	//è§’åº¦è¨ˆç®—
+	//Šp“xŒvZ
 	float fAngle = ANGLE_RADIAN;
-	//åŠå¾„
+	//”¼Œa
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);
 
-	//æ…£æ€§è§’åº¦
+	//Šµ«Šp“x
 	ActualMove.x = (cosf(fAngle) * cos(fr* FR_SIZE_VALUE))*move.x;
 	ActualMove.y = (cosf(fr* FR_SIZE_VALUE))*move.y;
 	ActualMove.z = (sinf(fAngle) * cos(fr* FR_SIZE_VALUE))*move.z;
 
-	//ä½ç½®
+	//ˆÊ’u
 	CreatePos.x = (cos(fAngle) * cos(fr* FR_SIZE_VALUE))*pos.x;
 	CreatePos.y = (cos(fr* FR_SIZE_VALUE))*pos.y;
 	CreatePos.z = (sin(fAngle) * cos(fr* FR_SIZE_VALUE))*pos.z;
 
-	//å¤§ãã•
+	//‘å‚«‚³
 	//RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	//RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-	m_bLoop = true;//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’æ ¼ç´
+	m_bLoop = true;//ƒAƒjƒ[ƒVƒ‡ƒ“ƒ‹[ƒv
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WAVE));//ƒeƒNƒXƒ`ƒƒî•ñ‚ğŠi”[
 	Init(pos, size, ActualMove, type, col, Life);
 }
 
 //=============================================================================
-//åˆæœŸåŒ–é–¢æ•°
+//‰Šú‰»ŠÖ”
 //=============================================================================
 HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFECT_TYPE type, D3DXCOLOR col, int Life)
 {
-	SetMove(move);					//ç§»å‹•é‡
-	GetColor() = col;				//ã‚«ãƒ©ãƒ¼
-	SetLife(Life);					//ãƒ©ã‚¤ãƒ•
-	m_nType = type;					//ã‚¿ã‚¤ãƒ—
-	CBillboard::Init(pos, size);	//ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰
+	SetMove(move);					//ˆÚ“®—Ê
+	GetColor() = col;				//ƒJƒ‰[
+	SetLife(Life);					//ƒ‰ƒCƒt
+	m_nType = type;					//ƒ^ƒCƒv
+	CBillboard::Init(pos, size);	//ƒrƒ‹ƒ{[ƒh
 
-	//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ã‚¿ã‚¤ãƒ—
+									//ƒGƒtƒFƒNƒg‚Ìƒ^ƒCƒv
 	switch (type)
 	{
-		//ç…™
+		//‰Œ
 	case EFFECT_TYPE::EFFECT_TYPE_1:
 		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
 		break;
 
-		//çˆ†ç™º
+		//”š”­
 	case EFFECT_TYPE::EFFECT_TYPE_2:
 		CBillboard::InitAnimation(ANIMETION_EXPLOSION, 0);
 		break;
 
-		//æ³¢
+		//”g
 	case EFFECT_TYPE::EFFECT_TYPE_3:
 		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
 		break;
 
-		//æ°´ã—ã¶ã
+		//…‚µ‚Ô‚«
 	case EFFECT_TYPE::EFFECT_TYPE_4:
 		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
 		break;
 
-		//æœ¨æ
+		//–ØŞ
 	case EFFECT_TYPE::EFFECT_TYPE_5:
 		CBillboard::InitAnimation(ANIMETION_WOOD, m_bLoop);
 		break;
@@ -349,15 +349,15 @@ HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFEC
 }
 
 //=============================================================================
-//æ›´æ–°é–¢æ•°
+//XVŠÖ”
 //=============================================================================
 void CEffect::Update(void)
 {
-	//ç¨®é¡ã”ã¨ã®é«˜ã•ã®è¨­å®šã¨é™ä¸‹è¨­å®š
+	//í—Ş‚²‚Æ‚Ì‚‚³‚Ìİ’è‚Æ~‰ºİ’è
 	switch (m_nType)
 
 	{
-		//çˆ†ç™º
+		//”š”­
 	case EFFECT_TYPE_1:
 		if ((rand() % MAX_GRAVITY_COUNTER_EXPLOSION) < GetPos().y)
 		{
@@ -366,7 +366,7 @@ void CEffect::Update(void)
 		}
 		break;
 
-		//æ³¢
+		//”g
 	case EFFECT_TYPE_3:
 		if (rand() % MAX_GRAVITY_COUNTER_WAVE< GetPos().y)
 		{
@@ -375,7 +375,7 @@ void CEffect::Update(void)
 		}
 		break;
 
-		//æ°´ã—ã¶ã
+		//…‚µ‚Ô‚«
 	case EFFECT_TYPE_4:
 		if ((rand() % MAX_GRAVITY_COUNTER_SPLASH)< GetPos().y)
 		{
@@ -384,7 +384,7 @@ void CEffect::Update(void)
 		}
 		break;
 
-		//æœ¨æ
+		//–ØŞ
 	case EFFECT_TYPE_5:
 		if ((rand() % MAX_GRAVITY_COUNTER_EXPLOSION) < GetPos().y)
 		{
@@ -396,7 +396,7 @@ void CEffect::Update(void)
 	default:
 		break;
 	}
-	//åœ°é¢ã‚ˆã‚Šä¸‹ã§ã‚ã‚Œã°
+	//’n–Ê‚æ‚è‰º‚Å‚ ‚ê‚Î
 	if (GetPos().y < 0)
 	{
 		Uninit();
@@ -407,7 +407,7 @@ void CEffect::Update(void)
 }
 
 //=============================================================================
-//çµ‚äº†é–¢æ•°
+//I—¹ŠÖ”
 //=============================================================================
 void CEffect::Uninit(void)
 {
@@ -415,7 +415,7 @@ void CEffect::Uninit(void)
 }
 
 //=============================================================================
-//æç”»é–¢æ•°
+//•`‰æŠÖ”
 //=============================================================================
 void CEffect::Draw(void)
 {

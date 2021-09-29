@@ -1,10 +1,10 @@
-//=============================================================================
-// 繝励Ξ繧､繝､繝ｼ繧ｯ繝ｩ繧ｹ [player.cpp]
+﻿//=============================================================================
+// プレイヤー [player.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 
 //=============================================================================
-// 繧､繝ｳ繧ｯ繝ｫ繝ｼ繝
+// インクルードファイル
 //=============================================================================
 #include "player.h"
 #include "manager.h"
@@ -30,7 +30,7 @@
 #include "effect.h"
 
 //=============================================================================
-// 繝槭け繝ｭ螳夂ｾｩ
+// マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
 #define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
@@ -78,68 +78,67 @@
 #define SOUND_INTER_TIME		(10)									// 移動の音の間隔
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
-// 遐ｲ蜿ｰ縺ｮ菴咲ｽｮ
+// 砲台の位置
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
 
-//繧ｨ繝輔ぉ繧ｯ繝医�蜷�焚蛟､
-//辷�匱
-#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//菴咲ｽｮ
-#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//螟ｧ縺阪＆
-#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
-#define EXPLOSION_LIFE		(70)													//菴灘鴨
+//エフェクトデータ
+//爆発
+#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//位置
+#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//サイズ
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define EXPLOSION_LIFE		(70)													//ライフ
 
-//辣																				
-#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
-#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//螟ｧ縺阪＆
-#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//遘ｻ蜍募鴨
-#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//濶ｲ
-#define SMOKE_LIFE			(500)													//菴灘鴨
+//煙																				
+#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//サイズ
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//移動量
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//色
+#define SMOKE_LIFE			(500)													//ライフ
 
-//豌ｴ縺励�縺																			
-#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
-#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//螟ｧ縺阪＆
-#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//遘ｻ蜍募鴨
-#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
-#define SPLASH_LIFE			(200)													//菴灘鴨
+//しぶき																		
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//サイズ
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動量
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define SPLASH_LIFE			(200)													//ライフ
 
-//譛ｨ譚																			
-#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
-#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//螟ｧ縺阪＆
-#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//遘ｻ蜍募鴨
-#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
-#define WOOD_LIFE			(500)													//菴灘鴨
+//木																		
+#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//サイズ
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//移動量
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define WOOD_LIFE			(500)													//ライフ
 
-//豕｢																				
-#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//菴咲ｽｮ
-#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//螟ｧ縺阪＆
-#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//遘ｻ蜍募鴨
-#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
-#define WAVE_LIFE			(70)													//菴灘鴨
-#define WAVE_MAX_PARTICLE	(10)													//謾ｾ蜃ｺ蝗樊焚
+//波																				
+#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//位置
+#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//サイズ
+#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//移動量
+#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define WAVE_LIFE			(70)													//ライフ
+#define WAVE_MAX_PARTICLE	(10)													//量
 
 //=============================================================================
-// 逕滓�蜃ｦ逅�未謨ｰ
+// 生成処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// 蛻晄悄蛹門�逅
 	CPlayer *pPlayer = new CPlayer;
 
 	// !nullcheck
 	if (pPlayer != nullptr)
 	{
-		// 蛻晄悄蛹門�逅
+		// 初期化処理
 		pPlayer->Init(pos, rot);
 	}
 
-	// 繝昴う繝ｳ繧ｿ繧定ｿ斐☆
+	// CPlayerを返す
 	return pPlayer;
 }
 
 //=============================================================================
-// 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+// コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
@@ -161,7 +160,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 }
 
 //=============================================================================
-// 繝�せ繝医Λ繧ｯ繧ｿ
+// デストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::~CPlayer()
@@ -169,105 +168,103 @@ CPlayer::~CPlayer()
 }
 
 //=============================================================================
-// 蛻晄悄蛹門�逅
+// 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
 HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// 繝｢繝�Ν諠�ｱ蜿門ｾ
+	// CXfile取得
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
 
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// 繝｢繝�Ν縺ｮ諠�ｱ繧呈ｸ｡縺
+		// モデル生成
 		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_PLAYER);
 	}
 
-	// 蛻晄悄蛹
+	// 初期化処理
 	CCharacter::Init(pos, rot);
 
-	// 蜷代″莉｣蜈･
+	// 向き
 	m_rotDest = rot;
 
-	// 繧ｵ繧､繧ｺ險ｭ螳
+	// サイズ設定
 	SetSize(SIZE);
 
-	// 繝ｩ繧､繝
+	// ライフ設定
 	SetLife(LIFE);
 
-	// 騾溷ｺｦ險ｭ螳
+	// スピード設定
 	SetSpeed(PLAYER_SPEED);
 
-	// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
+	// パッド取得
 	LPDIRECTINPUTDEVICE8 P1_PAD = CInputJoypad::GetController(PAD_P1);
 	LPDIRECTINPUTDEVICE8 P2_PAD = CInputJoypad::GetController(PAD_P2);
 
-	// 繝代ャ繝峨′2蛟九▽縺ｪ縺後▲縺ｦ繧句ｴ蜷
+	// 2Pad接続されているなら
 	if (P1_PAD != nullptr && P2_PAD != nullptr)
 	{
-		m_PadType = PAD_TYPE_1P;
+		m_PadType = PAD_TYPE_2P;
 	}
 
-	// 蠖ｱ縺ｮ菴ｿ逕ｨ
+	// 影
 	SetUseShadow();
 
-	// 蠖ｱ縺ｮ蝗櫁ｻ｢繧貞渚譏縺輔○繧
+	// 影の向き
 	SetShadowRotCalculation();
 
-	// 繝ｬ繧､縺ｮ諠�ｱ險ｭ螳
+	// レイのデータ
 	CCharacter::RAY_DATA Ray_Data = { RAY_RADIUS ,RAY_HIT_RANGE ,RAY_NUM };
 
-	// 繝ｬ繧､縺ｮ諠�ｱ險ｭ螳
+	// レイのデータ設定
 	SetRay_Data(Ray_Data);
 
-	// 邂ｱ逕滓�
+	// 箱生成
 	//CCharacter_Box::Create(pos, rot, this);
 
 	return S_OK;
 }
 
 //=============================================================================
-// 邨ゆｺ��逅
+// 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Uninit(void)
 {
-	// 邨ゆｺ��逅
 	CCharacter::Uninit();
 }
 
 //=============================================================================
-// 譖ｴ譁ｰ蜃ｦ逅
+// 更新関数処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Update(void)
 {
-	// 隕ｪ繧ｯ繝ｩ繧ｹ縺ｮ譖ｴ譁ｰ蜃ｦ逅
+	// 更新
 	CCharacter::Update();
 
-	// 蠎ｧ讓吩ｻ｣蜈･
+	// 位置取得
 	D3DXVECTOR3 pos = GetPos();
 
-	// 蜿､縺�ｺｧ讓吩ｿ晏ｭ
+	// 古い位置設定
 	SetPosOld(pos);
 
-	// 繝励Ξ繧､繝､繝ｼ縺ｮ迥ｶ諷
+	// 状態更新
 	UpdateState();
 
-	// 菴灘鴨縺0縺ｫ縺ｪ縺｣縺溘ｉ
+	// false1の場合
 	if (!m_bDeath)
 	{
-		// 繝励Ξ繧､繝､繝ｼ縺ｮ蛻ｶ蠕｡
+		// プレイヤー処理
 		PlayerControl();
 	}
 	else
 	{
-		// 豐医ｓ縺ｧ縺�￥蜃ｦ逅
+		// 死亡処理
 		SinkEnd();
 	}
 
-	// 隗貞ｺｦ縺ｮ譖ｴ譁ｰ蜃ｦ逅
 	// 移動のサウンド
 	MoveSound();
 
@@ -276,17 +273,18 @@ void CPlayer::Update(void)
 }
 
 //=============================================================================
-// 謠冗判蜃ｦ逅
+// 描画処理関数
+// Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	// 謠冗判蜃ｦ逅
+	// 描画
 	CCharacter::Draw();
 }
 
 //=============================================================================
-// Author : Sugawara Tsukasa
-// 繝励Ξ繧､繝､繝ｼ縺ｮ迥ｶ諷
+// 状態更新
+// Author: Sugawara Tsukasa
 //=============================================================================
 void CPlayer::UpdateState(void)
 {
@@ -294,65 +292,64 @@ void CPlayer::UpdateState(void)
 }
 
 //=============================================================================
-// 繝励Ξ繧､繝､繝ｼ縺ｮ蛻ｶ蠕｡
+// プレイヤーの処理
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::PlayerControl()
 {
-	// 繝｢繝ｼ繝牙叙蠕
+	// モード取得
 	CManager::MODE_TYPE mode = CManager::GetMode();
 
-	// 繧ｲ繝ｼ繝縺ｮ蝣ｴ蜷
+	// GAMEの場合
 	if (mode == CManager::MODE_TYPE_GAME)
 	{
-		// 繧ｲ繝ｼ繝蜿門ｾ
+		// CGame取得
 		CGame *pGame = (CGame*)CManager::GetModePtr();
 
 		// !nullcheck
 		if (pGame != nullptr)
 		{
-			// 繝懊せ驕ｷ遘ｻ蜿門ｾ
+			// ボス遷移しているか取得
 			bool bBossTransition = pGame->GetbBossTransition();
 
-			// 繝懊せ驕ｷ遘ｻ迥ｶ諷九〒縺ｪ縺�ｴ蜷
+			// falseの場合
 			if (bBossTransition == false)
 			{
-				// false縺ｮ蝣ｴ蜷
+				// falseの場合
 				if (m_bKnock_Back == false)
 				{
-					// 1P縺ｮ蝣ｴ蜷
 					if (m_PadType == PAD_TYPE_1P)
 					{
-						// 繝励Ξ繧､繝､繝ｼ縺ｮ遘ｻ蜍募�逅
+						// 移動処理
 						Move();
 
-						// 謾ｻ謦��逅
+						// 攻撃処理
 						Attack();
 					}
-					// 1P縺ｮ蝣ｴ蜷
+					// 2Pの場合
 					if (m_PadType == PAD_TYPE_2P)
 					{
-						// 繝励Ξ繧､繝､繝ｼ縺ｮ遘ｻ蜍募�逅
+						// 移動処理
 						Pad2Move();
 
-						// 謾ｻ謦��逅
+						// 攻撃処理
 						Pad2Attack();
 					}
 
-					// 繧ｭ繝ｼ繝懊�繝臥ｧｻ蜍
+					// キーボード移動処理
 					KeyboardMove();
 
-					// 謾ｻ謦��逅
+					// 攻撃処理
 					Attack();
 				}
-				// true縺ｮ蝣ｴ蜷
+				// trueの場合
 				if (m_bKnock_Back == true)
 				{
-					// 繝弱ャ繧ｯ繝舌ャ繧ｯ蜃ｦ逅
+					// ノックバック処理
 					Knock_Back();
 				}
 
-				// 蠖薙◆繧雁愛螳
+				// 当たり判定
 				Collision();
 			}
 		}
@@ -360,12 +357,12 @@ void CPlayer::PlayerControl()
 }
 
 //=============================================================================
-// 隗貞ｺｦ縺ｮ譖ｴ譁ｰ蜃ｦ逅
+// 向き更新処理
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::UpdateRot(void)
 {
-	// 隗貞ｺｦ縺ｮ蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 rot = GetRot();
 
 	while (m_rotDest.y - rot.y > D3DXToRadian(180))
@@ -378,29 +375,29 @@ void CPlayer::UpdateRot(void)
 		m_rotDest.y += D3DXToRadian(360);
 	}
 
-	// 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ蝗櫁ｻ｢縺ｮ騾溷ｺｦ
+	// 向き
 	rot += (m_rotDest - rot) * PLAYER_ROT_SPEED;
 
-	// 隗貞ｺｦ縺ｮ險ｭ螳
+	// 向き設定
 	SetRot(rot);
 }
 
 //=============================================================================
-// 謨ｵ縺ｮ蠑ｾ縺ｮ繝偵ャ繝亥�逅
+// ヒット処理関数
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Hit(int nDamage)
 {
-	// 繝ｩ繧､繝墓ｸ帷ｮ
+	// ライフ取得
 	GetLife() -= nDamage;
 
-	// true縺ｫ
+	// trueに
 	m_bHitFlag = true;
 
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_DAMAGE);
 
-	// 0莉･荳九□縺｣縺溘ｉ
+	// 0の場合
 	if (!m_bDeath && GetLife() <= 0)
 	{
 		// 豁ｻ縺ｬ
@@ -409,7 +406,7 @@ void CPlayer::Hit(int nDamage)
 }
 
 //=============================================================================
-// 豁ｻ繧薙□縺ｨ縺阪�蜃ｦ逅
+// 死亡処理
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Death(void)
@@ -421,163 +418,153 @@ void CPlayer::Death(void)
 }
 
 //=============================================================================
-// 遘ｻ蜍輔�蜃ｦ逅
+// 移動処理
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Move(void)
 {
-	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
-	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// 繧ｵ繧ｦ繝ｳ繝峨�繝昴う繝ｳ繧ｿ
-	D3DXVECTOR3 pos = GetPos();												// 蠎ｧ讓
-	D3DXVECTOR3 rot = GetRot();												// 隗貞ｺｦ
-	float fSpeed = GetSpeed();												// 繧ｹ繝斐�繝
-	float fAngle_R = ZERO_FLOAT;											// 蜿ｳ隗貞ｺｦ
-	float fAngle_L = ZERO_FLOAT;											// 蟾ｦ隗貞ｺｦ
+	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// スティック取得
+	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// サウンド取得
+	D3DXVECTOR3 pos = GetPos();												// 位置取得
+	D3DXVECTOR3 rot = GetRot();												// 向き取得
+	float fSpeed = GetSpeed();												// スピード取得
+	float fAngle_R = ZERO_FLOAT;											// 右
+	float fAngle_L = ZERO_FLOAT;											// 左
 
-	//// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	//// 蜷代″蜿門ｾ
-	//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
-
-	//// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	//// 蜷代″蜿門ｾ
-	//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-
-	//===========================================
-	// 蜿ｳ豁ｯ霆
-	//===========================================
-	// 蜿ｳ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+																			//===========================================
+																			// 右歯車
+																			//===========================================
+																			// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
-	{	
-		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+	{
+		// コントローラーの角度
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+		//スティックの最短距離
 		RStickAngle(fAngle_R);
 
-		// 蟾ｦ縺ｫ遘ｻ蜍
+		// 左に移動
 		if (fAngle_R < m_fdisAngle_R)
 		{
-			// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
+			// パドルの回転
 			PaddleRotateR(-GEAR_SPIN_ANGLE);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//豕｢繧ｨ繝輔ぉ繧ｯ繝
+			//波エフェクト
 			CreateWave();
 		}
-		// false縺ｮ蝣ｴ蜷
+		// falseの場合
 		else if (m_bBack == false)
 		{
-			// 蜿ｳ縺ｫ遘ｻ蜍
+			// 右に移動
 			if (fAngle_R > m_fdisAngle_R)
 			{
-				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
+				// パドルの回転
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
 
-				//豕｢繧ｨ繝輔ぉ繧ｯ繝
+				//波エフェクト
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// 蟾ｦ豁ｯ霆
+	// 左歯車
 	//===========================================
-	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+	// 左スティックが入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 	{
-		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+		// コントローラーの角度
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
-		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+		//スティックの最短距離
 		LStickAngle(fAngle_L);
 
-		// 蜿ｳ縺ｫ遘ｻ蜍
+		// 右に移動
 		if (fAngle_L < m_fdisAngle_L)
 		{
-			// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
+			// パドルの回転
 			PaddleRotateL(-GEAR_SPIN_ANGLE);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//豕｢繧ｨ繝輔ぉ繧ｯ繝
+			//波エフェクト
 			CreateWave();
 		}
-		// false縺ｮ蝣ｴ蜷
+		// falseの場合
 		else if (m_bBack == false)
 		{
-			// 蟾ｦ縺ｫ遘ｻ蜍
+			// 左に移動
 			if (fAngle_L > m_fdisAngle_L)
 			{
-				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
+				// パドルの回転
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
 
-				//豕｢繧ｨ繝輔ぉ繧ｯ繝
+				//波エフェクト
 				CreateWave();
 			}
 		}
 	}
-	// 蜈･蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+	// 入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+		// コントローラーの角度
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+		//スティックの最短距離
 		LStickAngle(fAngle_L);
 		RStickAngle(fAngle_R);
 
-		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�ｋ蝣ｴ蜷
+		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
-			// true縺ｫ
+			// trueに
 			m_bBack = true;
-			// true縺ｮ蝣ｴ蜷
+			// trueの場合
 			if (m_bBack == true)
 			{
-				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
+				// パドルの回転
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 
@@ -585,929 +572,841 @@ void CPlayer::Move(void)
 			}
 		}
 
-		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
 		else
 		{
 			// false縺ｫ
 			m_bBack = false;
 		}
 	}
-	// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
+	// 前回の角度より小さい場合
 	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 	{
 		// false縺ｫ
 		m_bBack = false;
 	}
-	
 
-	// 隗貞ｺｦ縺ｮ陬懈ｭ｣
+
+	// 角度の補正
 	PaddleRotFix();
 
-	// 蜷代″
+	// 向き
 	SetRot(rot);
 
-	// 菴咲ｽｮ險ｭ螳
+	// 位置設定
 	SetPos(pos);
 
-	//蜑榊屓縺ｮ繧ｹ繝�ぅ繝�け隗貞ｺｦ
+	//前回のスティック角度
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 //=============================================================================
-// 2繝代ャ繝峨�遘ｻ蜍募�逅�未謨ｰ
+// 2PADの移動処理関数
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Move(void)
 {
-	// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
+	// ジョイパッドの取得
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
-	float fAngle_R = ZERO_FLOAT;	// 蜿ｳ隗貞ｺｦ
-	float fAngle_L = ZERO_FLOAT;	// 蟾ｦ隗貞ｺｦ
+	float fAngle_R = ZERO_FLOAT;	// 右角度
+	float fAngle_L = ZERO_FLOAT;	// 左角度
 
-	// サウンドのポインタ
+									// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
-	// 蠎ｧ讓
+	// 座標
 	D3DXVECTOR3 pos = GetPos();
 
-	// 隗貞ｺｦ
+	// 角度
 	D3DXVECTOR3 rot = GetRot();
 
-	// 繧ｹ繝斐�繝
+	// スピード
 	float fSpeed = GetSpeed();
 
 
-	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	// 右の歯車の情報取得
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
 	//===========================================
-	// 蟾ｦ豁ｯ霆 窶ｻ1Player
+	// 左歯車 ※1Player
 	//===========================================
-	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+	// 左スティックが入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE)
 	{
-		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+		// コントローラーの角度
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+		//スティックの最短距離
 		LStickAngle(fAngle_L);
-		// 蜿ｳ縺ｫ遘ｻ蜍
+		// 右に移動
 		if (fAngle_L > m_fdisAngle_L)
 		{
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_L->SetRot(Gear_L_rot);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//豕｢繧ｨ繝輔ぉ繧ｯ繝
+			//波エフェクト
 			CreateWave();
 		}
-		// false縺ｮ蝣ｴ蜷
+		// falseの場合
 		if (m_bBack == false)
 		{
-			// 蟾ｦ縺ｫ遘ｻ蜍
+			// 左に移動
 			if (fAngle_L < m_fdisAngle_L)
 			{
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_L->SetRot(Gear_L_rot);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
 
-				//豕｢繧ｨ繝輔ぉ繧ｯ繝
+				//波エフェクト
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// 蜿ｳ豁ｯ霆 窶ｻ2Player
+	// 右歯車 ※2Player
 	//===========================================
-	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+	// 左スティックが入力されている場合
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+		// コントローラーの角度
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+		//スティックの最短距離
 		RStickAngle(fAngle_R);
-		// 蟾ｦ縺ｫ遘ｻ蜍
+		// 左に移動
 		if (fAngle_R > m_fdisAngle_R)
 		{
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_R->SetRot(Gear_R_rot);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//豕｢繧ｨ繝輔ぉ繧ｯ繝
+			//波エフェクト
 			CreateWave();
 		}
-		// false縺ｮ蝣ｴ蜷
+		// falseの場合
 		if (m_bBack == false)
 		{
-			// 蜿ｳ縺ｫ遘ｻ蜍
+			// 右に移動
 			if (fAngle_R < m_fdisAngle_R)
 			{
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_R->SetRot(Gear_R_rot);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
 
-				//豕｢繧ｨ繝輔ぉ繧ｯ繝
+				//波エフェクト
 				CreateWave();
 			}
 		}
 
 
 	}
-	// 蜈･蜉帙＆繧後※縺�ｋ蝣ｴ蜷
+	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�ｋ蝣ｴ蜷
+		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
-			// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
+			// コントローラーの角度
 			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
-			//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
+			//スティックの最短距離
 			LStickAngle(fAngle_L);
 			RStickAngle(fAngle_R);
-			// true縺ｫ
+			// trueに
 			m_bBack = true;
-			// true縺ｮ蝣ｴ蜷
+			// trueの場合
 			if (m_bBack == true)
 			{
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_L->SetRot(Gear_L_rot);
 
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_R->SetRot(Gear_R_rot);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
+
+				m_bMoveSound = true;
 			}
 		}
+		// 入力されていない場合
+		else
+		{
+			// falseに
+			m_bBack = false;
+		}
 	}
-	// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
-	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
-	{
-		// false縺ｫ
-		m_bBack = false;
-	}
-	
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
+
+	// 角度が最大になった場合
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0縺ｫ謌ｻ縺
+		// 0に戻す
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
+		// 向き設定
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
+	// 角度が最大になった場合
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0縺ｫ謌ｻ縺
+		// 0に戻す
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
+		// 向き設定
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// 蜷代″
+	// 向き
 	SetRot(rot);
 
-	// 菴咲ｽｮ險ｭ螳
+	// 位置設定
 	SetPos(pos);
 
-	//譬ｼ邏
+	//格納
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 
 //=============================================================================
-// 謾ｻ謦��逅
+// 攻撃処理
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Attack(void)
 {
-	// 繧ｭ繝ｼ繝懊�繝牙叙蠕
+	// キーボード取得
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// 繧ｸ繝ｧ繧､繝代ャ繝牙叙蠕
+	// ジョイパッド取得
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
+	// モデルの情報取得
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
+	// モデルの情報取得
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 rot = GetRot();
 
-	// SPACE繧ｭ繝ｼ繧呈款縺励◆蝣ｴ蜷
+	// SPACEキーを押した場合
 	if (pKeyboard->GetTrigger(DIK_SPACE))
 	{
-		// 蜿ｳ蠑ｾ逕滓�
+		// 右弾生成
 		CPlayer_Bullet::Create(BATTERY_R_POS, rot);
-		// 蟾ｦ蠑ｾ逕滓�
+		// 左弾生成
 		CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 	}
 
-	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
+	// カウントが0の場合
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
+		// RTトリガーを押した場合
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// 蜿ｳ蠑ｾ逕滓�
+			// 右弾生成
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+			// インクリメント
 			m_nAttackCount_R++;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
+	// カウントが0の場合
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
+		// LTトリガーを押した場合
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L_TRIGGER, PAD_1))
 		{
-			// 蟾ｦ蠑ｾ逕滓�
+			// 左弾生成
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+			// インクリメント
 			m_nAttackCount_L++;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
+	// カウントが0より多い場合
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+		// インクリメント
 		m_nAttackCount_R++;
 
-		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
+		// カウントが60の場合
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0縺ｫ
+			// 0に
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
+	// カウントが0より多い場合
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+		// インクリメント
 		m_nAttackCount_L++;
 
-		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
+		// カウントが60の場合
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0縺ｫ
+			// 0に
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// 2繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ謾ｻ謦��逅
+// 2コントローラーの攻撃処理
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Attack(void)
 {
-	// 繧ｸ繝ｧ繧､繝代ャ繝牙叙蠕
+	// ジョイパッド取得
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
+	// モデルの情報取得
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
+	// モデルの情報取得
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 rot = GetRot();
 
-	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
+	// カウントが0の場合
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
+		// LTトリガーを押した場合
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// 蟾ｦ蠑ｾ逕滓�
+			// 左弾生成
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+			// インクリメント
 			m_nAttackCount_L++;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
+	// カウントが0より多い場合
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+		// インクリメント
 		m_nAttackCount_L++;
 
-		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
+		// カウントが60の場合
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0縺ｫ
+			// 0に
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
+	// カウントが0の場合
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
+		// RTトリガーを押した場合
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_2) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_2))
 		{
-			// 蜿ｳ蠑ｾ逕滓�
+			// 右弾生成
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+			// インクリメント
 			m_nAttackCount_R++;
 		}
 	}
-	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
+	// カウントが0より多い場合
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
+		// インクリメント
 		m_nAttackCount_R++;
 
-		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
+		// カウントが60の場合
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0縺ｫ
+			// 0に
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// 繧ｭ繝ｼ繝懊�繝臥ｧｻ蜍募�逅
+// キーボード移動処理
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::KeyboardMove(void)
 {
-	// 繧ｭ繝ｼ繝懊�繝画峩譁ｰ
+	// キーボード更新
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	// 右の歯車の情報取得
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// 蜷代″蜿門ｾ
+	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	// 蠎ｧ讓
+	// 座標
 	D3DXVECTOR3 pos = GetPos();
 
-	// 隗貞ｺｦ
+	// 角度
 	D3DXVECTOR3 rot = GetRot();
 
-	// 繧ｹ繝斐�繝
+	// スピード
 	float fSpeed = GetSpeed();
 
-	// 蜿ｳ隗貞ｺｦ
+	// 右角度
 	float fAngle_R = ZERO_FLOAT;
 
-	// 蟾ｦ隗貞ｺｦ
+	// 左角度
 	float fAngle_L = ZERO_FLOAT;
 
-	// S縺梧款縺輔ｌ縺ｦ縺�↑蝣ｴ蜷
+	// Sが押されていな場合
 	if (!pKeyboard->GetPress(DIK_S))
 	{
-		// 蜿ｳ縺ｫ遘ｻ蜍
+		// 右に移動
 		if (pKeyboard->GetPress(DIK_W))
 		{
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_L->SetRot(Gear_L_rot);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//繧ｨ繝輔ぉ繧ｯ繝
+			//エフェクト
 			CreateWave();
 
-			// false縺ｫ
+			// falseに
 			m_bBack = false;
-			m_bMoveSound = true;
 		}
 	}
-	// false縺ｮ蝣ｴ蜷
+	// falseの場合
 	if (m_bBack == false)
 	{
-		// W縺梧款縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
+		// Wが押されていない場合
 		if (!pKeyboard->GetPress(DIK_W))
 		{
-			// 蟾ｦ縺ｫ遘ｻ蜍
+			// 左に移動
 			if (pKeyboard->GetPress(DIK_S))
 			{
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_L->SetRot(Gear_L_rot);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
-
-				m_bMoveSound = true;
 			}
 		}
 	}
-	// 竊薙′謚ｼ縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
+	// ↓が押されていない場合
 	if (!pKeyboard->GetPress(DIK_DOWN))
 	{
-		// 蜿ｳ縺ｫ遘ｻ蜍
+		// 右に移動
 		if (pKeyboard->GetPress(DIK_UP))
 		{
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_R->SetRot(Gear_R_rot);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// 蜷代″
+			// 向き
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// 逶ｮ逧��蜷代″
+			// 目的の向き
 			m_rotDest.y = rot.y;
 
-			//繧ｨ繝輔ぉ繧ｯ繝
+			//エフェクト
 			CreateWave();
 
-			// false縺ｫ
+			// falseに
 			m_bBack = false;
-
-			m_bMoveSound = true;
 		}
 	}
-	// false縺ｮ蝣ｴ蜷
+	// falseの場合
 	if (m_bBack == false)
 	{
-		// 竊代′謚ｼ縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
+		// ↑が押されていない場合
 		if (!pKeyboard->GetPress(DIK_UP))
 		{
-			// 蟾ｦ縺ｫ遘ｻ蜍
+			// 左に移動
 			if (pKeyboard->GetPress(DIK_DOWN))
 			{
-				// 蜷代″蜉邂
+				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// 蜷代″險ｭ螳
+				// 向き設定
 				pGear_R->SetRot(Gear_R_rot);
 
-				// 遘ｻ蜍
+				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// 蜷代″
+				// 向き
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// 逶ｮ逧��蜷代″
+				// 目的の向き
 				m_rotDest.y = rot.y;
-
-				m_bMoveSound = true;
 			}
 		}
 	}
-	// 蠕後ｍ遘ｻ蜍
+	// 後ろ移動
 	if (pKeyboard->GetPress(DIK_DOWN) && pKeyboard->GetPress(DIK_S))
 	{
-		// true縺ｫ
+		// trueに
 		m_bBack = true;
 
-		// true縺ｮ蝣ｴ蜷
+		// trueの場合
 		if (m_bBack == true)
 		{
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_L_rot.x += GEAR_SPIN_ANGLE;
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_L->SetRot(Gear_L_rot);
 
-			// 蜷代″蜉邂
+			// 向き加算
 			Gear_R_rot.x += GEAR_SPIN_ANGLE;
-			// 蜷代″險ｭ螳
+			// 向き設定
 			pGear_R->SetRot(Gear_R_rot);
 
-			// 遘ｻ蜍
+			// 移動
 			pos.x += sinf(rot.y)*fSpeed;
 			pos.z += cosf(rot.y)*fSpeed;
-
-			m_bMoveSound = true;
 		}
 	}
-	// 蠕後ｍ遘ｻ蜍
+	// 後ろ移動
 	if (pKeyboard->GetRelease(DIK_DOWN) || pKeyboard->GetRelease(DIK_S))
 	{
-		// true縺ｮ蝣ｴ蜷
+		// trueの場合
 		if (m_bBack == true)
 		{
-			// false縺ｫ
+			// falseに
 			m_bBack = false;
-
-			m_bMoveSound = true;
 		}
 	}
 
 	if (pKeyboard->GetPress(DIK_P))
 	{
-		//繝代�繝�ぅ繧ｯ繝ｫ逕滓�
+		//パーティクル生成
 		CreateSmoke();
 		CreateWoodEP();
 		CreateExplosion();
 	}
 
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
+	// 角度が最大になった場合
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0縺ｫ謌ｻ縺
+		// 0に戻す
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
+		// 向き設定
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
+	// 角度が最大になった場合
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0縺ｫ謌ｻ縺
+		// 0に戻す
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
+		// 向き設定
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// 蜷代″
+	// 向き
 	SetRot(rot);
 
-	// 菴咲ｽｮ險ｭ螳
+	// 位置設定
 	SetPos(pos);
 }
 //=============================================================================
-// 蠖薙◆繧雁愛螳壼�逅
+// 当たり判定処理
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Collision(void)
 {
-	// CScene縺ｮ繝昴う繝ｳ繧ｿ
+	// CSceneのポインタ
 	CScene *pScene = nullptr;
 
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
+	// モデルの情報取得
 	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
 
-	// 菴咲ｽｮ蜿門ｾ
+	// 位置取得
 	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
 
-	// 菴咲ｽｮ蜿門ｾ
+	// 位置取得
 	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
 
-	// 繧ｵ繧､繧ｺ蜿門ｾ
+	// サイズ取得
 	D3DXVECTOR3 size = GetSize();
 
-	// 遘ｻ蜍暮㍼蜿門ｾ
+	// 移動量取得
 	D3DXVECTOR3 move = GetMove();
 
 	// nullcheck
 	if (pScene == nullptr)
 	{
-		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
+		// 先頭のポインタ取得
 		pScene = GetTop(PRIORITY_ENEMY);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
-			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
 			{
-				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
+				// 現在のポインタ
 				CScene *pSceneCur = pScene->GetNext();
 
-				// 菴咲ｽｮ
+				// 位置
 				D3DXVECTOR3 CharacterPos = ZeroVector3;
 
-				// 菴咲ｽｮ蜿門ｾ
+				// 位置取得
 				CharacterPos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
 				CharacterPos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
 				CharacterPos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
 
-				// 繧ｵ繧､繧ｺ蜿門ｾ
+				// サイズ取得
 				D3DXVECTOR3 CharacterSize = ((CCharacter*)pScene)->GetSize();
 
-				//縺ｩ縺薙�髱｢縺ｫ蠖薙◆縺｣縺溘°蜿門ｾ
-				//荳
+				//どこの面に当たったか取得
+				//下
 				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_DOWN)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.y = (-CharacterSize.y / DIVIDE_2 + CharacterPos.y) - (size.y / DIVIDE_2);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 荳
+				// 上
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_UP)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.y = (CharacterSize.y / DIVIDE_2 + CharacterPos.y) + (size.y / DIVIDE_2);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 蟾ｦ
+				// 左
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_LEFT)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.x = (-CharacterSize.x / DIVIDE_2 + CharacterPos.x) - (size.x / DIVIDE_2);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 蜿ｳ
+				// 右
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_RIGHT)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.x = (CharacterSize.x / DIVIDE_2 + CharacterPos.x) + (size.x / DIVIDE_2);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 謇句燕
+				// 手前
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_PREVIOUS)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.z = (-CharacterSize.z / DIVIDE_2 + CharacterPos.z) - (size.z / DIVIDE_2);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 螂･
+				// 奥
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_BACK)
 				{
-					// 遘ｻ蜍暮㍼蜿門ｾ
+					// 移動量取得
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// 遘ｻ蜍暮㍼0
+					// 移動量0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// 菴咲ｽｮ
+					// 位置
 					pos.z = (CharacterSize.z / DIVIDE_2 + CharacterPos.z) + (size.z / DIVIDE_2);
 
-					// 遘ｻ蜍暮㍼險ｭ螳
+					// 移動量設定
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// 菴咲ｽｮ險ｭ螳
+					// 位置設定
 					SetPos(pos);
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
+				// 次のポインタ取得
 				pScene = pSceneCur;
 			}
 		}
 
-		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
+		// 先頭のポインタ取得
 		pScene = GetTop(PRIORITY_OBSTACLE);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
-			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
 			{
-				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
+				// 現在のポインタ
 				CScene *pSceneCur = pScene->GetNext();
 
-				// 菴咲ｽｮ
+				// 位置
 				D3DXVECTOR3 ObstaclePos = ((CModel*)pScene)->GetPos();
 
-				// 繧ｵ繧､繧ｺ蜿門ｾ
+				// サイズ取得
 				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
 
-				// 遏ｩ蠖｢縺ｮ蠖薙◆繧雁愛螳
+				// 矩形の当たり判定
 				if (CCollision::CollisionRectangleAndRectangle(ObstaclePos, pos, ObstacleSize, size) == true)
 				{
-					// 繝吶け繝医Ν
+					// ベクトル
 					D3DXVECTOR3 Vec = ZeroVector3;
 
-					// 豕慕ｷ壹�繧ｯ繝医Ν
+					// 法線ベクトル
 					D3DXVECTOR3 NormalVec = ZeroVector3;
 
-					// 騾ｲ陦後�繧ｯ繝医Ν
+					// 進行ベクトル
 					Vec.x = ObstaclePos.x - pos.x;
 					Vec.z = ObstaclePos.z - pos.z;
 
-					// 髟ｷ縺慕ｮ怜�
+					// 長さ算出
 					float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
-					// 豕慕ｷ壹�繧ｯ繝医Ν縺ｫ
+					// 法線ベクトルに
 					NormalVec.x = Vec.x / fVec_Length;
 					NormalVec.z = Vec.z / fVec_Length;
 
-					// 蜿榊ｰ��繧ｯ繝医Ν邂怜�
+					// 反射ベクトル算出
 					D3DXVec3Normalize(&m_Reflection_Vec, &(Vec - 2.0f * D3DXVec3Dot(&Vec, &NormalVec) * NormalVec));
 
-					// true縺ｫ
+					// trueに
 					m_bKnock_Back = true;
-
-					CSound *pSound = GET_SOUND_PTR;
-					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 
-				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
-				pScene = pSceneCur;
-			}
-		}
-	}
-}
-//=============================================================================
-// 螟也ｩ阪�蠖薙◆繧雁愛螳壼�逅
-// Author : SugawaraTsukasa
-//=============================================================================
-void CPlayer::CrossCollision(void)
-{
-	// CScene縺ｮ繝昴う繝ｳ繧ｿ
-	CScene *pScene = nullptr;
-
-	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
-	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
-
-	// 菴咲ｽｮ蜿門ｾ
-	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
-
-	// 菴咲ｽｮ蜿門ｾ
-	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
-
-	// 繧ｵ繧､繧ｺ蜿門ｾ
-	D3DXVECTOR3 size = GetSize();
-
-	// 遘ｻ蜍暮㍼蜿門ｾ
-	D3DXVECTOR3 move = GetMove();
-
-	// nullcheck
-	if (pScene == nullptr)
-	{
-		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
-		pScene = GetTop(PRIORITY_ENEMY);
-
-		// !nullcheck
-		if (pScene != nullptr)
-		{
-			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
-			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
-			{
-				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
-				CScene *pSceneCur = pScene->GetNext();
-
-				// 繝代�繝�焚蜿門ｾ
-				int nParts = ((CCharacter*)pScene)->GetPartsNum();
-
-				// 繝代�繝�焚蛻�ｹｰ繧願ｿ斐☆
-				for (int nCnt = ZERO_INT; nCnt < nParts; nCnt++)
-				{
-					// 繝｡繝�す繝･蜿門ｾ
-					LPD3DXMESH mesh = ((CCharacter*)pScene)->GetModelAnime(nCnt)->GetMesh();
-
-					// 繝輔ぉ繝ｼ繧ｹ謨ｰ蜿門ｾ
-					DWORD FaceNum = mesh->GetNumFaces();
-				}
-				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
+				// 次のポインタ取得
 				pScene = pSceneCur;
 			}
 		}
@@ -1515,7 +1414,7 @@ void CPlayer::CrossCollision(void)
 }
 
 //=======================================================================================
-// 豐医�蜃ｦ逅
+// 沈む処理
 // Author : Konishi Yuuto
 //=======================================================================================
 void CPlayer::SinkEnd(void)
@@ -1535,6 +1434,175 @@ void CPlayer::SinkEnd(void)
 	GetRot().x += D3DXToRadian(SINK_ROTATE);
 }
 
+//=======================================================================================
+// 煙生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateSmoke(void)
+{
+	// パーティクル生成
+	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
+		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
+}
+
+//=======================================================================================
+// 木材爆破生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateWoodEP(void)
+{
+	// パーティクル生成
+	CEffect::Create(WOOD_POS,
+		WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
+		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
+}
+
+//=======================================================================================
+// 水しぶき生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateSplash(void)
+{
+	for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
+	{
+		// パーティクル生成
+		CEffect::Create(SPLASH_POS,
+			WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+	}
+}
+
+//=======================================================================================
+// 爆発生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateExplosion(void)
+{
+	// パーティクル生成
+	CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
+		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+
+}
+
+//=======================================================================================
+// 波生成関数
+// Author : Oguma Akira
+//=======================================================================================
+void CPlayer::CreateWave(void)
+{
+	for (int nCntEffect = 0; nCntEffect < WAVE_MAX_PARTICLE; nCntEffect++)
+	{
+		// パーティクル生成
+		CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
+	}
+}
+
+//=============================================================================
+// ノックバック処理関数
+// Author : SugawaraTsukasa
+//=============================================================================
+void CPlayer::Knock_Back(void)
+{
+	// カウントインクリメント
+	m_nRockHitCount++;
+
+	// 移動量取得
+	D3DXVECTOR3 move = GetMove();
+
+	// 0の場合
+	if (m_nRockHitCount <= KNOCK_BACK_COUNT)
+	{
+		// 移動量
+		move.x = m_Reflection_Vec.x *KNOCK_BACK_SPEED;
+		move.z = m_Reflection_Vec.z *KNOCK_BACK_SPEED;
+
+		// 移動量設定
+		SetMove(move);
+	}
+	// 10より大きい場合
+	if (m_nRockHitCount > KNOCK_BACK_COUNT)
+	{
+		// 移動量設定
+		SetMove(ZeroVector3);
+
+		// 0に戻す
+		m_nRockHitCount = ZERO_INT;
+
+		// falseに
+		m_bKnock_Back = false;
+	}
+}
+
+//=============================================================================
+// パドルの右回転
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotateR(float fRotate)
+{
+	// 右の歯車の情報取得
+	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+
+	// 角度加算
+	Gear_R_rot.x += fRotate;
+
+	// 向き設定
+	pGear_R->SetRot(Gear_R_rot);
+}
+
+//=============================================================================
+// パドルの左回転
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotateL(float fRotate)
+{
+	// 左の歯車の情報取得
+	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+
+	// 角度加算
+	Gear_L_rot.x += fRotate;
+
+	// 向き設定
+	pGear_L->SetRot(Gear_L_rot);
+}
+
+//=============================================================================
+// パドルの角度修正
+// Author : Konishi Yuuto
+//=============================================================================
+void CPlayer::PaddleRotFix(void)
+{
+	// 右の歯車の情報取得
+	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
+	// 左の歯車の情報取得
+	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	// 向き取得
+	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+
+	// 角度が最大になった場合
+	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
+	{
+		// 0に戻す
+		Gear_L_rot.x = GEAR_DEF_ROT;
+		// 向き設定
+		pGear_L->SetRot(Gear_L_rot);
+	}
+
+	// 角度が最大になった場合
+	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
+	{
+		// 0に戻す
+		Gear_R_rot.x = GEAR_DEF_ROT;
+		// 向き設定
+		pGear_R->SetRot(Gear_R_rot);
+	}
+}
 //=======================================================================================
 // 移動の音
 // Author : Konishi Yuuto
@@ -1558,179 +1626,8 @@ void CPlayer::MoveSound(void)
 		m_bMoveSound = false;
 	}
 }
-
-//=======================================================================================
-// 辣咏函謌宣未謨ｰ
-// Author : Oguma Akira
-//=======================================================================================
-void CPlayer::CreateSmoke(void)
-{
-	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
-	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
-		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
-}
-
-//=======================================================================================
-// 譛ｨ譚千�遐ｴ逕滓�髢｢謨ｰ
-// Author : Oguma Akira
-//=======================================================================================
-void CPlayer::CreateWoodEP(void)
-{
-	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
-	CEffect::Create(WOOD_POS,
-		WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
-		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
-}
-
-//=======================================================================================
-// 豌ｴ縺励�縺咲函謌宣未謨ｰ
-// Author : Oguma Akira
-//=======================================================================================
-void CPlayer::CreateSplash(void)
-{
-	for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
-	{
-		// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
-		CEffect::Create(SPLASH_POS,
-			WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
-			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
-	}
-}
-
-//=======================================================================================
-// 辷�匱逕滓�髢｢謨ｰ
-// Author : Oguma Akira
-//=======================================================================================
-void CPlayer::CreateExplosion(void)
-{
-	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
-	CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
-		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
-
-}
-
-//=======================================================================================
-// 豕｢逕滓�髢｢謨ｰ
-// Author : Oguma Akira
-//=======================================================================================
-void CPlayer::CreateWave(void)
-{
-	for (int nCntEffect = 0; nCntEffect < WAVE_MAX_PARTICLE; nCntEffect++)
-	{
-		// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
-		CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
-			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
-	}
-}
-
 //=============================================================================
-// 繝弱ャ繧ｯ繝舌ャ繧ｯ蜃ｦ逅�未謨ｰ
-// Author : SugawaraTsukasa
-//=============================================================================
-void CPlayer::Knock_Back(void)
-{
-	// 繧ｫ繧ｦ繝ｳ繝医う繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
-	m_nRockHitCount++;
-
-	// 遘ｻ蜍暮㍼蜿門ｾ
-	D3DXVECTOR3 move = GetMove();
-
-	// 0縺ｮ蝣ｴ蜷
-	if (m_nRockHitCount <= KNOCK_BACK_COUNT)
-	{
-		// 遘ｻ蜍暮㍼
-		move.x = m_Reflection_Vec.x *KNOCK_BACK_SPEED;
-		move.z = m_Reflection_Vec.z *KNOCK_BACK_SPEED;
-
-		// 遘ｻ蜍暮㍼險ｭ螳
-		SetMove(move);
-	}
-	// 10繧医ｊ螟ｧ縺阪＞蝣ｴ蜷
-	if (m_nRockHitCount > KNOCK_BACK_COUNT)
-	{
-		// 遘ｻ蜍暮㍼險ｭ螳
-		SetMove(ZeroVector3);
-
-		// 0縺ｫ謌ｻ縺
-		m_nRockHitCount = ZERO_INT;
-
-		// false縺ｫ
-		m_bKnock_Back = false;
-	}
-}
-
-//=============================================================================
-// 繝代ラ繝ｫ縺ｮ蜿ｳ蝗櫁ｻ｢
-// Author : Konishi Yuuto
-//=============================================================================
-void CPlayer::PaddleRotateR(float fRotate)
-{
-	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// 蜷代″蜿門ｾ
-	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-
-	// 隗貞ｺｦ蜉邂
-	Gear_R_rot.x += fRotate;
-
-	// 蜷代″險ｭ螳
-	pGear_R->SetRot(Gear_R_rot);
-}
-
-//=============================================================================
-// 繝代ラ繝ｫ縺ｮ蟾ｦ蝗櫁ｻ｢
-// Author : Konishi Yuuto
-//=============================================================================
-void CPlayer::PaddleRotateL(float fRotate)
-{
-	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// 蜷代″蜿門ｾ
-	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
-
-	// 隗貞ｺｦ蜉邂
-	Gear_L_rot.x += fRotate;
-
-	// 蜷代″險ｭ螳
-	pGear_L->SetRot(Gear_L_rot);
-}
-
-//=============================================================================
-// 繝代ラ繝ｫ縺ｮ隗貞ｺｦ菫ｮ豁｣
-// Author : Konishi Yuuto
-//=============================================================================
-void CPlayer::PaddleRotFix(void)
-{
-	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// 蜷代″蜿門ｾ
-	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
-	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// 蜷代″蜿門ｾ
-	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
-
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
-	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
-	{
-		// 0縺ｫ謌ｻ縺
-		Gear_L_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
-		pGear_L->SetRot(Gear_L_rot);
-	}
-
-	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
-	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
-	{
-		// 0縺ｫ謌ｻ縺
-		Gear_R_rot.x = GEAR_DEF_ROT;
-		// 蜷代″險ｭ螳
-		pGear_R->SetRot(Gear_R_rot);
-	}
-}
-
-//=============================================================================
-// L繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ隗貞ｺｦ霍晞屬
+// Lスティックの最短角度距離
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::LStickAngle(float fangle_L)
@@ -1746,7 +1643,7 @@ void CPlayer::LStickAngle(float fangle_L)
 }
 
 //=============================================================================
-// R繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ隗貞ｺｦ霍晞屬
+// Rスティックの最短角度距離
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::RStickAngle(float fangle_R)
@@ -1762,7 +1659,7 @@ void CPlayer::RStickAngle(float fangle_R)
 }
 
 //=============================================================================
-// 譛ｬ菴薙�繝昴う繝ｳ繧ｿ
+// 本体のポインタ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetShip(void)
@@ -1771,7 +1668,7 @@ CModelAnime * CPlayer::GetShip(void)
 }
 
 //=============================================================================
-// 蜿ｳ縺ｮ霆願ｼｪ縺ｮ繝昴う繝ｳ繧ｿ
+// 右の車輪のポインタ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetRightPaddle(void)
@@ -1780,7 +1677,7 @@ CModelAnime * CPlayer::GetRightPaddle(void)
 }
 
 //=============================================================================
-// 蟾ｦ縺ｮ霆願ｼｪ縺ｮ繝昴う繝ｳ繧ｿ
+// 左の車輪のポインタ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetLeftPaddle(void)
