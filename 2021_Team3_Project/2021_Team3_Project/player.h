@@ -84,6 +84,7 @@ public:
 	void Collision(void);										// 当たり判定
 	void CrossCollision(void);									// 外積当たり判定
 	void SinkEnd(void);											// 船が沈む処理
+	void MoveSound(void);										// 移動のサウンド
 
 	void CreateSmoke(void);										// 煙生成関数
 	void CreateWoodEP(void);									// 木材生成関数
@@ -108,13 +109,13 @@ public:
 	CModelAnime* GetRightPaddle(void);
 	CModelAnime* GetLeftPaddle(void);
 
-
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
 	int m_nAttackCount_L;							// 左攻撃カウント
 	int m_nRockHitCount;							// 岩にヒットしたカウント
 	int m_nSinkCounter;								// 沈むときのカウント
+	int m_nSoundCounter;							// サウンドの間隔
 	PAD_TYPE m_PadType;								// パッドタイプ
 	D3DXVECTOR3 m_Reflection_Vec;					// 反射ベクトル
 	bool m_bBack;									// 後ろに移動しているか
@@ -125,5 +126,6 @@ private:
 	bool m_bHitFlag;								// ダメージを受けたフラグ
 	bool m_bDeath;									// 死亡フラグ
 	bool m_bEnd;									// プレイヤー終了のフラグ
+	bool m_bMoveSound;								// 移動サウンドのフラグ
 };
 #endif

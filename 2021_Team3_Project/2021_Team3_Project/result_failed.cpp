@@ -52,7 +52,7 @@ HRESULT CResultFailed::Init(void)
 	Create2DObject();
 
 	CSound *pSound = GET_SOUND_PTR;
-	pSound->Play(CSound::SOUND_BGM_RESULT);
+	pSound->Play(CSound::SOUND_BGM_RESULT_OVER);
 
 	return S_OK;
 }
