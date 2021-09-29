@@ -541,13 +541,14 @@ void CPlayer::Move(void)
 				pos.z += cosf(rot.y)*fSpeed;
 			}
 		}
-		// 右スティックと左スティックが下に倒されていない場合
-		else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
-		{
-			// falseに
-			m_bBack = false;
-		}
 	}
+	// 右スティックと左スティックが下に倒されていない場合
+	else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	{
+		// falseに
+		m_bBack = false;
+	}
+	
 
 	// 角度の補正
 	PaddleRotFix();
@@ -715,21 +716,22 @@ void CPlayer::Pad2Move(void)
 				CreateWave();
 			}
 		}
+
+
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
-	{	
-		// コントローラーの角度
-		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
-		RStickAngle(fAngle_R);
+	{
 		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
+			// コントローラーの角度
+			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
+			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
+			//スティックの最短距離
+			LStickAngle(fAngle_L);
+			RStickAngle(fAngle_R);
 			// trueに
 			m_bBack = true;
 			// trueの場合
@@ -750,14 +752,14 @@ void CPlayer::Pad2Move(void)
 				pos.z += cosf(rot.y)*fSpeed;
 			}
 		}
-		// 入力されていない場合
-		else
-		{
-			// falseに
-			m_bBack = false;
-		}
 	}
-
+	// 右スティックと左スティックが下に倒されていない場合
+	else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	{
+		// falseに
+		m_bBack = false;
+	}
+	
 	// 角度が最大になった場合
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
@@ -784,6 +786,7 @@ void CPlayer::Pad2Move(void)
 	//格納
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
+
 }
 
 //=============================================================================
