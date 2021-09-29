@@ -32,7 +32,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(50.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -541,6 +541,15 @@ void CPlayer::Move(void)
 				pos.z += cosf(rot.y)*fSpeed;
 			}
 		}
+<<<<<<< HEAD
+=======
+		// 右スティックと左スティックが下に倒されていない場合
+		else
+		{
+			// falseに
+			m_bBack = false;
+		}
+>>>>>>> parent of ddc6e2c... 闊ｹ縺ｮ繝舌ャ繧ｯ繧貞�ｺ譚･繧九ｈ縺�縺ｫ縺励◆
 	}
 	// 右スティックと左スティックが下に倒されていない場合
 	else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
