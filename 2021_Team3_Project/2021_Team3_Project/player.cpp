@@ -32,7 +32,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(50.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -542,7 +542,7 @@ void CPlayer::Move(void)
 			}
 		}
 		// 右スティックと左スティックが下に倒されていない場合
-		else
+		else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 		{
 			// falseに
 			m_bBack = false;
@@ -715,22 +715,21 @@ void CPlayer::Pad2Move(void)
 				CreateWave();
 			}
 		}
-
-
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
-	{
+	{	
+		// コントローラーの角度
+		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
+		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
+
+		//スティックの最短距離
+		LStickAngle(fAngle_L);
+		RStickAngle(fAngle_R);
 		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
-			// コントローラーの角度
-			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
-			//スティックの最短距離
-			LStickAngle(fAngle_L);
-			RStickAngle(fAngle_R);
 			// trueに
 			m_bBack = true;
 			// trueの場合
@@ -785,7 +784,6 @@ void CPlayer::Pad2Move(void)
 	//格納
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
-
 }
 
 //=============================================================================
