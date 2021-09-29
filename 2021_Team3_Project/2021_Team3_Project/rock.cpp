@@ -19,7 +19,7 @@
 // Author : Sugawara Tsukasa
 //=============================================================================
 #define GRAVITY		(0.1f)									// 重力
-#define SIZE		(D3DXVECTOR3 (1400.0f,1400.0f,1400.0f))	// サイズ
+#define SIZE		(D3DXVECTOR3 (1500.0f,2000.0f,1500.0f))	// サイズ
 #define POS_Y_MIN	(0.0f)									// Y座標最小値
 #define MIN_MOVE	(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小
 //=============================================================================
@@ -56,9 +56,6 @@ CRock * CRock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pRock->Init(pos, rot);
-
-			// 箱生成
-			//CModel_Box::Create(pos, rot, pRock);
 		}
 	}
 	// ポインタを返す
@@ -86,6 +83,9 @@ HRESULT CRock::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// サイズ設定
 	SetSize(SIZE);
 
+	// 箱生成
+	//CModel_Box::Create(pos, rot, this);
+
 	// 初期化処理
 	CModel::Init(pos, ZeroVector3);
 
@@ -108,6 +108,25 @@ void CRock::Update(void)
 {
 	// 更新処理
 	CModel::Update();
+
+	// ゲーム取得
+	CGame *pGame = (CGame*)CManager::GetModePtr();
+
+	// !nullchrck
+	if (pGame != nullptr)
+	{
+		// ボス戦に遷移したか
+		bool bBossTransition = pGame->GetbBossTransition();
+
+		// ボス戦に遷移した場合
+		if (bBossTransition == true)
+		{
+			// 終了
+			Uninit();
+
+			return;
+		}
+	}
 }
 //=============================================================================
 // 描画処理関数

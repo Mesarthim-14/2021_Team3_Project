@@ -27,7 +27,7 @@
 #define DAMAGE				(10)								// ダメージ
 #define GRAVITY				(-1.0f)								// 重力
 #define DIVIDE_2F			(2.0f)								// ÷2
-#define ANGLE				(D3DXToRadian(60.0f))				// 角度
+#define ANGLE				(D3DXToRadian(45.0f))				// 角度
 #define POW_VALUE			(2.0f)								// 累乗値
 // 攻撃地点のサイズ
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
@@ -244,7 +244,7 @@ void CEnemy_Bullet::Projectile_motion(void)
 	float fY = Dist.y;
 
 	// 斜方投射の公式を初速度について解く
-	float fSpeed = sqrtf(-GRAVITY * powf(fX, POW_VALUE) / (2.0f * powf(cosf(ANGLE), POW_VALUE) * (fX * tanf(ANGLE) + fY)));
+	float fSpeed = sqrtf(-GRAVITY * powf(fX, POW_VALUE) / (2 * powf(cosf(ANGLE), POW_VALUE) * (fX * tanf(ANGLE) + fY)));
 
 	// ベクトル
 	D3DXVECTOR3 Vec = ZeroVector3;
@@ -273,12 +273,8 @@ void CEnemy_Bullet::Projectile_motion(void)
 		// 発射時重力を/2
 		move.y += GRAVITY / DIVIDE_2F;
 
-		// trueなら
-		if (m_bInitVelocity == true)
-		{
-			// false1に
-			m_bInitVelocity = false;
-		}
+		// false1に
+		m_bInitVelocity = false;
 	}
 	// 移動量
 	SetMove(move);

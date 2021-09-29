@@ -75,12 +75,14 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/Explosion_Animation.png" },		// 爆発
 		{ "data/Texture/Wave_Effect.png" },				// 波
 		{ "data/Texture/Wood_Animation.png" },			// 木材
+		{ "data/Texture/L1.png" },						// L1
+
 	};
 
 	// 分割テクスチャ
 	m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE] =
 	{
-		{ "data/Texture/sharp_effect.png" }
+		{ "data/Texture/Move_Ui.png" },					// 移動のUi
 	};
 
 	// ボリュームテクスチャ

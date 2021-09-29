@@ -109,6 +109,9 @@
     <Filter Include="06_Effect\Boss_Fade">
       <UniqueIdentifier>{a3cf2459-0c63-48f8-a734-78262c876776}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08_Ui\3D\Control_Ui">
+      <UniqueIdentifier>{7e434bb4-f850-4caa-86d2-24262b5dc864}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="collision.cpp">
@@ -270,14 +273,8 @@
     <ClCompile Include="wave.cpp">
       <Filter>06_Effect\Ocean</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>03_Mode\Game</Filter>
-    </ClCompile>
     <ClCompile Include="boss_shark.cpp">
       <Filter>04_Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>04_Character\Player</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>00_Important\Camera</Filter>
@@ -329,6 +326,21 @@
     </ClCompile>
     <ClCompile Include="result_story.cpp">
       <Filter>03_Mode\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="rotate_ui.cpp">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="attack_ui.cpp">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="control_ui.cpp">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>04_Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>03_Mode\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -550,6 +562,15 @@
     </ClInclude>
     <ClInclude Include="result_story.h">
       <Filter>03_Mode\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="rotate_ui.h">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="attack_ui.h">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="control_ui.h">
+      <Filter>08_Ui\3D\Control_Ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

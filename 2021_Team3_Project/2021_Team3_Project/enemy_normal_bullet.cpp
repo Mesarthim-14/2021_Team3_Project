@@ -22,30 +22,30 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Noraml_Bullet::CEnemy_Noraml_Bullet(PRIORITY Priority) : CEnemy_Bullet(Priority)
+CEnemy_Normal_Bullet::CEnemy_Normal_Bullet(PRIORITY Priority) : CEnemy_Bullet(Priority)
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Noraml_Bullet::~CEnemy_Noraml_Bullet()
+CEnemy_Normal_Bullet::~CEnemy_Normal_Bullet()
 {
 }
 //=============================================================================
 // インクルードファイル
 // Author : Sugawara Tsukasa
 //=============================================================================
-CEnemy_Noraml_Bullet * CEnemy_Noraml_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CEnemy_Normal_Bullet * CEnemy_Normal_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CEnemy_Noraml_Bulletのポインタ
-	CEnemy_Noraml_Bullet *pEnemy_Noraml_Bullet = nullptr;
+	// CEnemy_Normal_Bulletのポインタ
+	CEnemy_Normal_Bullet *pEnemy_Noraml_Bullet = nullptr;
 
 	// nullcheck
 	if (pEnemy_Noraml_Bullet == nullptr)
 	{
 		// メモリ確保
-		pEnemy_Noraml_Bullet = new CEnemy_Noraml_Bullet;
+		pEnemy_Noraml_Bullet = new CEnemy_Normal_Bullet;
 
 		// !nullcheck
 		if (pEnemy_Noraml_Bullet != nullptr)
@@ -61,7 +61,7 @@ CEnemy_Noraml_Bullet * CEnemy_Noraml_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3
 // 初期化処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-HRESULT CEnemy_Noraml_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CEnemy_Normal_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// XFile名設定
 	SetXFileNum(CXfile::XFILE_NUM_BULLET);
@@ -84,7 +84,7 @@ HRESULT CEnemy_Noraml_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 // 終了処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Noraml_Bullet::Uninit(void)
+void CEnemy_Normal_Bullet::Uninit(void)
 {
 	// 終了処理
 	CEnemy_Bullet::Uninit();
@@ -93,7 +93,7 @@ void CEnemy_Noraml_Bullet::Uninit(void)
 // 更新処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Noraml_Bullet::Update(void)
+void CEnemy_Normal_Bullet::Update(void)
 {
 	// 更新処理
 	CEnemy_Bullet::Update();
@@ -108,7 +108,7 @@ void CEnemy_Noraml_Bullet::Update(void)
 // 描画処理関数
 // Author : Sugawara Tsukasa
 //=============================================================================
-void CEnemy_Noraml_Bullet::Draw(void)
+void CEnemy_Normal_Bullet::Draw(void)
 {
 	// 描画処理
 	CEnemy_Bullet::Draw();

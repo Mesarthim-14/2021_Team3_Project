@@ -12,6 +12,8 @@
 #include "collision.h"
 #include "bullet.h"
 #include "effect.h"
+#include "sound.h"
+
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
 // Author : Sugawara Tsukasa
@@ -94,6 +96,9 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	// ‰Šú‰»ˆ—
 	CModel::Init(pos, rot);
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_SHOT);
 
 	return S_OK;
 }

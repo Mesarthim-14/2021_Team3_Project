@@ -16,7 +16,7 @@
 class CByte_Attack_Range : public CScene3D
 {
 public:
-	CByte_Attack_Range(PRIORITY Priority = PRIORITY_3D_UI);						// コンストラクタ
+	CByte_Attack_Range(PRIORITY Priority = PRIORITY_UI);						// コンストラクタ
 	~CByte_Attack_Range();														// デストラクタ
 	static CByte_Attack_Range *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);		// 生成処理
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);							// 初期化処理

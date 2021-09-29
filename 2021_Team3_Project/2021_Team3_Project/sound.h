@@ -19,7 +19,16 @@ class CSound
 public:
 	enum SOUND_LABEL
 	{
-		SOUND_LABEL_BGM_TITLE = 0,		// BGM0
+		SOUND_BGM_TITLE = 0,		// タイトル
+		SOUND_BGM_GAME,				// ゲーム
+		SOUND_BGM_BOSS,				// ボス
+		SOUND_BGM_RESULT,			// リザルト
+		SOUND_SE_BREAK,				// 破壊音
+		SOUND_SE_BUTTON,			// ボタン
+		SOUND_SE_DAMAGE,			// ダメージ
+		SOUND_SE_EXPLOSION,			// 爆発
+		SOUND_SE_HIT,				// 当たった時
+		SOUND_SE_SHOT,				// 大砲の音
 		SOUND_LABEL_MAX,
 	};
 

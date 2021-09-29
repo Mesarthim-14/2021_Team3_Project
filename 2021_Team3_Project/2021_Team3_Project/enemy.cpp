@@ -24,14 +24,14 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MIN_LIFE	(0)									// ライフの最小
-#define FAN_LENGTH	(5000.0f)							// 扇の長さ
-#define FAN_DIR		(D3DXVECTOR3(1.0f, 0.0f, 0.0f))		// 弧線方向
-#define ANGLE_90	(D3DXToRadian(90.0f))				// 90度
-#define ANGLE_270	(D3DXToRadian(270.0f))				// 270度
-#define ANGLE_0		(D3DXToRadian(0.0f))				// 0度
-#define ANGLE_360	(D3DXToRadian(360.0f))				// 360度
-#define FAN_COS		(cosf(D3DXToRadian(180.0f / 2.0f)))	// cosfに
+#define MIN_LIFE		(0)									// ライフの最小
+#define DECISION_LENGTH	(8000.0f)							// 扇の長さ
+#define FAN_DIR			(D3DXVECTOR3(1.0f, 0.0f, 0.0f))		// 弧線方向
+#define ANGLE_90		(D3DXToRadian(90.0f))				// 90度
+#define ANGLE_270		(D3DXToRadian(270.0f))				// 270度
+#define ANGLE_0			(D3DXToRadian(0.0f))				// 0度
+#define ANGLE_360		(D3DXToRadian(360.0f))				// 360度
+#define FAN_COS			(cosf(D3DXToRadian(180.0f / 2.0f)))	// cosfに
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -79,7 +79,7 @@ HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	CCharacter::Init(pos, rot);			// 座標、角度
 
 	// ボックス生成
-	CCharacter_Box::Create(pos, rot, this);
+	//CCharacter_Box::Create(pos, rot, this);
 
 	// 通常敵の場合
 	if (m_Type == TYPE_NORMAL)
@@ -127,7 +127,26 @@ void CEnemy::Update(void)
 		// 扇の攻撃判定
 		CircleDecision();
 	}
+	// ボスの場合
+	if (m_Type == TYPE_NORMAL)
+	{
+		// ゲーム取得
+		CGame *pGame = (CGame*)CManager::GetModePtr();
 
+		// !nullchrck
+		if (pGame != nullptr)
+		{
+			// ボス戦に遷移したか
+			bool bBossTransition = pGame->GetbBossTransition();
+
+			// ボス戦に遷移した場合
+			if (bBossTransition == true)
+			{
+				// 状態設定
+				SetState(CCharacter::STATE_DEAD);
+			}
+		}
+	}
 	// 体力の設定
 	if (GetLife() <= MIN_LIFE)
 	{
@@ -194,7 +213,7 @@ void CEnemy::FanDecision(void)
 		float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
 		// 長さの比較
-		if (fVec_Length > FAN_LENGTH)
+		if (fVec_Length > DECISION_LENGTH)
 		{
 			// 攻撃判定をtrueに
 			m_bAttack_Decision = false;
@@ -274,7 +293,7 @@ void CEnemy::CircleDecision(void)
 		D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
 
 		// 円の判定
-		if (CCollision::CollisionCircularAndCircular(Pos, PlayerPos, FAN_LENGTH, ZERO_FLOAT) == true)
+		if (CCollision::CollisionCircularAndCircular(Pos, PlayerPos, DECISION_LENGTH, ZERO_FLOAT) == true)
 		{
 			// 攻撃判定がfalseの場合
 			if (m_bAttack_Decision == false)

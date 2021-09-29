@@ -24,7 +24,7 @@
 #define RAND_POS_MIN	(0)												// 最小
 #define RANDOM_POS_MUT	(10)											// 10倍
 #define MUT_2			(2)												// 2倍
-#define BULLET_NUM		(5)												// 弾の発射数
+#define BULLET_NUM		(20)											// 弾の発射数
 #define ANGLE_180		(D3DXToRadian(90.0f))							// 角度90
 //=============================================================================
 // コンストラクタ
@@ -116,6 +116,8 @@ HRESULT CBoss_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 	// 向き
 	Rot.y = m_fAngle;
+
+	// 180度加算
 	Rot.x = ANGLE_180;
 
 	// 初期化処理
@@ -176,9 +178,9 @@ void CBoss_Bullet::CreateBullet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	Create(pos, rot, TYPE_NORMAL);
 
 	// 10回生成
-	//for (int nCount = ZERO_INT; nCount < BULLET_NUM; nCount++)
-	//{
+	for (int nCount = ZERO_INT; nCount < BULLET_NUM; nCount++)
+	{
 		// ランダム弾生成
-		//Create(pos, rot, TYPE_RANDOM);
-	//}
+		Create(pos, rot, TYPE_RANDOM);
+	}
 }

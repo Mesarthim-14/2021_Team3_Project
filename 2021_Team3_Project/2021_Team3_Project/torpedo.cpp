@@ -21,10 +21,10 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define SIZE			(D3DXVECTOR3(500.0f,800.0f,1000.0f))		// サイズ
+#define SIZE			(D3DXVECTOR3(1000.0f,1000.0f,1000.0f))		// サイズ
 #define ROT				(D3DXVECTOR3(rot.x,rot.y + m_fAngle,rot.z))	// 向き
 #define MOVE_VALUE		(10.0f)										// 移動量
-#define FAN_LENGTH		(5000.0f)									// 扇の長さ
+#define DECISION_LENGTH	(5000.0f)									// 扇の長さ
 #define FAN_DIR			(D3DXVECTOR3(1.0f, 0.0f, 0.0f))				// 弧線方向
 #define ANGLE_90		(D3DXToRadian(90.0f))						// 90度
 #define ANGLE_270		(D3DXToRadian(270.0f))						// 270度
@@ -70,9 +70,6 @@ CTorpedo * CTorpedo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pTorpedo->Init(pos, rot);
-
-			// 箱生成
-			//CModel_Box::Create(pos, rot, pTorpedo);
 		}
 	}
 	// ポインタを返す
@@ -100,8 +97,11 @@ HRESULT CTorpedo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// サイズ設定
 	SetSize(SIZE);
 
+	// 箱生成
+	//CModel_Box::Create(pos, rot, this);
+
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }
@@ -170,6 +170,24 @@ void CTorpedo::Update(void)
 	// 当たり判定
 	Collision();
 
+	// ゲーム取得
+	CGame *pGame = (CGame*)CManager::GetModePtr();
+
+	// !nullchrck
+	if (pGame != nullptr)
+	{
+		// ボス戦に遷移したか
+		bool bBossTransition = pGame->GetbBossTransition();
+
+		// ボス戦に遷移した場合
+		if (bBossTransition == true)
+		{
+			// 終了
+			Uninit();
+
+			return;
+		}
+	}
 	// レイの当たり判定
 	//RayCollision();
 }
@@ -257,7 +275,7 @@ void CTorpedo::FanDecision(void)
 		float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
 		// 長さの比較
-		if (fVec_Length > FAN_LENGTH)
+		if (fVec_Length > DECISION_LENGTH)
 		{
 			// 攻撃判定をtrueに
 			m_bAttackDecision = false;

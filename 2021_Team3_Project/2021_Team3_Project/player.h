@@ -103,6 +103,12 @@ public:
 	void SetHitFlag(bool bHitFlag) { m_bHitFlag = bHitFlag; }
 	bool GetHitFlag(void) { return m_bHitFlag; }
 	bool GetEnd(void) { return m_bEnd; }
+
+	CModelAnime* GetShip(void);
+	CModelAnime* GetRightPaddle(void);
+	CModelAnime* GetLeftPaddle(void);
+
+
 private:
 	D3DXVECTOR3 m_rotDest;							// 回転(目標値)
 	int m_nAttackCount_R;							// 右攻撃カウント
