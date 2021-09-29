@@ -13,6 +13,8 @@
 #include "manager.h"
 #include "renderer.h"
 #include "player.h"
+#include "sound.h"
+#include "resource_manager.h"
 
 //=============================================================================
 //マクロ定義
@@ -67,7 +69,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 {
 	CEffect *m_pEffect = NULL;	//メモリ確保
 
-								//NULLチェック
+	//NULLチェック
 	if (m_pEffect == NULL)
 	{
 		//メモリ確保
@@ -182,6 +184,10 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	m_bLoop = true;
 	BindTexture(m_apTexture[EFFECT_TEXTURE_4]);//テクスチャ情報を格納
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_BREAK);
+
 }
 
 //=============================================================================
@@ -191,6 +197,9 @@ void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT
 {
 	Init(pos, size, ZeroVector3, type, col, Life);
 	BindTexture(m_apTexture[EFFECT_TEXTURE_2]);//テクスチャ情報を格納
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_EXPLOSION);
 }
 
 //=============================================================================
@@ -205,7 +214,7 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-																									//角度計算
+	//角度計算
 	float fAngle = ANGLE_RADIAN;
 	//半径
 	float fr = sqrtf((size.x) * size.x + (size.y) * size.y + (size.z) * size.z);

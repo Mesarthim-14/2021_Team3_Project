@@ -390,6 +390,9 @@ void CPlayer::Hit(int nDamage)
 	// trueに
 	m_bHitFlag = true;
 
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_DAMAGE);
+
 	// 0以下だったら
 	if (!m_bDeath && GetLife() <= 0)
 	{
@@ -1260,6 +1263,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 上
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_UP)
@@ -1278,6 +1284,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 左
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_LEFT)
@@ -1296,6 +1305,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 右
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_RIGHT)
@@ -1314,6 +1326,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 手前
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_PREVIOUS)
@@ -1332,6 +1347,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 奥
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_BACK)
@@ -1350,6 +1368,9 @@ void CPlayer::Collision(void)
 
 					// 位置設定
 					SetPos(pos);
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 				// 次のポインタ取得
 				pScene = pSceneCur;
@@ -1399,6 +1420,9 @@ void CPlayer::Collision(void)
 
 					// trueに
 					m_bKnock_Back = true;
+
+					CSound *pSound = GET_SOUND_PTR;
+					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 
 				// 次のポインタ取得
