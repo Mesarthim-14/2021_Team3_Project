@@ -2,131 +2,131 @@
 #define _TEXTURE_H_
 //=============================================================================
 //
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç®¡ç†ãƒ˜ãƒƒãƒ€ãƒ¼ [texture.h]
+// ƒeƒNƒXƒ`ƒƒ‚ÌŠÇ—ƒwƒbƒ_[ [texture.h]
 // Author : Konishi Yuuto
 //
 //=============================================================================
 
 //=============================================================================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+// ƒCƒ“ƒNƒ‹[ƒh
 //=============================================================================
 #include "main.h"
 
 //=============================================================================
-//ã‚¯ãƒ©ã‚¹å®£è¨€
+//ƒNƒ‰ƒXéŒ¾
 //=============================================================================
 class CTexture
 {
 public:
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç¨®é¡ž
+	// ƒeƒNƒXƒ`ƒƒ‚ÌŽí—Þ
 	enum TEXTURE_TYPE_NUM
 	{
-		TEXTURE_TYPE_NUM_NONE = -1,		// åˆæœŸå€¤
-		TEXTURE_TYPE_NUM_NORMAL,		// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£
-		TEXTURE_TYPE_NUM_SEPARATE,		// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£
-		TEXTURE_TYPE_NUM_VOLUME,		// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
-		TEXTURE_TYPE_NUM_CUBE,			// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
-		TEXTURE_TYPE_NUM_MAX			// æœ€å¤§å€¤
+		TEXTURE_TYPE_NUM_NONE = -1,		// ‰Šú’l
+		TEXTURE_TYPE_NUM_NORMAL,		// ’ÊíƒeƒNƒXƒ`ƒƒ
+		TEXTURE_TYPE_NUM_SEPARATE,		// •ªŠ„ƒeƒNƒXƒ`ƒƒ
+		TEXTURE_TYPE_NUM_VOLUME,		// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
+		TEXTURE_TYPE_NUM_CUBE,			// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
+		TEXTURE_TYPE_NUM_MAX			// Å‘å’l
 	};
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç•ªå·ã®åˆ—æŒ™åž‹
+	// ƒeƒNƒXƒ`ƒƒ‚Ì”Ô†‚Ì—ñ‹“Œ^
 	enum TEXTURE_TYPE
 	{
-		TEXTURE_NUM_NONE = -1,			// åˆæœŸå€¤
-		TEXTURE_NUM_FLOOR,				// åœ°é¢
-		TEXTURE_NUM_ATTACK_POINT,		// æ”»æ’ƒåœ°ç‚¹
-		TEXTURE_NUM_ATTACK_ARROW,		// æ”»æ’ƒåœ°ç‚¹ã®çŸ¢å°
-		TEXTURE_NUM_BYTE,				// å™›ã¿ã¤ã
-		TEXTURE_NUM_TITLE_LOGO,			// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´
-		TEXTURE_NUM_STORY_BG,			// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®èƒŒæ™¯
-		TEXTURE_NUM_STORY_SENTENCE0,	// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		TEXTURE_NUM_STORY_SENTENCE1,	// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		TEXTURE_NUM_STORY_SENTENCE2,	// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		TEXTURE_NUM_STORY_SENTENCE3,	// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		TEXTURE_NUM_RESULT_BG,			// ãƒªã‚¶ãƒ«ãƒˆ
-		TEXTURE_NUM_RESULT_STORY,		// ãƒªã‚¶ãƒ«ãƒˆã®ã‚¹ãƒˆãƒ¼ãƒªãƒ¼
-		TEXTURE_NUM_RESULT_STORY_BACK,	// ãƒªã‚¶ãƒ«ãƒˆã®ã‚¹ãƒˆãƒ¼ãƒªãƒ¼
-		TEXTURE_NUM_EFFECT_SMOKE,		// ã‚¹ãƒ¢ãƒ¼ã‚¯
-		TEXTURE_NUM_EFFECT_EXPLOSION,	// çˆ†ç™º
-		TEXTURE_NUM_EFFECT_WAVE,		// æ³¢
-		TEXTURE_NUM_EFFECT_WOOD,		// æœ¨æ
-		TEXTURE_NUM_L1,					// L1ã®UI
-    TEXTURE_NUM_RED,				// èµ¤
+		TEXTURE_NUM_NONE = -1,			// ‰Šú’l
+		TEXTURE_NUM_FLOOR,				// ’n–Ê
+		TEXTURE_NUM_ATTACK_POINT,		// UŒ‚’n“_
+		TEXTURE_NUM_ATTACK_ARROW,		// UŒ‚’n“_‚Ì–îˆó
+		TEXTURE_NUM_BYTE,				// Šš‚Ý‚Â‚«
+		TEXTURE_NUM_TITLE_LOGO,			// ƒ^ƒCƒgƒ‹ƒƒS
+		TEXTURE_NUM_STORY_BG,			// ƒXƒg[ƒŠ[‚Ì”wŒi
+		TEXTURE_NUM_STORY_SENTENCE0,	// ƒXƒg[ƒŠ[‚Ì•¶Í
+		TEXTURE_NUM_STORY_SENTENCE1,	// ƒXƒg[ƒŠ[‚Ì•¶Í
+		TEXTURE_NUM_STORY_SENTENCE2,	// ƒXƒg[ƒŠ[‚Ì•¶Í
+		TEXTURE_NUM_STORY_SENTENCE3,	// ƒXƒg[ƒŠ[‚Ì•¶Í
+		TEXTURE_NUM_RESULT_BG,			// ƒŠƒUƒ‹ƒg
+		TEXTURE_NUM_RESULT_STORY,		// ƒŠƒUƒ‹ƒg‚ÌƒXƒg[ƒŠ[
+		TEXTURE_NUM_RESULT_STORY_BACK,	// ƒŠƒUƒ‹ƒg‚ÌƒXƒg[ƒŠ[
+		TEXTURE_NUM_EFFECT_SMOKE,		// ƒXƒ‚[ƒN
+		TEXTURE_NUM_EFFECT_EXPLOSION,	// ”š”­
+		TEXTURE_NUM_EFFECT_WAVE,		// ”g
+		TEXTURE_NUM_EFFECT_WOOD,		// –ØÞ
+		TEXTURE_NUM_L1,					// L1‚ÌUI
+		TEXTURE_NUM_RED,				// Ô
 		TEXTURE_NUM_MAX
 	};
 
-	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¡Œã†ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ—æŒ™åž‹
+	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ðs‚¤ƒeƒNƒXƒ`ƒƒ‚Ì—ñ‹“Œ^
 	enum SEPARATE_TEX_TYPE
 	{
-		SEPARATE_TEX_NONE = -1,			// åˆæœŸå€¤
-		SEPARATE_TEX_MOVE_UI,			// ç§»å‹•ã®UI
-		SEPARATE_TEX_MAX				// æœ€å¤§å€¤
+		SEPARATE_TEX_NONE = -1,			// ‰Šú’l
+		SEPARATE_TEX_MOVE_UI,			// ˆÚ“®‚ÌUI
+		SEPARATE_TEX_MAX				// Å‘å’l
 	};
 
-	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¡Œã†ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æ§‹é€ ä½“æƒ…å ±
+	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ðs‚¤ƒeƒNƒXƒ`ƒƒ‚Ì\‘¢‘Ìî•ñ
 	struct SEPARATE_TEX_INFO
 	{
-		LPDIRECT3DTEXTURE9 pSeparateTexture;		// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã¸ã®ãƒã‚¤ãƒ³ã‚¿
-		SEPARATE_TEX_TYPE type;						// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç¨®é¡ž
-		D3DXVECTOR2 m_TexInfo;						// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ†å‰²æ•°ã€é€Ÿã•
-		bool bLoop;									// ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‹
+		LPDIRECT3DTEXTURE9 pSeparateTexture;		// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+		SEPARATE_TEX_TYPE type;						// ƒeƒNƒXƒ`ƒƒ‚ÌŽí—Þ
+		D3DXVECTOR2 m_TexInfo;						// ƒeƒNƒXƒ`ƒƒ‚Ì•ªŠ„”A‘¬‚³
+		bool bLoop;									// ƒ‹[ƒv‚·‚é‚©
 	};
 
-	// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ—æŒ™åž‹
+	// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ‚Ì—ñ‹“Œ^
 	enum VOLUME_TEX_TYPE
 	{
-		VOLUME_TEX_NONE = -1,		// åˆæœŸå€¤
-		VOLUME_TEX_NOISE,			// æ°´é¢ã®ãƒŽã‚¤ã‚º
-		VOLUME_TEX_MAX				// æœ€å¤§å€¤
+		VOLUME_TEX_NONE = -1,		// ‰Šú’l
+		VOLUME_TEX_NOISE,			// …–Ê‚ÌƒmƒCƒY
+		VOLUME_TEX_MAX				// Å‘å’l
 	};
 
-	// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ—æŒ™åž‹
+	// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ‚Ì—ñ‹“Œ^
 	enum CUBE_TEX_TYPE
 	{
-		CUBE_TEX_NONE = -1,			// åˆæœŸå€¤
-		CUBE_TEX_OCEAN,				// æµ·
-		CUBE_TEX_MAX				// æœ€å¤§å€¤
+		CUBE_TEX_NONE = -1,			// ‰Šú’l
+		CUBE_TEX_OCEAN,				// ŠC
+		CUBE_TEX_MAX				// Å‘å’l
 	};
 
-	CTexture();		// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-	~CTexture();	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	CTexture();		// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	~CTexture();	// ƒfƒXƒgƒ‰ƒNƒ^
 
-	static CTexture *Create(void);											// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
-	HRESULT SetTextureName(void);											// åˆæœŸåŒ–å‡¦ç†
-	void LoadAll(void);														// å…¨ã¦ã®ãƒ­ãƒ¼ãƒ‰
-	void UnLoadAll(void);													// å…¨ã¦ã®ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+	static CTexture *Create(void);											// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+	HRESULT SetTextureName(void);											// ‰Šú‰»ˆ—
+	void LoadAll(void);														// ‘S‚Ä‚Ìƒ[ƒh
+	void UnLoadAll(void);													// ‘S‚Ä‚ÌƒAƒ“ƒ[ƒh
 
-																			// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	HRESULT NormalTexLoad(void);											// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
-	void NormalTexUnLoad(void);												// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
-	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);					// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+																			// ’ÊíƒeƒNƒXƒ`ƒƒ
+	HRESULT NormalTexLoad(void);											// ƒeƒNƒXƒ`ƒƒƒ[ƒh
+	void NormalTexUnLoad(void);												// ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
+	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);					// ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 
-																			// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	HRESULT SeparateTexLoad(void);											// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
-	void SeparateTexUnLoad(void);											// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
-	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
-	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);			// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã€€UVã®æžšæ•°å–å¾—
-	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);					// ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‹
+																			// •ªŠ„ƒeƒNƒXƒ`ƒƒ
+	HRESULT SeparateTexLoad(void);											// •ªŠ„ƒeƒNƒXƒ`ƒƒƒ[ƒh
+	void SeparateTexUnLoad(void);											// •ªŠ„ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
+	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);	// •ªŠ„ƒeƒNƒXƒ`ƒƒî•ñ
+	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);			// •ªŠ„ƒeƒNƒXƒ`ƒƒ@UV‚Ì–‡”Žæ“¾
+	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);					// ƒ‹[ƒv‚·‚é‚©
 
-																			// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	HRESULT VolumeTexLoad(void);											// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
-	void VolumeTexUnLoad(void);												// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
-	LPDIRECT3DVOLUMETEXTURE9 GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type);	// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+																			// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
+	HRESULT VolumeTexLoad(void);											// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒƒ[ƒh
+	void VolumeTexUnLoad(void);												// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
+	LPDIRECT3DVOLUMETEXTURE9 GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type);	// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 
-																			// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	HRESULT CubeTexLoad(void);												// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
-	void CubeTexUnLoad(void);												// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
-	LPDIRECT3DCUBETEXTURE9 GetCubeTexture(CUBE_TEX_TYPE Tex_Type);			// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+																			// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
+	HRESULT CubeTexLoad(void);												// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒƒ[ƒh
+	void CubeTexUnLoad(void);												// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
+	LPDIRECT3DCUBETEXTURE9 GetCubeTexture(CUBE_TEX_TYPE Tex_Type);			// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 
 private:
-	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];						// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒã‚¤ãƒ³ã‚¿
+	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];						// ƒeƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^
 	SEPARATE_TEX_INFO m_apSeparateTexture[SEPARATE_TEX_MAX] =
 	{
 		nullptr, CTexture::SEPARATE_TEX_MOVE_UI, D3DXVECTOR2(8, 5), true,
 	};
 
-	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	LPDIRECT3DCUBETEXTURE9 m_pCubeTexture[CUBE_TEX_MAX];					// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	vector<string> m_aTexFileName[TEXTURE_TYPE_NUM_MAX];					// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åå‰
+	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
+	LPDIRECT3DCUBETEXTURE9 m_pCubeTexture[CUBE_TEX_MAX];					// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
+	vector<string> m_aTexFileName[TEXTURE_TYPE_NUM_MAX];					// ƒeƒNƒXƒ`ƒƒ‚Ì–¼‘O
 };
 #endif
