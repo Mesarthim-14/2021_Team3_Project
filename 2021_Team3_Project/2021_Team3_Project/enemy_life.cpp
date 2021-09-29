@@ -13,7 +13,7 @@
 // Author : Sugawara Tsukasa
 //=============================================================================
 #define POS			(D3DXVECTOR3(pos.x,pos.y + size.y,pos.z))		// 位置
-#define SIZE		(D3DXVECTOR3(500.0f,30.0f,0.0f))				// サイズ
+#define SIZE		(D3DXVECTOR3(800.0f,30.0f,0.0f))				// サイズ
 #define COL			(D3DXCOLOR(1.0f,0.0f,0.0f,1.0f))				// 色
 //=============================================================================
 // コンストラクタ

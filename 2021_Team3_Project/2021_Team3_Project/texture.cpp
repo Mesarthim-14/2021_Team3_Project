@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 //
 // テクスチャの管理クラス [texture.cpp]
 // Author : Konishi Yuuto
@@ -76,7 +76,7 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/Wave_Effect.png" },				// 波
 		{ "data/Texture/Wood_Animation.png" },			// 木材
 		{ "data/Texture/L1.png" },						// L1
-
+    { "data/Texture/Red.png" },						// 赤
 	};
 
 	// 分割テクスチャ

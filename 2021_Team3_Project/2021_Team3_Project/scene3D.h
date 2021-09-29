@@ -38,7 +38,7 @@ public:
 	void InitAnimation(D3DXVECTOR2 TexInfo, int nLoop);			// アニメーション情報初期化
 	void UpdateAnimation(void);									// アニメーションの更新
 	void ScaleUp(float fScale);									// 拡大処理
-	void SetColor(const D3DXCOLOR color);						// カラーの設定
+	void SetColor(D3DXCOLOR color);								// カラーの設定
 
 private:
 	D3DXMATRIX	m_mtxWorld;		// ワールドマトリクス

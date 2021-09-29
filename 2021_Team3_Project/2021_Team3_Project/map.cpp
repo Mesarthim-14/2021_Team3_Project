@@ -118,8 +118,8 @@ void CMap::Update(void)
 	// 更新処理
 	CModel::Update();
 
-	// レイの当たり判定
-	RayCollision();
+
+	//RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -177,6 +177,9 @@ void CMap::RayCollision(void)
 					// trueの場合
 					if (Ray_Info.bHit == true)
 					{
+						// ヒットマップ
+						((CCharacter*)pScene)->SetHitMap(true);
+
 						// 移動を0に
 						((CCharacter*)pScene)->SetMove(ZeroVector3);
 
@@ -226,6 +229,7 @@ void CMap::RayCollision(void)
 					// trueの場合
 					if (Ray_Info.bHit == true)
 					{
+						
 						// 移動を0に
 						((CCharacter*)pScene)->SetMove(ZeroVector3);
 

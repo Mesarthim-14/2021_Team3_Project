@@ -18,13 +18,13 @@
 #include "sound.h"
 #include "resource_manager.h"
 #include "motion.h"
-
+#include "map.h"
 //=============================================================================
 // マクロ定義
 //=============================================================================
 #define GRAVITY_POWAR			(1.0f)						// 重力の強さ
 #define GROUND_RIMIT			(0.0f)						// 地面の制限
-
+#define PARENT_NUM				(0)							// 親のナンバー
 //=============================================================================
 // コンストラクタ
 //=============================================================================
@@ -47,6 +47,7 @@ CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 	m_bUseShadow = false;
 	m_RayData = { ZERO_FLOAT,ZERO_FLOAT,ZERO_INT };
 	m_bGravity = true;
+	m_bHitMap = false;
 }
 
 //=============================================================================
@@ -110,9 +111,12 @@ void CCharacter::Update()
 	// 重力
 	Gravity();
 
-	// 移動量加算
-	m_pos += m_move;
-
+	// falseの場合
+	if (m_bHitMap == false)
+	{
+		// 移動量加算
+		m_pos += m_move;
+	}
 	// 無敵時間のとき
 	if (m_bArmor == true)
 	{
@@ -268,6 +272,62 @@ void CCharacter::Landing(float fHeight)
 	if (m_bLanding == false)
 	{
 		m_bLanding = true;
+	}
+}
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+void CCharacter::RayCollision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_MAP);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 Pos = ZeroVector3;
+
+				// レイの数が0より多い場合
+				if (m_RayData.nNum > ZERO_INT)
+				{
+					// 位置取得
+					Pos.x = GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+					Pos.y = GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+					Pos.z = GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, ((CMap*)pScene), m_RayData.fAngle, m_RayData.fRange, m_RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						SetMove(ZeroVector3);
+
+						// 位置
+						Pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						SetPos(Pos);
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
 	}
 }
 

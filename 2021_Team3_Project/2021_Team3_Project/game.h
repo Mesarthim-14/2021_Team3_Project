@@ -2,23 +2,23 @@
 #define _GAME_H_
 //=======================================================================================
 //
-// ƒQ[ƒ€‚Ìˆ— [game.h]
+// ã‚²ãƒ¼ãƒ ã®å‡¦ç† [game.h]
 // Author : Konishi Yuuto
 //
 //=======================================================================================
 
 //=======================================================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //=======================================================================================
 #include "mode_base.h"
 
 //=======================================================================================
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //=======================================================================================
-#define MAX_PLAYER (1)			// ƒvƒŒƒCƒ„[‚Ì”
+#define MAX_PLAYER (1)			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ•°
 
 //=======================================================================================
-// ‘O•ûéŒ¾
+// å‰æ–¹å®£è¨€
 //=======================================================================================
 class CCamera;
 class CCameraGame;
@@ -30,7 +30,7 @@ class CMap;
 class CBoss_Shark;
 
 //=======================================================================================
-// ƒQ[ƒ€ƒNƒ‰ƒX
+// ã‚²ãƒ¼ãƒ ã‚¯ãƒ©ã‚¹
 //=======================================================================================
 class CGame : public CModeBase
 {
@@ -45,63 +45,65 @@ public:
 		ENEMY_OBSTACLE_TYPE_MAX
 	};
 	//=============================================================================
-	//@“G¶¬ƒtƒ@ƒCƒ‹î•ñ‚Ì\‘¢‘Ì
+	//ã€€æ•µç”Ÿæˆãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ã®æ§‹é€ ä½“
 	//=============================================================================
 	struct ENEMY_FILE_DATA
 	{
-		D3DXVECTOR3 Pos;		// ˆÊ’u‚ÌƒIƒtƒZƒbƒgî•ñ
-		D3DXVECTOR3 Rot;		// Œü‚«‚ÌƒIƒtƒZƒbƒgî•ñ
-		ENEMY_OBSTACLE_TYPE Type;		// í—Şî•ñ
+		D3DXVECTOR3 Pos;		// ä½ç½®ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆæƒ…å ±
+		D3DXVECTOR3 Rot;		// å‘ãã®ã‚ªãƒ•ã‚»ãƒƒãƒˆæƒ…å ±
+		ENEMY_OBSTACLE_TYPE Type;		// ç¨®é¡æƒ…å ±
 	};
 
-	CGame();		// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	~CGame();		// ƒfƒXƒgƒ‰ƒNƒ^
+	CGame();		// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	~CGame();		// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 
-	HRESULT Init(void);								// ‰Šú‰»ˆ—
-	void Uninit(void);								// I—¹ˆ—
-	void Update(void);								// XVˆ—
-	void Draw(void);								// •`‰æˆ—
-	void SetGame(void);								// ƒQ[ƒ€‚Ìİ’è
+	HRESULT Init(void);								// åˆæœŸåŒ–å‡¦ç†
+	void Uninit(void);								// çµ‚äº†å‡¦ç†
+	void Update(void);								// æ›´æ–°å‡¦ç†
+	void Draw(void);								// æç”»å‡¦ç†
+	void SetGame(void);								// ã‚²ãƒ¼ãƒ ã®è¨­å®š
 
-	void CreatePlayer(void);						// ƒvƒŒƒCƒ„[‚Ì¶¬	
-	void CreateMap(void);							// ƒ}ƒbƒv‚Ì¶¬	
-	void CreateGround(void);						// ’n–Ê‚Ì¶¬
-	void CreateEnemy_Obstacle(string pEnemyFile);	// “G¶¬ŠÖ”
-	void RoadEnemyFile(string pEnemyFile);			// “G‚Ì¶¬ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
-	void DrawPlayerPos(void);						// ƒvƒŒƒCƒ„[‚ÌˆÊ’u‘‚«‚İ
-	void CreateBossMap(void);						// ƒ{ƒXƒ}ƒbƒv¶¬
-	void BossTransition(void);						// ƒ{ƒXí‘JˆÚ
-	void ModeTransition(void);						// ƒ‚[ƒh‘JˆÚ
+	void CreatePlayer(void);						// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ	
+	void CreateMap(void);							// ãƒãƒƒãƒ—ã®ç”Ÿæˆ	
+	void CreateGround(void);						// åœ°é¢ã®ç”Ÿæˆ
+	void CreateEnemy_Obstacle(string pEnemyFile);	// æ•µç”Ÿæˆé–¢æ•°
+	void RoadEnemyFile(string pEnemyFile);			// æ•µã®ç”Ÿæˆãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
+	void DrawPlayerPos(void);						// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®æ›¸ãè¾¼ã¿
+	void CreateBossMap(void);						// ãƒœã‚¹ãƒãƒƒãƒ—ç”Ÿæˆ
+	void BossTransition(void);						// ãƒœã‚¹æˆ¦é·ç§»
+	void ModeTransition(void);						// ãƒ¢ãƒ¼ãƒ‰é·ç§»
+	void Boss_Enemy_Create(void);					// ãƒœã‚¹æˆ¦æ•µç”Ÿæˆ
+	// Seté–¢æ•°
+	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }		// ãƒœã‚¹æˆ¦ã®åˆ¤å®š
+	void SetbBossTransition(bool bBossTransition) { m_bBossTransition = bBossTransition; }	// ãƒœã‚¹æˆ¦é·ç§»ã®åˆ¤å®š
 
-	// SetŠÖ”
-	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }		// ƒ{ƒXí‚Ì”»’è
-	void SetbBossTransition(bool bBossTransition) { m_bBossTransition = bBossTransition; }	// ƒ{ƒXí‘JˆÚ‚Ì”»’è
+	// Geté–¢æ•°
 
-	// GetŠÖ”
+	CCamera *GetCamera(void) { return (CCamera*)m_pCamera; }	// ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿æƒ…å ±
 
-	CCamera *GetCamera(void) { return (CCamera*)m_pCamera; }	// ƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^î•ñ
+	CLight *GetLight(void) { return m_pLight; }					// ãƒ©ã‚¤ãƒˆã®ãƒã‚¤ãƒ³ã‚¿æƒ…å ±
+	CPlayer *GetPlayer(void) { return m_pPlayer; }				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¤ãƒ³ã‚¿æƒ…å ±
 
-	CLight *GetLight(void) { return m_pLight; }					// ƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^î•ñ
-	CPlayer *GetPlayer(void) { return m_pPlayer; }				// ƒvƒŒƒCƒ„[‚Ìƒ|ƒCƒ“ƒ^î•ñ
-
-	CMap *GetMap(void) { return m_pMap; }						// ƒ}ƒbƒv‚Ìƒ|ƒCƒ“ƒ^æ“¾
-	bool GetbBoss(void) { return m_bBoss; }						// ƒ{ƒX‚Ìboolæ“¾
-	bool GetbBossTransition(void) { return m_bBossTransition; }	// ƒ{ƒX‘JˆÚ”»’èæ“¾
+	CMap *GetMap(void) { return m_pMap; }						// ãƒãƒƒãƒ—ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
+	bool GetbBoss(void) { return m_bBoss; }						// ãƒœã‚¹ã®boolå–å¾—
+	bool GetbBossTransition(void) { return m_bBossTransition; }	// ãƒœã‚¹é·ç§»åˆ¤å®šå–å¾—
 
 private:
-	CCameraGame *m_pCamera;					// ƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^	
-	CLight *m_pLight;						// ƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^
-	CMeshField *m_pMeshField;				// ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^
-	CBg *m_pBg;								// ”wŒi‚Ìƒ|ƒCƒ“ƒ^
-	CPlayer *m_pPlayer;						// ƒvƒŒƒCƒ„[‚Ìƒ|ƒCƒ“ƒ^
-	CMap * m_pMap;							// ƒ}ƒbƒv‚Ìƒ|ƒCƒ“ƒ^
-	CBoss_Shark *m_pBoss_Shark;				// ƒ{ƒX‚Ìƒ|ƒCƒ“ƒ^
-	ENEMY_FILE_DATA *m_pEnemyFileData;		// “G‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^
-	bool m_bGameEnd;						// ƒQ[ƒ€‚ÌƒGƒ“ƒhƒtƒ‰ƒO
-	int m_nEnemyNum;						// “G”
-	bool m_bBossTransition;					// ƒ{ƒXí‚É‘JˆÚ‚µ‚½‚©
-	bool m_bBoss;							// ƒ{ƒXí‚©
 
-	LPD3DXFONT m_pFont;						// ƒfƒoƒbƒN—pƒtƒHƒ“ƒg
+	// ãƒã‚¤ãƒ³ã‚¿
+	CCameraGame *m_pCamera;					// ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿	
+	CLight *m_pLight;						// ãƒ©ã‚¤ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	CMeshField *m_pMeshField;				// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿
+	CBg *m_pBg;								// èƒŒæ™¯ã®ãƒã‚¤ãƒ³ã‚¿
+	CPlayer *m_pPlayer;						// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¤ãƒ³ã‚¿
+	CMap * m_pMap;							// ãƒãƒƒãƒ—ã®ãƒã‚¤ãƒ³ã‚¿
+	CBoss_Shark *m_pBoss_Shark;				// ãƒœã‚¹ã®ãƒã‚¤ãƒ³ã‚¿
+	ENEMY_FILE_DATA *m_pEnemyFileData;		// æ•µã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ãƒ¼ã‚¿
+	bool m_bGameEnd;						// ã‚²ãƒ¼ãƒ ã®ã‚¨ãƒ³ãƒ‰ãƒ•ãƒ©ã‚°
+	int m_nEnemyNum;						// æ•µæ•°
+	bool m_bBossTransition;					// ãƒœã‚¹æˆ¦ã«é·ç§»ã—ãŸã‹
+	bool m_bBoss;							// ãƒœã‚¹æˆ¦ã‹
+
+	LPD3DXFONT m_pFont;						// ãƒ‡ãƒãƒƒã‚¯ç”¨ãƒ•ã‚©ãƒ³ãƒˆ
 };
 #endif

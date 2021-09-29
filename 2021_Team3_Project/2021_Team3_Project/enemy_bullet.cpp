@@ -25,9 +25,9 @@
 #define POS_Y_MAX			(4000.0f)							// Y最大値
 #define PARENT_NUM			(0)									// 親のナンバー
 #define DAMAGE				(10)								// ダメージ
-#define GRAVITY				(-1.0f)								// 重力
+#define GRAVITY				(-0.98f)							// 重力
 #define DIVIDE_2F			(2.0f)								// ÷2
-#define ANGLE				(D3DXToRadian(45.0f))				// 角度
+#define ANGLE				(D3DXToRadian(60.0f))				// 角度
 #define POW_VALUE			(2.0f)								// 累乗値
 // 攻撃地点のサイズ
 #define ARROW_SIZE	(D3DXVECTOR3(500.0f,300.0f,0.0f))
@@ -237,6 +237,7 @@ void CEnemy_Bullet::Projectile_motion(void)
 	Dist.y = m_StartPos.y - m_TargetPos.y;
 	Dist.z = m_StartPos.z - m_TargetPos.z;
 
+	
 	// 水平方向の距離
 	float fX = sqrtf((Dist.x * Dist.x) + (Dist.z * Dist.z));
 

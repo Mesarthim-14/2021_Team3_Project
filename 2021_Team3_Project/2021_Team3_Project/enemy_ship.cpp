@@ -26,7 +26,7 @@
 #define ROT_SPEED		(0.01f)									// 旋回速度
 #define ANGLE_180		(180)									// 180度
 #define ANGLE_360		(360)									// 360度
-#define SIZE			(D3DXVECTOR3 (1000.0f,1500.0f,1000.0f))	// サイズ
+#define SIZE			(D3DXVECTOR3 (1000.0f,1200.0f,1000.0f))	// サイズ
 #define ATTACK_COUNT	(300)									// 攻撃間隔
 #define SHIP_NUM		(0)										// 船のナンバー
 #define RAY_NUM			(1)										// レイの数
@@ -272,48 +272,4 @@ void CEnemy_Ship::Attack(void)
 		// 0に
 		GetAttackCount() = ZERO_INT;
 	}
-}
-//=============================================================================
-// レイの当たり判定処理関数
-// Author : Sugawara Tsukasa
-//=============================================================================
-void CEnemy_Ship::RayCollision(void)
-{
-	//// モデルの情報取得
-	//CModelAnime *pShip = GetModelAnime(SHIP_NUM);
-
-	//// 位置取得
-	//D3DXVECTOR3 pos = SHIP_POS;
-
-	//// 向き取得
-	//D3DXVECTOR3 rot = GetRot();
-
-	//// マップのポインタ取得
-	//CMap *pMap = GET_MAP_PTR;
-
-	//// !nullcheck
-	//if (pShip != nullptr)
-	//{
-	//	// !nullcheck
-	//	if (pMap != nullptr)
-	//	{
-	//		// レイの情報
-	//		CCollision::RAY_INFO Ray_Info;
-
-	//		// レイの当たり判定
-	//		Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
-
-	//		// trueの場合
-	//		if (Ray_Info.bHit == true)
-	//		{
-	//			// 戻す
-	//			pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
-
-	//			// 位置設定
-	//			SetPos(pos);
-
-	//			return;
-	//		}
-	//	}
-	//}
 }

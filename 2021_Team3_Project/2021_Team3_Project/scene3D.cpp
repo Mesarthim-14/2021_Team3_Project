@@ -84,25 +84,17 @@ void CScene3D::Update(void)
 //=============================================================================
 void CScene3D::Draw(void)
 {
-	//デバイスの取得
+	// デバイス情報取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;	//計算用のマトリクス
-	D3DXCOLOR col = GetColor();
+
+	//計算用のマトリクス
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+
+	// ライト無効
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// アルファテストを有力化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-
-	// アルファテストが有効なら
-	if (m_bAlpha == true)
-	{
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 0xC0);
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-	}
-	else
-	{
-		// アルファテスト基準値の設定
-		pDevice->SetRenderState(D3DRS_ALPHAREF, m_nAlphaTestNum);
-	}
 
 	// 加算合成
 	if (m_bBlend == true)
@@ -111,68 +103,49 @@ void CScene3D::Draw(void)
 		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);			// aデスティネーションカラー
 	}
 
+	// テクスチャの設定
+	pDevice->SetTexture(0, GetTexture());
+
+	// 頂点バッファをデバイスのデータストリームに設定
+	pDevice->SetStreamSource(0, GetVtxBuff(), 0, sizeof(VERTEX_3D));
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
 	//ワールドマトリクスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	// 逆行列をかけるかどうか
-	if (m_bInverse == false)
-	{
-		D3DXVECTOR3 rot = GetRot();
+	// 向き取得
+	D3DXVECTOR3 rot = GetRot();
 
-		//向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-	}
-	else
-	{
-		// 回転の逆行列の生成
-		pDevice->GetTransform(D3DTS_VIEW, &mtxRot);
-		D3DXMatrixInverse(&m_mtxWorld, nullptr,
-			&mtxRot);
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-		m_mtxWorld._41 = 0;
-		m_mtxWorld._42 = 0;
-		m_mtxWorld._43 = 0;
-	}
-
-	//位置を反映
+	// サイズ情報
 	D3DXVECTOR3 pos = GetPos();
+
+	// 位置を反映、ワールドマトリクス設定、ポリゴン描画
 	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	//ワールドマトリックスの設定
+	// ワールドマトリクスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	//頂点バッファをデバイスのデータストリームに設定
-	pDevice->SetStreamSource(0, GetVtxBuff(), 0, sizeof(VERTEX_3D));
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
-
-	//テクスチャの設定
-	pDevice->SetTexture(0, GetTexture());
-
-	//ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
-
-	// アルファテストが有効でなかったら
-	if (m_bAlpha != true)
-	{
-		// アルファテスト基準値の設定
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
-	}
-
-	// 加算合成が有効なら
+	// 加算合成を行う処理
 	if (m_bBlend == true)
 	{
 		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// aデスティネーションカラー
 	}
 
-	//テクスチャの設定
-	pDevice->SetTexture(0, nullptr);
-
-	// アルファテストを有力化
+	// アルファテスト無効化
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	// ライト有効
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================
@@ -197,10 +170,10 @@ void CScene3D::CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標設定の設定
-	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), +(size.y / 2), +(size.z / 2));
-	pVtx[1].pos = D3DXVECTOR3(+(size.x / 2), +(size.y / 2), +(size.z / 2));
+	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), (size.y / 2), (size.z / 2));
+	pVtx[1].pos = D3DXVECTOR3((size.x / 2), (size.y / 2), (size.z / 2));
 	pVtx[2].pos = D3DXVECTOR3(-(size.x / 2), -(size.y / 2), -(size.z / 2));
-	pVtx[3].pos = D3DXVECTOR3(+(size.x / 2), -(size.y / 2), -(size.z / 2));
+	pVtx[3].pos = D3DXVECTOR3((size.x / 2), -(size.y / 2),	-(size.z / 2));
 
 	//各頂点の法線の設定
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -255,10 +228,10 @@ void CScene3D::SetPosision(D3DXVECTOR3 pos)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標設定の設定
-	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), +(size.y / 2), + (size.z / 2));
-	pVtx[1].pos = D3DXVECTOR3(+(size.x / 2), +(size.y / 2), + (size.z / 2));
-	pVtx[2].pos = D3DXVECTOR3(-(size.x / 2), -(size.y / 2), - (size.z / 2));
-	pVtx[3].pos = D3DXVECTOR3(+(size.x / 2), -(size.y / 2), - (size.z / 2));
+	pVtx[0].pos = D3DXVECTOR3(-(size.x / 2), +(size.y / 2),(size.z / 2));
+	pVtx[1].pos = D3DXVECTOR3(+(size.x / 2), +(size.y / 2),(size.z / 2));
+	pVtx[2].pos = D3DXVECTOR3(-(size.x / 2), -(size.y / 2),-(size.z / 2));
+	pVtx[3].pos = D3DXVECTOR3(+(size.x / 2), -(size.y / 2),-(size.z / 2));
 
 	// 頂点バッファをアンロックする
 	pVtxBuff->Unlock();
@@ -383,8 +356,8 @@ void CScene3D::ScaleUp(float fScaleUp)
 	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-(size.x * m_fScaleNum), +(size.y * m_fScaleNum), +(size.z * m_fScaleNum));
-	pVtx[1].pos = D3DXVECTOR3(+(size.x * m_fScaleNum), +(size.y * m_fScaleNum), +(size.z * m_fScaleNum));
+	pVtx[0].pos = D3DXVECTOR3(-(size.x * m_fScaleNum), +(size.y * m_fScaleNum), (size.z * m_fScaleNum));
+	pVtx[1].pos = D3DXVECTOR3(+(size.x * m_fScaleNum), +(size.y * m_fScaleNum), (size.z * m_fScaleNum));
 	pVtx[2].pos = D3DXVECTOR3(-(size.x * m_fScaleNum), -(size.y * m_fScaleNum), -(size.z * m_fScaleNum));
 	pVtx[3].pos = D3DXVECTOR3(+(size.x * m_fScaleNum), -(size.y * m_fScaleNum), -(size.z * m_fScaleNum));
 

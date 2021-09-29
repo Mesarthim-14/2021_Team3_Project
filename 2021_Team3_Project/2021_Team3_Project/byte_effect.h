@@ -36,6 +36,7 @@ public:
 private:
 	void Move(void);	// ˆÚ“®ˆ—ŠÖ”
 
+	D3DXVECTOR3 m_rot;		// Œü‚«
 	D3DXVECTOR3 m_SavePos;	// ˆÊ’u•Û‘¶—p
 	TYPE m_Type;			// í—Ş
 	bool bEndByte;			// I—¹

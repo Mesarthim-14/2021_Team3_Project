@@ -12,6 +12,7 @@
 #include "collision.h"
 #include "model_box.h"
 #include "enemy.h"
+#include "torpedo.h"
 #include "player_bullet.h"
 #include "effect.h"
 
@@ -19,7 +20,11 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE	(50.0f)								// 移動量
+#define MOVE_VALUE	(50.0f)	 // �ړ���
+#define PARENT_NUM	(0)		 // �e�̃i���o�[
+#define DAMAGE		(25)	 // �_���[�W
+#define RAY_RANGE	(100.0f) // ���C�͈̔�
+#define RAY_NUM		(1)		 // ���C�̖{��
 #define PARENT_NUM	(0)									// 親のナンバー
 //水しぶき																			
 #define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
@@ -27,7 +32,6 @@
 #define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動力
 #define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
 #define SPLASH_LIFE			(200)													//体力
-#define DAMAGE		(25)								// ダメージ
 
 //=============================================================================
 // コンストラクタ
@@ -90,6 +94,11 @@ HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 移動量設定
 	SetMove(move);
 
+	// ���C�f�[�^
+	RAY_DATA Ray_Data = { rot.y , RAY_RANGE , RAY_NUM };
+
+	// ���C�f�[�^�ݒ�
+	SetRay_Data(Ray_Data);
 	return S_OK;
 }
 //=============================================================================
@@ -112,6 +121,14 @@ void CPlayer_Bullet::Update(void)
 
 	// 当たり判定
 	Collision();
+
+	// true�̏ꍇ
+	if (RayCollision() == true)
+	{
+		// �I��
+		Uninit();
+		return;
+	}
 }
 //=============================================================================
 // 描画処理関数
@@ -185,6 +202,44 @@ void CPlayer_Bullet::Collision(void)
 				}
 
 				// 次に代入
+				pScene = pSceneCur;
+			}
+		}
+	}
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// �擪�̃|�C���^�擾
+		pScene = GetTop(PRIORITY_TORPEDO);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcter�Ƃ̓����蔻��
+			while (pScene != nullptr) 	// nullptr�ɂȂ�܂ŉ�
+			{
+				// �g�b�v���
+				CScene *pSceneCur = pScene->GetNext();
+
+				// �ʒu�擾
+				D3DXVECTOR3 TorpedoPos = ((CTorpedo*)pScene)->GetPos();
+
+				// �T�C�Y�擾
+				D3DXVECTOR3 TorpedoSize = ((CTorpedo*)pScene)->GetSize();
+
+				// ����
+				if (CCollision::CollisionRectangleAndRectangle(pos, TorpedoPos, size, TorpedoSize) == true)
+				{
+					// �I��
+					((CTorpedo*)pScene)->Uninit();
+
+					// �I��
+					Uninit();
+
+					return;
+				}
+
+				// ���ɑ��
 				pScene = pSceneCur;
 			}
 		}
