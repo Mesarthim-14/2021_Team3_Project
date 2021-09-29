@@ -13,6 +13,8 @@
 #include "model_box.h"
 #include "enemy.h"
 #include "player_bullet.h"
+#include "effect.h"
+
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
@@ -20,6 +22,14 @@
 #define MOVE_VALUE	(40.0f)								// 移動量
 #define PARENT_NUM	(0)									// 親のナンバー
 #define DAMAGE		(100)								// ダメージ
+
+//水しぶき																			
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//大きさ
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//移動力
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define SPLASH_LIFE			(200)													//体力
+
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -158,6 +168,15 @@ void CPlayer_Bullet::Collision(void)
 
 				// サイズ取得
 				D3DXVECTOR3 CharacterSize = ((CEnemy*)pScene)->GetSize();
+
+				//エフェクト発生
+				for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
+				{
+					// パーティクル生成
+					CEffect::Create(CharacterPos,
+						SPLASH_SIZE, SPLASH_MOVE, SPLASH_COLOR,
+						CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+				}
 
 				// 判定
 				if (CCollision::CollisionRectangleAndRectangle(pos, CharacterPos, size, CharacterSize) == true)

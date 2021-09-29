@@ -541,18 +541,16 @@ void CPlayer::Move(void)
 				pos.z += cosf(rot.y)*fSpeed;
 			}
 		}
-<<<<<<< HEAD
-=======
+
 		// 右スティックと左スティックが下に倒されていない場合
 		else
 		{
 			// falseに
 			m_bBack = false;
 		}
->>>>>>> parent of ddc6e2c... 闊ｹ縺ｮ繝舌ャ繧ｯ繧貞�ｺ譚･繧九ｈ縺�縺ｫ縺励◆
 	}
 	// 右スティックと左スティックが下に倒されていない場合
-	else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 	{
 		// falseに
 		m_bBack = false;
@@ -763,7 +761,7 @@ void CPlayer::Pad2Move(void)
 		}
 	}
 	// 右スティックと左スティックが下に倒されていない場合
-	else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 	{
 		// falseに
 		m_bBack = false;

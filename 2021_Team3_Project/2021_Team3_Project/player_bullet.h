@@ -25,6 +25,7 @@ public:
 	void Uninit(void);											// I—¹ˆ—
 	void Update(void);											// XVˆ—
 	void Draw(void);											// •`‰æˆ—
+
 private:
 	void Collision(void);										// “–‚½‚è”»’è
 };
