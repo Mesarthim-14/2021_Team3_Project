@@ -1,10 +1,10 @@
 //=============================================================================
-// �v���C���[�N���X [player.cpp]
+// 繝励Ξ繧､繝､繝ｼ繧ｯ繝ｩ繧ｹ [player.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 
 //=============================================================================
-// �C���N���[�h
+// 繧､繝ｳ繧ｯ繝ｫ繝ｼ繝
 //=============================================================================
 #include "player.h"
 #include "manager.h"
@@ -30,117 +30,116 @@
 #include "effect.h"
 
 //=============================================================================
-// �}�N����`
+// 繝槭け繝ｭ螳夂ｾｩ
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(20.0f)									// �v���C���[�̈ړ���
-#define STICK_SENSITIVITY		(50.0f)									// �X�e�B�b�N���x
-#define PLAYER_ROT_SPEED		(0.1f)									// �L�����N�^�[�̉�]���鑬�x
-#define SHIP_NUM				(0)										// �D�̃i���o�[
-#define GEAR_R_NUM				(1)										// �������̉E�i���o�[
-#define GEAR_L_NUM				(2)										// �������̍��i���o�[
-#define BATTERY_R_NUM			(3)										// �C��E�̃i���o�[
-#define BATTERY_L_NUM			(4)										// �C�䍶�̃i���o�[
-#define MIN_MOVE				(D3DXVECTOR3(0.0f,0.0f,0.0f))			// �ړ��ʂ̍ŏ��l
-#define SIZE					(D3DXVECTOR3 (1200.0f,1000.0f,1200.0f))	// �T�C�Y
-#define PARENT_NUM				(0)										// �e�̃i���o�[
-#define GEAR_SPIN_ANGLE			(D3DXToRadian(2.0f))					// ���Ԃ̉�]�p�x
-#define SPIN_ANGLE				(D3DXToRadian(1.0f))					// ����p�x
-#define STICK_INPUT_ZONE		(100)									// �X�e�B�b�N�̓��͔͈�
-#define STICK_INPUT_ZONE_2		(1000)									// �X�e�B�b�N�̓��͔͈�
-#define STICK_INPUT_ZERO		(0)										// �X�e�B�b�N�̓��͒l0
-#define MUT_SPEED				(1.5f)									// �X�s�[�h
-#define PAD_1					(0)										// 1�Ԗڂ̃p�b�h
-#define PAD_2					(1)										// 2�Ԗڂ̃p�b�h
-#define ATTACK_COOLTIME			(90)									// �U���̃N�[���^�C��
-#define RAY_NUM					(4)										// ���C�̐�
-#define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// ���C���o������
-#define RAY_HIT_RANGE			(600.0f)								// �͈�
-#define MIN_LIFE				(0)										// ���C�t�̍ŏ�
-#define LIFE					(100)									// ���C�t
-#define ANGLE_MAX				(D3DXToRadian(360.0f))					// �p�x�̍ő�
-#define ANGLE_MIN				(D3DXToRadian(-360.0f))					// �p�x�̍ŏ�
-#define ANGLE_0					(D3DXToRadian(0.0f))					// �p�x0
-#define ANGLE_90				(D3DXToRadian(90.0f))					// �p�x90
-#define ANGLE_180				(D3DXToRadian(180.0f))					// �p�x180
-#define ANGLE_270				(D3DXToRadian(270.0f))					// �p�x270
-#define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// �f�t�H���g�̊p�x
-#define DEAD_ZONE				(0.0f)									// �R���g���[���[�̔������Ȃ��͈�
-#define PAD_P1					(0)										// �p�b�h�v���C���[1
-#define PAD_P2					(1)										// �p�b�h�v���C���[2
-#define KNOCK_BACK_SPEED		(100.0f)								// �m�b�N�o�b�N�̑���
-#define KNOCK_BACK_COUNT		(10)									// �m�b�N�o�b�N�J�E���g
-#define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// ����
-#define STICK_ANGLERANGE		(1.0f)									//�X�e�B�b�N�̊p�x�͈�
-#define SINK_TIME				(120)									// ���ގ���
-#define SINK_MOVE				(3.0f)									// ���ޗ�
-#define SINK_ROTATE				(3.0f)									// ���ފp�x
-#define SOUND_INTER_TIME		(10)									// �ړ��̉��̊Ԋu
-
-// �D�̂̈ʒu
+#define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
+#define STICK_SENSITIVITY		(50.0f)									// スティック感度
+#define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
+#define SHIP_NUM				(0)										// 船のナンバー
+#define GEAR_R_NUM				(1)										// 水かきの右ナンバー
+#define GEAR_L_NUM				(2)										// 水かきの左ナンバー
+#define BATTERY_R_NUM			(3)										// 砲台右のナンバー
+#define BATTERY_L_NUM			(4)										// 砲台左のナンバー
+#define MIN_MOVE				(D3DXVECTOR3(0.0f,0.0f,0.0f))			// 移動量の最小値
+#define SIZE					(D3DXVECTOR3 (1200.0f,1000.0f,1200.0f))	// サイズ
+#define PARENT_NUM				(0)										// 親のナンバー
+#define GEAR_SPIN_ANGLE			(D3DXToRadian(2.0f))					// 歯車の回転角度
+#define SPIN_ANGLE				(D3DXToRadian(1.0f))					// 旋回角度
+#define STICK_INPUT_ZONE		(100)									// スティックの入力範囲
+#define STICK_INPUT_ZONE_2		(1000)									// スティックの入力範囲
+#define STICK_INPUT_ZERO		(0)										// スティックの入力値0
+#define MUT_SPEED				(1.5f)									// スピード
+#define PAD_1					(0)										// 1番目のパッド
+#define PAD_2					(1)										// 2番目のパッド
+#define ATTACK_COOLTIME			(90)									// 攻撃のクールタイム
+#define RAY_NUM					(4)										// レイの数
+#define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
+#define RAY_HIT_RANGE			(600.0f)								// 範囲
+#define MIN_LIFE				(0)										// ライフの最小
+#define LIFE					(100)									// ライフ
+#define ANGLE_MAX				(D3DXToRadian(360.0f))					// 角度の最大
+#define ANGLE_MIN				(D3DXToRadian(-360.0f))					// 角度の最小
+#define ANGLE_0					(D3DXToRadian(0.0f))					// 角度0
+#define ANGLE_90				(D3DXToRadian(90.0f))					// 角度90
+#define ANGLE_180				(D3DXToRadian(180.0f))					// 角度180
+#define ANGLE_270				(D3DXToRadian(270.0f))					// 角度270
+#define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// デフォルトの角度
+#define DEAD_ZONE				(0.0f)									// コントローラーの反応しない範囲
+#define PAD_P1					(0)										// パッドプレイヤー1
+#define PAD_P2					(1)										// パッドプレイヤー2
+#define KNOCK_BACK_SPEED		(100.0f)								// ノックバックの速さ
+#define KNOCK_BACK_COUNT		(10)									// ノックバックカウント
+#define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// 方向
+#define STICK_ANGLERANGE		(1.0f)									//スティックの角度範囲
+#define SINK_TIME				(120)									// 沈む時間
+#define SINK_MOVE				(3.0f)									// 沈む量
+#define SINK_ROTATE				(3.0f)									// 沈む角度
+#define SOUND_INTER_TIME		(10)									// 移動の音の間隔
+// 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
-// �C��̈ʒu
+// 遐ｲ蜿ｰ縺ｮ菴咲ｽｮ
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
 
-//�G�t�F�N�g�̊e���l
-//����
-#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//�ʒu
-#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//�傫��
-#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//�F
-#define EXPLOSION_LIFE		(70)													//�̗�
+//繧ｨ繝輔ぉ繧ｯ繝医�蜷�焚蛟､
+//辷�匱
+#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//菴咲ｽｮ
+#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//螟ｧ縺阪＆
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
+#define EXPLOSION_LIFE		(70)													//菴灘鴨
 
-//��																				
-#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//�ʒu
-#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//�傫��
-#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//�ړ���
-#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//�F
-#define SMOKE_LIFE			(500)													//�̗�
+//辣																				
+#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//螟ｧ縺阪＆
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//遘ｻ蜍募鴨
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//濶ｲ
+#define SMOKE_LIFE			(500)													//菴灘鴨
 
-//�����Ԃ�																			
-#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//�ʒu
-#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//�傫��
-#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//�ړ���
-#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//�F
-#define SPLASH_LIFE			(200)													//�̗�
+//豌ｴ縺励�縺																			
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//螟ｧ縺阪＆
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//遘ｻ蜍募鴨
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
+#define SPLASH_LIFE			(200)													//菴灘鴨
 
-//�؍�																			
-#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//�ʒu
-#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//�傫��
-#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//�ړ���
-#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//�F
-#define WOOD_LIFE			(500)													//�̗�
+//譛ｨ譚																			
+#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//菴咲ｽｮ
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//螟ｧ縺阪＆
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//遘ｻ蜍募鴨
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
+#define WOOD_LIFE			(500)													//菴灘鴨
 
-//�g																				
-#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//�ʒu
-#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//�傫��
-#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//�ړ���
-#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//�F
-#define WAVE_LIFE			(70)													//�̗�
-#define WAVE_MAX_PARTICLE	(10)													//���o��
+//豕｢																				
+#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//菴咲ｽｮ
+#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//螟ｧ縺阪＆
+#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//遘ｻ蜍募鴨
+#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//濶ｲ
+#define WAVE_LIFE			(70)													//菴灘鴨
+#define WAVE_MAX_PARTICLE	(10)													//謾ｾ蜃ｺ蝗樊焚
 
 //=============================================================================
-// ���������֐�
+// 逕滓�蜃ｦ逅�未謨ｰ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// ����������
+	// 蛻晄悄蛹門�逅
 	CPlayer *pPlayer = new CPlayer;
 
 	// !nullcheck
 	if (pPlayer != nullptr)
 	{
-		// ����������
+		// 蛻晄悄蛹門�逅
 		pPlayer->Init(pos, rot);
 	}
 
-	// �|�C���^��Ԃ�
+	// 繝昴う繝ｳ繧ｿ繧定ｿ斐☆
 	return pPlayer;
 }
 
 //=============================================================================
-// �R���X�g���N�^
+// 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
@@ -162,7 +161,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 }
 
 //=============================================================================
-// �f�X�g���N�^
+// 繝�せ繝医Λ繧ｯ繧ｿ
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::~CPlayer()
@@ -170,123 +169,124 @@ CPlayer::~CPlayer()
 }
 
 //=============================================================================
-// ����������
+// 蛻晄悄蛹門�逅
 // Author : Sugawara Tsukasa
 //=============================================================================
 HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// ���f�����擾
+	// 繝｢繝�Ν諠�ｱ蜿門ｾ
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
 
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// ���f���̏���n��
+		// 繝｢繝�Ν縺ｮ諠�ｱ繧呈ｸ｡縺
 		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_PLAYER);
 	}
 
-	// ������
+	// 蛻晄悄蛹
 	CCharacter::Init(pos, rot);
 
-	// �������
+	// 蜷代″莉｣蜈･
 	m_rotDest = rot;
 
-	// �T�C�Y�ݒ�
+	// 繧ｵ繧､繧ｺ險ｭ螳
 	SetSize(SIZE);
 
-	// ���C�t
+	// 繝ｩ繧､繝
 	SetLife(LIFE);
 
-	// ���x�ݒ�
+	// 騾溷ｺｦ險ｭ螳
 	SetSpeed(PLAYER_SPEED);
 
-	// �W���C�p�b�h�̎擾
+	// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
 	LPDIRECTINPUTDEVICE8 P1_PAD = CInputJoypad::GetController(PAD_P1);
 	LPDIRECTINPUTDEVICE8 P2_PAD = CInputJoypad::GetController(PAD_P2);
 
-	// �p�b�h��2�Ȃ����Ă�ꍇ
+	// 繝代ャ繝峨′2蛟九▽縺ｪ縺後▲縺ｦ繧句ｴ蜷
 	if (P1_PAD != nullptr && P2_PAD != nullptr)
 	{
 		m_PadType = PAD_TYPE_1P;
 	}
 
-	// �e�̎g�p
+	// 蠖ｱ縺ｮ菴ｿ逕ｨ
 	SetUseShadow();
 
-	// �e�̉�]�𔽉f������
+	// 蠖ｱ縺ｮ蝗櫁ｻ｢繧貞渚譏縺輔○繧
 	SetShadowRotCalculation();
 
-	// ���C�̏��ݒ�
+	// 繝ｬ繧､縺ｮ諠�ｱ險ｭ螳
 	CCharacter::RAY_DATA Ray_Data = { RAY_RADIUS ,RAY_HIT_RANGE ,RAY_NUM };
 
-	// ���C�̏��ݒ�
+	// 繝ｬ繧､縺ｮ諠�ｱ險ｭ螳
 	SetRay_Data(Ray_Data);
 
-	// ������
+	// 邂ｱ逕滓�
 	//CCharacter_Box::Create(pos, rot, this);
 
 	return S_OK;
 }
 
 //=============================================================================
-// �I������
+// 邨ゆｺ��逅
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Uninit(void)
 {
-	// �I������
+	// 邨ゆｺ��逅
 	CCharacter::Uninit();
 }
 
 //=============================================================================
-// �X�V����
+// 譖ｴ譁ｰ蜃ｦ逅
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Update(void)
 {
-	// �e�N���X�̍X�V����
+	// 隕ｪ繧ｯ繝ｩ繧ｹ縺ｮ譖ｴ譁ｰ蜃ｦ逅
 	CCharacter::Update();
 
-	// ���W���
+	// 蠎ｧ讓吩ｻ｣蜈･
 	D3DXVECTOR3 pos = GetPos();
 
-	// �Â����W�ۑ�
+	// 蜿､縺�ｺｧ讓吩ｿ晏ｭ
 	SetPosOld(pos);
 
-	// �v���C���[�̏��
+	// 繝励Ξ繧､繝､繝ｼ縺ｮ迥ｶ諷
 	UpdateState();
 
-	// �̗͂�0�ɂȂ�����
+	// 菴灘鴨縺0縺ｫ縺ｪ縺｣縺溘ｉ
 	if (!m_bDeath)
 	{
-		// �v���C���[�̐���
+		// 繝励Ξ繧､繝､繝ｼ縺ｮ蛻ｶ蠕｡
 		PlayerControl();
 	}
 	else
 	{
-		// ����ł�������
+		// 豐医ｓ縺ｧ縺�￥蜃ｦ逅
 		SinkEnd();
 	}
 
-	// �ړ��̃T�E���h
+	// 隗貞ｺｦ縺ｮ譖ｴ譁ｰ蜃ｦ逅
+	// 移動のサウンド
 	MoveSound();
 
-	// �p�x�̍X�V����
+	// 角度の更新処理
 	UpdateRot();
 }
 
 //=============================================================================
-// �`�揈��
+// 謠冗判蜃ｦ逅
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	// �`�揈��
+	// 謠冗判蜃ｦ逅
 	CCharacter::Draw();
 }
 
 //=============================================================================
 // Author : Sugawara Tsukasa
-// �v���C���[�̏��
+// 繝励Ξ繧､繝､繝ｼ縺ｮ迥ｶ諷
 //=============================================================================
 void CPlayer::UpdateState(void)
 {
@@ -294,65 +294,65 @@ void CPlayer::UpdateState(void)
 }
 
 //=============================================================================
-// �v���C���[�̐���
+// 繝励Ξ繧､繝､繝ｼ縺ｮ蛻ｶ蠕｡
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::PlayerControl()
 {
-	// ���[�h�擾
+	// 繝｢繝ｼ繝牙叙蠕
 	CManager::MODE_TYPE mode = CManager::GetMode();
 
-	// �Q�[���̏ꍇ
+	// 繧ｲ繝ｼ繝縺ｮ蝣ｴ蜷
 	if (mode == CManager::MODE_TYPE_GAME)
 	{
-		// �Q�[���擾
+		// 繧ｲ繝ｼ繝蜿門ｾ
 		CGame *pGame = (CGame*)CManager::GetModePtr();
 
 		// !nullcheck
 		if (pGame != nullptr)
 		{
-			// �{�X�J�ڎ擾
+			// 繝懊せ驕ｷ遘ｻ蜿門ｾ
 			bool bBossTransition = pGame->GetbBossTransition();
 
-			// �{�X�J�ڏ�ԂłȂ��ꍇ
+			// 繝懊せ驕ｷ遘ｻ迥ｶ諷九〒縺ｪ縺�ｴ蜷
 			if (bBossTransition == false)
 			{
-				// false�̏ꍇ
+				// false縺ｮ蝣ｴ蜷
 				if (m_bKnock_Back == false)
 				{
-					// 1P�̏ꍇ
+					// 1P縺ｮ蝣ｴ蜷
 					if (m_PadType == PAD_TYPE_1P)
 					{
-						// �v���C���[�̈ړ�����
+						// 繝励Ξ繧､繝､繝ｼ縺ｮ遘ｻ蜍募�逅
 						Move();
 
-						// �U������
+						// 謾ｻ謦��逅
 						Attack();
 					}
-					// 1P�̏ꍇ
+					// 1P縺ｮ蝣ｴ蜷
 					if (m_PadType == PAD_TYPE_2P)
 					{
-						// �v���C���[�̈ړ�����
+						// 繝励Ξ繧､繝､繝ｼ縺ｮ遘ｻ蜍募�逅
 						Pad2Move();
 
-						// �U������
+						// 謾ｻ謦��逅
 						Pad2Attack();
 					}
 
-					// �L�[�{�[�h�ړ�
+					// 繧ｭ繝ｼ繝懊�繝臥ｧｻ蜍
 					KeyboardMove();
 
-					// �U������
+					// 謾ｻ謦��逅
 					Attack();
 				}
-				// true�̏ꍇ
+				// true縺ｮ蝣ｴ蜷
 				if (m_bKnock_Back == true)
 				{
-					// �m�b�N�o�b�N����
+					// 繝弱ャ繧ｯ繝舌ャ繧ｯ蜃ｦ逅
 					Knock_Back();
 				}
 
-				// �����蔻��
+				// 蠖薙◆繧雁愛螳
 				Collision();
 			}
 		}
@@ -360,12 +360,12 @@ void CPlayer::PlayerControl()
 }
 
 //=============================================================================
-// �p�x�̍X�V����
+// 隗貞ｺｦ縺ｮ譖ｴ譁ｰ蜃ｦ逅
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::UpdateRot(void)
 {
-	// �p�x�̎擾
+	// 隗貞ｺｦ縺ｮ蜿門ｾ
 	D3DXVECTOR3 rot = GetRot();
 
 	while (m_rotDest.y - rot.y > D3DXToRadian(180))
@@ -378,38 +378,38 @@ void CPlayer::UpdateRot(void)
 		m_rotDest.y += D3DXToRadian(360);
 	}
 
-	// �L�����N�^�[��]�̑��x
+	// 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ蝗櫁ｻ｢縺ｮ騾溷ｺｦ
 	rot += (m_rotDest - rot) * PLAYER_ROT_SPEED;
 
-	// �p�x�̐ݒ�
+	// 隗貞ｺｦ縺ｮ險ｭ螳
 	SetRot(rot);
 }
 
 //=============================================================================
-// �G�̒e�̃q�b�g����
+// 謨ｵ縺ｮ蠑ｾ縺ｮ繝偵ャ繝亥�逅
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Hit(int nDamage)
 {
-	// ���C�t���Z
+	// 繝ｩ繧､繝墓ｸ帷ｮ
 	GetLife() -= nDamage;
 
-	// true��
+	// true縺ｫ
 	m_bHitFlag = true;
 
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_DAMAGE);
 
-	// 0�ȉ���������
+	// 0莉･荳九□縺｣縺溘ｉ
 	if (!m_bDeath && GetLife() <= 0)
 	{
-		// ����
+		// 豁ｻ縺ｬ
 		Death();
 	}
 }
 
 //=============================================================================
-// ���񂾂Ƃ��̏���
+// 豁ｻ繧薙□縺ｨ縺阪�蜃ｦ逅
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Death(void)
@@ -421,763 +421,768 @@ void CPlayer::Death(void)
 }
 
 //=============================================================================
-// �ړ��̏���
+// 遘ｻ蜍輔�蜃ｦ逅
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Move(void)
 {
-	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// �W���C�p�b�h�̎擾
-	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// �T�E���h�̃|�C���^
-	D3DXVECTOR3 pos = GetPos();												// ���W
-	D3DXVECTOR3 rot = GetRot();												// �p�x
-	float fSpeed = GetSpeed();												// �X�s�[�h
-	float fAngle_R = ZERO_FLOAT;											// �E�p�x
-	float fAngle_L = ZERO_FLOAT;											// ���p�x
+	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
+	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// 繧ｵ繧ｦ繝ｳ繝峨�繝昴う繝ｳ繧ｿ
+	D3DXVECTOR3 pos = GetPos();												// 蠎ｧ讓
+	D3DXVECTOR3 rot = GetRot();												// 隗貞ｺｦ
+	float fSpeed = GetSpeed();												// 繧ｹ繝斐�繝
+	float fAngle_R = ZERO_FLOAT;											// 蜿ｳ隗貞ｺｦ
+	float fAngle_L = ZERO_FLOAT;											// 蟾ｦ隗貞ｺｦ
 
-																			//float disfAngle_R = GetAngle_R();										//�O�̃R���g���[���[�̊p�x���擾
-																			//float disfAngle_L = GetAngle_L();										//�O�̃R���g���[���[�̊p�x���擾
+	//// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
+	//// 蜷代″蜿門ｾ
+	//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-																			//// ���̎��Ԃ̏��擾
-																			//CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-																			//// �����擾
-																			//D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
+	//// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
+	//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
+	//// 蜷代″蜿門ｾ
+	//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-																			//// �E�̎��Ԃ̏��擾
-																			//CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-																			//// �����擾
-																			//D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-
-																			//===========================================
-																			// �E����
-																			//===========================================
-																			// �E�X�e�B�b�N�����͂���Ă���ꍇ
+	//===========================================
+	// 蜿ｳ豁ｯ霆
+	//===========================================
+	// 蜿ｳ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
-	{
-		// �R���g���[���[�̊p�x
+	{	
+		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//�X�e�B�b�N�̍ŒZ����
+		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 		RStickAngle(fAngle_R);
 
-		// ���Ɉړ�
+		// 蟾ｦ縺ｫ遘ｻ蜍
 		if (fAngle_R < m_fdisAngle_R)
 		{
-			// �p�h���̉�]
+			// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
 			PaddleRotateR(-GEAR_SPIN_ANGLE);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�g�G�t�F�N�g
+			//豕｢繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 		}
-		// false�̏ꍇ
+		// false縺ｮ蝣ｴ蜷
 		else if (m_bBack == false)
 		{
-			// �E�Ɉړ�
+			// 蜿ｳ縺ｫ遘ｻ蜍
 			if (fAngle_R > m_fdisAngle_R)
 			{
-				// �p�h���̉�]
+				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
-				//�g�G�t�F�N�g
+				//豕｢繧ｨ繝輔ぉ繧ｯ繝
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// ������
+	// 蟾ｦ豁ｯ霆
 	//===========================================
-	// ���X�e�B�b�N�����͂���Ă���ꍇ
+	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 	{
-		// �R���g���[���[�̊p�x
+		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
-		//�X�e�B�b�N�̍ŒZ����
+		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 		LStickAngle(fAngle_L);
 
-		// �E�Ɉړ�
+		// 蜿ｳ縺ｫ遘ｻ蜍
 		if (fAngle_L < m_fdisAngle_L)
 		{
-			// �p�h���̉�]
+			// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
 			PaddleRotateL(-GEAR_SPIN_ANGLE);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�g�G�t�F�N�g
+			//豕｢繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 		}
-		// false�̏ꍇ
+		// false縺ｮ蝣ｴ蜷
 		else if (m_bBack == false)
 		{
-			// ���Ɉړ�
+			// 蟾ｦ縺ｫ遘ｻ蜍
 			if (fAngle_L > m_fdisAngle_L)
 			{
-				// �p�h���̉�]
+				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
-				//�g�G�t�F�N�g
+				//豕｢繧ｨ繝輔ぉ繧ｯ繝
 				CreateWave();
 			}
 		}
 	}
-	// ���͂���Ă���ꍇ
+	// 蜈･蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// �R���g���[���[�̊p�x
+		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//�X�e�B�b�N�̍ŒZ����
+		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 		LStickAngle(fAngle_L);
 		RStickAngle(fAngle_R);
 
-		// �E�X�e�B�b�N�ƍ��X�e�B�b�N�����ɓ|����Ă���ꍇ
+		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�ｋ蝣ｴ蜷
 		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
-			// true��
+			// true縺ｫ
 			m_bBack = true;
-			// true�̏ꍇ
+			// true縺ｮ蝣ｴ蜷
 			if (m_bBack == true)
 			{
-				// �p�h���̉�]
+				// 繝代ラ繝ｫ縺ｮ蝗櫁ｻ｢
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 
 				m_bMoveSound = true;
 			}
 		}
-		// �E�X�e�B�b�N�ƍ��X�e�B�b�N�����ɓ|����Ă��Ȃ��ꍇ
+
+		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
 		else
 		{
-			// false��
+			// false縺ｫ
 			m_bBack = false;
 		}
 	}
+	// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
+	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	{
+		// false縺ｫ
+		m_bBack = false;
+	}
+	
 
-	// �p�x�̕␳
+	// 隗貞ｺｦ縺ｮ陬懈ｭ｣
 	PaddleRotFix();
 
-	// ����
+	// 蜷代″
 	SetRot(rot);
 
-	// �ʒu�ݒ�
+	// 菴咲ｽｮ險ｭ螳
 	SetPos(pos);
 
-	//�O��̃X�e�B�b�N�p�x
+	//蜑榊屓縺ｮ繧ｹ繝�ぅ繝�け隗貞ｺｦ
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 //=============================================================================
-// 2�p�b�h�̈ړ������֐�
+// 2繝代ャ繝峨�遘ｻ蜍募�逅�未謨ｰ
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Move(void)
 {
-	// �W���C�p�b�h�̎擾
+	// 繧ｸ繝ｧ繧､繝代ャ繝峨�蜿門ｾ
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
-	float fAngle_R = ZERO_FLOAT;	// �E�p�x
-	float fAngle_L = ZERO_FLOAT;	// ���p�x
+	float fAngle_R = ZERO_FLOAT;	// 蜿ｳ隗貞ｺｦ
+	float fAngle_L = ZERO_FLOAT;	// 蟾ｦ隗貞ｺｦ
 
-	// �T�E���h�̃|�C���^
+	// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
-	// ���W
+	// 蠎ｧ讓
 	D3DXVECTOR3 pos = GetPos();
 
-	// �p�x
+	// 隗貞ｺｦ
 	D3DXVECTOR3 rot = GetRot();
 
-	// �X�s�[�h
+	// 繧ｹ繝斐�繝
 	float fSpeed = GetSpeed();
 
 
-	// ���̎��Ԃ̏��擾
+	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// �E�̎��Ԃ̏��擾
+	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
 	//===========================================
-	// ������ ��1Player
+	// 蟾ｦ豁ｯ霆 窶ｻ1Player
 	//===========================================
-	// ���X�e�B�b�N�����͂���Ă���ꍇ
+	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE)
 	{
-		// �R���g���[���[�̊p�x
+		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-		//�X�e�B�b�N�̍ŒZ����
+		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 		LStickAngle(fAngle_L);
-		// �E�Ɉړ�
+		// 蜿ｳ縺ｫ遘ｻ蜍
 		if (fAngle_L > m_fdisAngle_L)
 		{
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_L->SetRot(Gear_L_rot);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�g�G�t�F�N�g
+			//豕｢繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 		}
-		// false�̏ꍇ
+		// false縺ｮ蝣ｴ蜷
 		if (m_bBack == false)
 		{
-			// ���Ɉړ�
+			// 蟾ｦ縺ｫ遘ｻ蜍
 			if (fAngle_L < m_fdisAngle_L)
 			{
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_L->SetRot(Gear_L_rot);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
-				//�g�G�t�F�N�g
+				//豕｢繧ｨ繝輔ぉ繧ｯ繝
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// �E���� ��2Player
+	// 蜿ｳ豁ｯ霆 窶ｻ2Player
 	//===========================================
-	// ���X�e�B�b�N�����͂���Ă���ꍇ
+	// 蟾ｦ繧ｹ繝�ぅ繝�け縺悟�蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// �R���g���[���[�̊p�x
+		// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-		//�X�e�B�b�N�̍ŒZ����
+		//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 		RStickAngle(fAngle_R);
-		// ���Ɉړ�
+		// 蟾ｦ縺ｫ遘ｻ蜍
 		if (fAngle_R > m_fdisAngle_R)
 		{
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_R->SetRot(Gear_R_rot);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�g�G�t�F�N�g
+			//豕｢繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 		}
-		// false�̏ꍇ
+		// false縺ｮ蝣ｴ蜷
 		if (m_bBack == false)
 		{
-			// �E�Ɉړ�
+			// 蜿ｳ縺ｫ遘ｻ蜍
 			if (fAngle_R < m_fdisAngle_R)
 			{
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_R->SetRot(Gear_R_rot);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
-				//�g�G�t�F�N�g
+				//豕｢繧ｨ繝輔ぉ繧ｯ繝
 				CreateWave();
 			}
 		}
 
 
 	}
-	// ���͂���Ă���ꍇ
+	// 蜈･蜉帙＆繧後※縺�ｋ蝣ｴ蜷
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// �E�X�e�B�b�N�ƍ��X�e�B�b�N�����ɓ|����Ă���ꍇ
+		// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�ｋ蝣ｴ蜷
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
-			// �R���g���[���[�̊p�x
+			// 繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ隗貞ｺｦ
 			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
-			//�X�e�B�b�N�̍ŒZ����
+			//繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ霍晞屬
 			LStickAngle(fAngle_L);
 			RStickAngle(fAngle_R);
-			// true��
+			// true縺ｫ
 			m_bBack = true;
-			// true�̏ꍇ
+			// true縺ｮ蝣ｴ蜷
 			if (m_bBack == true)
 			{
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_L->SetRot(Gear_L_rot);
 
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_R->SetRot(Gear_R_rot);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 			}
 		}
-		// ���͂���Ă��Ȃ��ꍇ
-		else
-		{
-			// false��
-			m_bBack = false;
-		}
 	}
-
-	// �p�x���ő�ɂȂ����ꍇ
+	// 蜿ｳ繧ｹ繝�ぅ繝�け縺ｨ蟾ｦ繧ｹ繝�ぅ繝�け縺御ｸ九↓蛟偵＆繧後※縺�↑縺�ｴ蜷
+	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
+	{
+		// false縺ｫ
+		m_bBack = false;
+	}
+	
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// �p�x���ő�ɂȂ����ꍇ
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// ����
+	// 蜷代″
 	SetRot(rot);
 
-	// �ʒu�ݒ�
+	// 菴咲ｽｮ險ｭ螳
 	SetPos(pos);
 
-	//�i�[
+	//譬ｼ邏
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 
 //=============================================================================
-// �U������
+// 謾ｻ謦��逅
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Attack(void)
 {
-	// �L�[�{�[�h�擾
+	// 繧ｭ繝ｼ繝懊�繝牙叙蠕
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// �W���C�p�b�h�擾
+	// 繧ｸ繝ｧ繧､繝代ャ繝牙叙蠕
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 rot = GetRot();
 
-	// SPACE�L�[���������ꍇ
+	// SPACE繧ｭ繝ｼ繧呈款縺励◆蝣ｴ蜷
 	if (pKeyboard->GetTrigger(DIK_SPACE))
 	{
-		// �E�e����
+		// 蜿ｳ蠑ｾ逕滓�
 		CPlayer_Bullet::Create(BATTERY_R_POS, rot);
-		// ���e����
+		// 蟾ｦ蠑ｾ逕滓�
 		CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 	}
 
-	// �J�E���g��0�̏ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RT�g���K�[���������ꍇ
+		// RT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// �E�e����
+			// 蜿ｳ蠑ｾ逕滓�
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// �C���N�������g
+			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 			m_nAttackCount_R++;
 		}
 	}
-	// �J�E���g��0�̏ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LT�g���K�[���������ꍇ
+		// LT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L_TRIGGER, PAD_1))
 		{
-			// ���e����
+			// 蟾ｦ蠑ｾ逕滓�
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// �C���N�������g
+			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 			m_nAttackCount_L++;
 		}
 	}
-	// �J�E���g��0��葽���ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// �C���N�������g
+		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 		m_nAttackCount_R++;
 
-		// �J�E���g��60�̏ꍇ
+		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0��
+			// 0縺ｫ
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
-	// �J�E���g��0��葽���ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// �C���N�������g
+		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 		m_nAttackCount_L++;
 
-		// �J�E���g��60�̏ꍇ
+		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0��
+			// 0縺ｫ
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// 2�R���g���[���[�̍U������
+// 2繧ｳ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺ｮ謾ｻ謦��逅
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Attack(void)
 {
-	// �W���C�p�b�h�擾
+	// 繧ｸ繝ｧ繧､繝代ャ繝牙叙蠕
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 rot = GetRot();
 
-	// �J�E���g��0�̏ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LT�g���K�[���������ꍇ
+		// LT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// ���e����
+			// 蟾ｦ蠑ｾ逕滓�
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// �C���N�������g
+			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 			m_nAttackCount_L++;
 		}
 	}
-	// �J�E���g��0��葽���ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// �C���N�������g
+		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 		m_nAttackCount_L++;
 
-		// �J�E���g��60�̏ꍇ
+		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0��
+			// 0縺ｫ
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
-	// �J�E���g��0�̏ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0縺ｮ蝣ｴ蜷
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RT�g���K�[���������ꍇ
+		// RT繝医Μ繧ｬ繝ｼ繧呈款縺励◆蝣ｴ蜷
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_2) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_2))
 		{
-			// �E�e����
+			// 蜿ｳ蠑ｾ逕滓�
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// �C���N�������g
+			// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 			m_nAttackCount_R++;
 		}
 	}
-	// �J�E���g��0��葽���ꍇ
+	// 繧ｫ繧ｦ繝ｳ繝医′0繧医ｊ螟壹＞蝣ｴ蜷
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// �C���N�������g
+		// 繧､繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 		m_nAttackCount_R++;
 
-		// �J�E���g��60�̏ꍇ
+		// 繧ｫ繧ｦ繝ｳ繝医′60縺ｮ蝣ｴ蜷
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0��
+			// 0縺ｫ
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// �L�[�{�[�h�ړ�����
+// 繧ｭ繝ｼ繝懊�繝臥ｧｻ蜍募�逅
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::KeyboardMove(void)
 {
-	// �L�[�{�[�h�X�V
+	// 繧ｭ繝ｼ繝懊�繝画峩譁ｰ
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// ���̎��Ԃ̏��擾
+	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// �E�̎��Ԃ̏��擾
+	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	// ���W
+	// 蠎ｧ讓
 	D3DXVECTOR3 pos = GetPos();
 
-	// �p�x
+	// 隗貞ｺｦ
 	D3DXVECTOR3 rot = GetRot();
 
-	// �X�s�[�h
+	// 繧ｹ繝斐�繝
 	float fSpeed = GetSpeed();
 
-	// �E�p�x
+	// 蜿ｳ隗貞ｺｦ
 	float fAngle_R = ZERO_FLOAT;
 
-	// ���p�x
+	// 蟾ｦ隗貞ｺｦ
 	float fAngle_L = ZERO_FLOAT;
 
-	// S��������Ă��ȏꍇ
+	// S縺梧款縺輔ｌ縺ｦ縺�↑蝣ｴ蜷
 	if (!pKeyboard->GetPress(DIK_S))
 	{
-		// �E�Ɉړ�
+		// 蜿ｳ縺ｫ遘ｻ蜍
 		if (pKeyboard->GetPress(DIK_W))
 		{
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_L->SetRot(Gear_L_rot);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�G�t�F�N�g
+			//繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 
-			// false��
+			// false縺ｫ
 			m_bBack = false;
 			m_bMoveSound = true;
 		}
 	}
-	// false�̏ꍇ
+	// false縺ｮ蝣ｴ蜷
 	if (m_bBack == false)
 	{
-		// W��������Ă��Ȃ��ꍇ
+		// W縺梧款縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
 		if (!pKeyboard->GetPress(DIK_W))
 		{
-			// ���Ɉړ�
+			// 蟾ｦ縺ｫ遘ｻ蜍
 			if (pKeyboard->GetPress(DIK_S))
 			{
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_L->SetRot(Gear_L_rot);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
 				m_bMoveSound = true;
 			}
 		}
 	}
-	// ����������Ă��Ȃ��ꍇ
+	// 竊薙′謚ｼ縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
 	if (!pKeyboard->GetPress(DIK_DOWN))
 	{
-		// �E�Ɉړ�
+		// 蜿ｳ縺ｫ遘ｻ蜍
 		if (pKeyboard->GetPress(DIK_UP))
 		{
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_R->SetRot(Gear_R_rot);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// ����
+			// 蜷代″
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// �ړI�̌���
+			// 逶ｮ逧��蜷代″
 			m_rotDest.y = rot.y;
 
-			//�G�t�F�N�g
+			//繧ｨ繝輔ぉ繧ｯ繝
 			CreateWave();
 
-			// false��
+			// false縺ｫ
 			m_bBack = false;
 
 			m_bMoveSound = true;
 		}
 	}
-	// false�̏ꍇ
+	// false縺ｮ蝣ｴ蜷
 	if (m_bBack == false)
 	{
-		// ����������Ă��Ȃ��ꍇ
+		// 竊代′謚ｼ縺輔ｌ縺ｦ縺�↑縺�ｴ蜷
 		if (!pKeyboard->GetPress(DIK_UP))
 		{
-			// ���Ɉړ�
+			// 蟾ｦ縺ｫ遘ｻ蜍
 			if (pKeyboard->GetPress(DIK_DOWN))
 			{
-				// �������Z
+				// 蜷代″蜉邂
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// �����ݒ�
+				// 蜷代″險ｭ螳
 				pGear_R->SetRot(Gear_R_rot);
 
-				// �ړ�
+				// 遘ｻ蜍
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// ����
+				// 蜷代″
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// �ړI�̌���
+				// 逶ｮ逧��蜷代″
 				m_rotDest.y = rot.y;
 
 				m_bMoveSound = true;
 			}
 		}
 	}
-	// ���ړ�
+	// 蠕後ｍ遘ｻ蜍
 	if (pKeyboard->GetPress(DIK_DOWN) && pKeyboard->GetPress(DIK_S))
 	{
-		// true��
+		// true縺ｫ
 		m_bBack = true;
 
-		// true�̏ꍇ
+		// true縺ｮ蝣ｴ蜷
 		if (m_bBack == true)
 		{
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_L_rot.x += GEAR_SPIN_ANGLE;
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_L->SetRot(Gear_L_rot);
 
-			// �������Z
+			// 蜷代″蜉邂
 			Gear_R_rot.x += GEAR_SPIN_ANGLE;
-			// �����ݒ�
+			// 蜷代″險ｭ螳
 			pGear_R->SetRot(Gear_R_rot);
 
-			// �ړ�
+			// 遘ｻ蜍
 			pos.x += sinf(rot.y)*fSpeed;
 			pos.z += cosf(rot.y)*fSpeed;
 
 			m_bMoveSound = true;
 		}
 	}
-	// ���ړ�
+	// 蠕後ｍ遘ｻ蜍
 	if (pKeyboard->GetRelease(DIK_DOWN) || pKeyboard->GetRelease(DIK_S))
 	{
-		// true�̏ꍇ
+		// true縺ｮ蝣ｴ蜷
 		if (m_bBack == true)
 		{
-			// false��
+			// false縺ｫ
 			m_bBack = false;
 
 			m_bMoveSound = true;
@@ -1186,323 +1191,323 @@ void CPlayer::KeyboardMove(void)
 
 	if (pKeyboard->GetPress(DIK_P))
 	{
-		//�p�[�e�B�N������
+		//繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 		CreateSmoke();
 		CreateWoodEP();
 		CreateExplosion();
 	}
 
-	// �p�x���ő�ɂȂ����ꍇ
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// �p�x���ő�ɂȂ����ꍇ
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// ����
+	// 蜷代″
 	SetRot(rot);
 
-	// �ʒu�ݒ�
+	// 菴咲ｽｮ險ｭ螳
 	SetPos(pos);
 }
 //=============================================================================
-// �����蔻�菈��
+// 蠖薙◆繧雁愛螳壼�逅
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Collision(void)
 {
-	// CScene�̃|�C���^
+	// CScene縺ｮ繝昴う繝ｳ繧ｿ
 	CScene *pScene = nullptr;
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
 
-	// �ʒu�擾
+	// 菴咲ｽｮ蜿門ｾ
 	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
 
-	// �ʒu�擾
+	// 菴咲ｽｮ蜿門ｾ
 	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
 
-	// �T�C�Y�擾
+	// 繧ｵ繧､繧ｺ蜿門ｾ
 	D3DXVECTOR3 size = GetSize();
 
-	// �ړ��ʎ擾
+	// 遘ｻ蜍暮㍼蜿門ｾ
 	D3DXVECTOR3 move = GetMove();
 
 	// nullcheck
 	if (pScene == nullptr)
 	{
-		// �擪�̃|�C���^�擾
+		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 		pScene = GetTop(PRIORITY_ENEMY);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter�Ƃ̓����蔻��
-			while (pScene != nullptr) // nullptr�ɂȂ�܂ŉ�
+			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
+			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
 			{
-				// ���݂̃|�C���^
+				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
 				CScene *pSceneCur = pScene->GetNext();
 
-				// �ʒu
+				// 菴咲ｽｮ
 				D3DXVECTOR3 CharacterPos = ZeroVector3;
 
-				// �ʒu�擾
+				// 菴咲ｽｮ蜿門ｾ
 				CharacterPos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
 				CharacterPos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
 				CharacterPos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
 
-				// �T�C�Y�擾
+				// 繧ｵ繧､繧ｺ蜿門ｾ
 				D3DXVECTOR3 CharacterSize = ((CCharacter*)pScene)->GetSize();
 
-				//�ǂ��̖ʂɓ����������擾
-				//��
+				//縺ｩ縺薙�髱｢縺ｫ蠖薙◆縺｣縺溘°蜿門ｾ
+				//荳
 				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_DOWN)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.y = (-CharacterSize.y / DIVIDE_2 + CharacterPos.y) - (size.y / DIVIDE_2);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// ��
+				// 荳
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_UP)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.y = (CharacterSize.y / DIVIDE_2 + CharacterPos.y) + (size.y / DIVIDE_2);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// ��
+				// 蟾ｦ
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_LEFT)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.x = (-CharacterSize.x / DIVIDE_2 + CharacterPos.x) - (size.x / DIVIDE_2);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// �E
+				// 蜿ｳ
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_RIGHT)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.x = (CharacterSize.x / DIVIDE_2 + CharacterPos.x) + (size.x / DIVIDE_2);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// ��O
+				// 謇句燕
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_PREVIOUS)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.z = (-CharacterSize.z / DIVIDE_2 + CharacterPos.z) - (size.z / DIVIDE_2);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// ��
+				// 螂･
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_BACK)
 				{
-					// �ړ��ʎ擾
+					// 遘ｻ蜍暮㍼蜿門ｾ
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// �ړ���0
+					// 遘ｻ蜍暮㍼0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// �ʒu
+					// 菴咲ｽｮ
 					pos.z = (CharacterSize.z / DIVIDE_2 + CharacterPos.z) + (size.z / DIVIDE_2);
 
-					// �ړ��ʐݒ�
+					// 遘ｻ蜍暮㍼險ｭ螳
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// �ʒu�ݒ�
+					// 菴咲ｽｮ險ｭ螳
 					SetPos(pos);
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
-				// ���̃|�C���^�擾
+				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 				pScene = pSceneCur;
 			}
 		}
 
-		// �擪�̃|�C���^�擾
+		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 		pScene = GetTop(PRIORITY_OBSTACLE);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter�Ƃ̓����蔻��
-			while (pScene != nullptr) // nullptr�ɂȂ�܂ŉ�
+			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
+			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
 			{
-				// ���݂̃|�C���^
+				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
 				CScene *pSceneCur = pScene->GetNext();
 
-				// �ʒu
+				// 菴咲ｽｮ
 				D3DXVECTOR3 ObstaclePos = ((CModel*)pScene)->GetPos();
 
-				// �T�C�Y�擾
+				// 繧ｵ繧､繧ｺ蜿門ｾ
 				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
 
-				// ��`�̓����蔻��
+				// 遏ｩ蠖｢縺ｮ蠖薙◆繧雁愛螳
 				if (CCollision::CollisionRectangleAndRectangle(ObstaclePos, pos, ObstacleSize, size) == true)
 				{
-					// �x�N�g��
+					// 繝吶け繝医Ν
 					D3DXVECTOR3 Vec = ZeroVector3;
 
-					// �@���x�N�g��
+					// 豕慕ｷ壹�繧ｯ繝医Ν
 					D3DXVECTOR3 NormalVec = ZeroVector3;
 
-					// �i�s�x�N�g��
+					// 騾ｲ陦後�繧ｯ繝医Ν
 					Vec.x = ObstaclePos.x - pos.x;
 					Vec.z = ObstaclePos.z - pos.z;
 
-					// �����Z�o
+					// 髟ｷ縺慕ｮ怜�
 					float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
-					// �@���x�N�g����
+					// 豕慕ｷ壹�繧ｯ繝医Ν縺ｫ
 					NormalVec.x = Vec.x / fVec_Length;
 					NormalVec.z = Vec.z / fVec_Length;
 
-					// ���˃x�N�g���Z�o
+					// 蜿榊ｰ��繧ｯ繝医Ν邂怜�
 					D3DXVec3Normalize(&m_Reflection_Vec, &(Vec - 2.0f * D3DXVec3Dot(&Vec, &NormalVec) * NormalVec));
 
-					// true��
+					// true縺ｫ
 					m_bKnock_Back = true;
 
 					CSound *pSound = GET_SOUND_PTR;
 					pSound->Play(CSound::SOUND_SE_HIT);
 				}
 
-				// ���̃|�C���^�擾
+				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 				pScene = pSceneCur;
 			}
 		}
 	}
 }
 //=============================================================================
-// �O�ς̓����蔻�菈��
+// 螟也ｩ阪�蠖薙◆繧雁愛螳壼�逅
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::CrossCollision(void)
 {
-	// CScene�̃|�C���^
+	// CScene縺ｮ繝昴う繝ｳ繧ｿ
 	CScene *pScene = nullptr;
 
-	// ���f���̏��擾
+	// 繝｢繝�Ν縺ｮ諠�ｱ蜿門ｾ
 	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
 
-	// �ʒu�擾
+	// 菴咲ｽｮ蜿門ｾ
 	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
 
-	// �ʒu�擾
+	// 菴咲ｽｮ蜿門ｾ
 	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
 
-	// �T�C�Y�擾
+	// 繧ｵ繧､繧ｺ蜿門ｾ
 	D3DXVECTOR3 size = GetSize();
 
-	// �ړ��ʎ擾
+	// 遘ｻ蜍暮㍼蜿門ｾ
 	D3DXVECTOR3 move = GetMove();
 
 	// nullcheck
 	if (pScene == nullptr)
 	{
-		// �擪�̃|�C���^�擾
+		// 蜈磯ｭ縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 		pScene = GetTop(PRIORITY_ENEMY);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter�Ƃ̓����蔻��
-			while (pScene != nullptr) // nullptr�ɂȂ�܂ŉ�
+			// Charcter縺ｨ縺ｮ蠖薙◆繧雁愛螳
+			while (pScene != nullptr) // nullptr縺ｫ縺ｪ繧九∪縺ｧ蝗槭☆
 			{
-				// ���݂̃|�C���^
+				// 迴ｾ蝨ｨ縺ｮ繝昴う繝ｳ繧ｿ
 				CScene *pSceneCur = pScene->GetNext();
 
-				// �p�[�c���擾
+				// 繝代�繝�焚蜿門ｾ
 				int nParts = ((CCharacter*)pScene)->GetPartsNum();
 
-				// �p�[�c�����J��Ԃ�
+				// 繝代�繝�焚蛻�ｹｰ繧願ｿ斐☆
 				for (int nCnt = ZERO_INT; nCnt < nParts; nCnt++)
 				{
-					// ���b�V���擾
+					// 繝｡繝�す繝･蜿門ｾ
 					LPD3DXMESH mesh = ((CCharacter*)pScene)->GetModelAnime(nCnt)->GetMesh();
 
-					// �t�F�[�X���擾
+					// 繝輔ぉ繝ｼ繧ｹ謨ｰ蜿門ｾ
 					DWORD FaceNum = mesh->GetNumFaces();
 				}
-				// ���̃|�C���^�擾
+				// 谺｡縺ｮ繝昴う繝ｳ繧ｿ蜿門ｾ
 				pScene = pSceneCur;
 			}
 		}
@@ -1510,7 +1515,7 @@ void CPlayer::CrossCollision(void)
 }
 
 //=======================================================================================
-// ���ޏ���
+// 豐医�蜃ｦ逅
 // Author : Konishi Yuuto
 //=======================================================================================
 void CPlayer::SinkEnd(void)
@@ -1531,18 +1536,18 @@ void CPlayer::SinkEnd(void)
 }
 
 //=======================================================================================
-// �ړ��̉�
+// 移動の音
 // Author : Konishi Yuuto
 //=======================================================================================
 void CPlayer::MoveSound(void)
 {
-	// �ړ������Ƃ�
+	// 移動したとき
 	if (m_bMoveSound)
 	{
-		// ���̊Ԋu��
+		// 一定の間隔で
 		if (m_nSoundCounter >= SOUND_INTER_TIME)
 		{
-			// ����炷
+			// 音を鳴らす
 			CSound *pSound = GET_SOUND_PTR;
 			pSound->Play(CSound::SOUND_SE_MOVE);
 
@@ -1555,37 +1560,37 @@ void CPlayer::MoveSound(void)
 }
 
 //=======================================================================================
-// �������֐�
+// 辣咏函謌宣未謨ｰ
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateSmoke(void)
 {
-	// �p�[�e�B�N������
+	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
 }
 
 //=======================================================================================
-// �؍ޔ��j�����֐�
+// 譛ｨ譚千�遐ｴ逕滓�髢｢謨ｰ
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateWoodEP(void)
 {
-	// �p�[�e�B�N������
+	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 	CEffect::Create(WOOD_POS,
 		WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
 }
 
 //=======================================================================================
-// �����Ԃ������֐�
+// 豌ｴ縺励�縺咲函謌宣未謨ｰ
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateSplash(void)
 {
 	for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
 	{
-		// �p�[�e�B�N������
+		// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 		CEffect::Create(SPLASH_POS,
 			WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
 			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
@@ -1593,139 +1598,139 @@ void CPlayer::CreateSplash(void)
 }
 
 //=======================================================================================
-// ���������֐�
+// 辷�匱逕滓�髢｢謨ｰ
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateExplosion(void)
 {
-	// �p�[�e�B�N������
+	// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 	CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
 
 }
 
 //=======================================================================================
-// �g�����֐�
+// 豕｢逕滓�髢｢謨ｰ
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateWave(void)
 {
 	for (int nCntEffect = 0; nCntEffect < WAVE_MAX_PARTICLE; nCntEffect++)
 	{
-		// �p�[�e�B�N������
+		// 繝代�繝�ぅ繧ｯ繝ｫ逕滓�
 		CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
 			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
 	}
 }
 
 //=============================================================================
-// �m�b�N�o�b�N�����֐�
+// 繝弱ャ繧ｯ繝舌ャ繧ｯ蜃ｦ逅�未謨ｰ
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Knock_Back(void)
 {
-	// �J�E���g�C���N�������g
+	// 繧ｫ繧ｦ繝ｳ繝医う繝ｳ繧ｯ繝ｪ繝｡繝ｳ繝
 	m_nRockHitCount++;
 
-	// �ړ��ʎ擾
+	// 遘ｻ蜍暮㍼蜿門ｾ
 	D3DXVECTOR3 move = GetMove();
 
-	// 0�̏ꍇ
+	// 0縺ｮ蝣ｴ蜷
 	if (m_nRockHitCount <= KNOCK_BACK_COUNT)
 	{
-		// �ړ���
+		// 遘ｻ蜍暮㍼
 		move.x = m_Reflection_Vec.x *KNOCK_BACK_SPEED;
 		move.z = m_Reflection_Vec.z *KNOCK_BACK_SPEED;
 
-		// �ړ��ʐݒ�
+		// 遘ｻ蜍暮㍼險ｭ螳
 		SetMove(move);
 	}
-	// 10���傫���ꍇ
+	// 10繧医ｊ螟ｧ縺阪＞蝣ｴ蜷
 	if (m_nRockHitCount > KNOCK_BACK_COUNT)
 	{
-		// �ړ��ʐݒ�
+		// 遘ｻ蜍暮㍼險ｭ螳
 		SetMove(ZeroVector3);
 
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		m_nRockHitCount = ZERO_INT;
 
-		// false��
+		// false縺ｫ
 		m_bKnock_Back = false;
 	}
 }
 
 //=============================================================================
-// �p�h���̉E��]
+// 繝代ラ繝ｫ縺ｮ蜿ｳ蝗櫁ｻ｢
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotateR(float fRotate)
 {
-	// �E�̎��Ԃ̏��擾
+	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	// �p�x���Z
+	// 隗貞ｺｦ蜉邂
 	Gear_R_rot.x += fRotate;
 
-	// �����ݒ�
+	// 蜷代″險ｭ螳
 	pGear_R->SetRot(Gear_R_rot);
 }
 
 //=============================================================================
-// �p�h���̍���]
+// 繝代ラ繝ｫ縺ｮ蟾ｦ蝗櫁ｻ｢
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotateL(float fRotate)
 {
-	// ���̎��Ԃ̏��擾
+	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// �p�x���Z
+	// 隗貞ｺｦ蜉邂
 	Gear_L_rot.x += fRotate;
 
-	// �����ݒ�
+	// 蜷代″險ｭ螳
 	pGear_L->SetRot(Gear_L_rot);
 }
 
 //=============================================================================
-// �p�h���̊p�x�C��
+// 繝代ラ繝ｫ縺ｮ隗貞ｺｦ菫ｮ豁｣
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotFix(void)
 {
-	// �E�̎��Ԃ̏��擾
+	// 蜿ｳ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-	// ���̎��Ԃ̏��擾
+	// 蟾ｦ縺ｮ豁ｯ霆翫�諠�ｱ蜿門ｾ
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// �����擾
+	// 蜷代″蜿門ｾ
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// �p�x���ő�ɂȂ����ꍇ
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// �p�x���ő�ɂȂ����ꍇ
+	// 隗貞ｺｦ縺梧怙螟ｧ縺ｫ縺ｪ縺｣縺溷ｴ蜷
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0�ɖ߂�
+		// 0縺ｫ謌ｻ縺
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// �����ݒ�
+		// 蜷代″險ｭ螳
 		pGear_R->SetRot(Gear_R_rot);
 	}
 }
 
 //=============================================================================
-// L�X�e�B�b�N�̍ŒZ�p�x����
+// L繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ隗貞ｺｦ霍晞屬
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::LStickAngle(float fangle_L)
@@ -1741,7 +1746,7 @@ void CPlayer::LStickAngle(float fangle_L)
 }
 
 //=============================================================================
-// R�X�e�B�b�N�̍ŒZ�p�x����
+// R繧ｹ繝�ぅ繝�け縺ｮ譛遏ｭ隗貞ｺｦ霍晞屬
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::RStickAngle(float fangle_R)
@@ -1757,7 +1762,7 @@ void CPlayer::RStickAngle(float fangle_R)
 }
 
 //=============================================================================
-// �{�̂̃|�C���^
+// 譛ｬ菴薙�繝昴う繝ｳ繧ｿ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetShip(void)
@@ -1766,7 +1771,7 @@ CModelAnime * CPlayer::GetShip(void)
 }
 
 //=============================================================================
-// �E�̎ԗւ̃|�C���^
+// 蜿ｳ縺ｮ霆願ｼｪ縺ｮ繝昴う繝ｳ繧ｿ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetRightPaddle(void)
@@ -1775,7 +1780,7 @@ CModelAnime * CPlayer::GetRightPaddle(void)
 }
 
 //=============================================================================
-// ���̎ԗւ̃|�C���^
+// 蟾ｦ縺ｮ霆願ｼｪ縺ｮ繝昴う繝ｳ繧ｿ
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetLeftPaddle(void)

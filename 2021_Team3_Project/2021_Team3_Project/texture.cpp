@@ -71,7 +71,12 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/ResultBg.png" },				// リザルト
 		{ "data/Texture/gameclear_story.png" },			// リザルトストーリー
 		{ "data/Texture/blackback.png" },				// リザルトストーリー
+		{ "data/Texture/Smoke.png" },					// スモーク
+		{ "data/Texture/Explosion_Animation.png" },		// 爆発
+		{ "data/Texture/Wave_Effect.png" },				// 波
+		{ "data/Texture/Wood_Animation.png" },			// 木材
 		{ "data/Texture/L1.png" },						// L1
+
 	};
 
 	// 分割テクスチャ

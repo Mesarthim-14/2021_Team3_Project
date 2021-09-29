@@ -18,7 +18,6 @@
 class CTexture;
 class CXfile;
 class CSound;
-class CEffect;
 
 //=============================================================================
 // リソースマネージャークラス
@@ -45,7 +44,6 @@ private:
 	CTexture *m_pTexture;							// テクスチャのポインタ
 	CXfile *m_pXFile;								// Xファイルのポインタ
 	CSound *m_pSound;								// サウンドのポインタ
-	CEffect *m_pEffect;								//エフェクトのポインタ
 };
 
 #endif

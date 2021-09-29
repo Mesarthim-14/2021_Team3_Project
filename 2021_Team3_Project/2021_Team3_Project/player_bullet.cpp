@@ -1,9 +1,9 @@
 //=============================================================================
-// ƒvƒŒƒCƒ„[’e [player_bullet.cpp]
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å¼¾ [player_bullet.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 // Author : Sugawara Tsukasa
 //=============================================================================
 #include "manager.h"
@@ -13,160 +13,178 @@
 #include "model_box.h"
 #include "enemy.h"
 #include "player_bullet.h"
+#include "effect.h"
+
 //=============================================================================
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE	(50.0f)								// ˆÚ“®—Ê
-#define PARENT_NUM	(0)									// e‚Ìƒiƒ“ƒo[
-#define DAMAGE		(25)								// ƒ_ƒ[ƒW
+#define MOVE_VALUE	(50.0f)								// ç§»å‹•é‡
+#define PARENT_NUM	(0)									// è¦ªã®ãƒŠãƒ³ãƒãƒ¼
+//æ°´ã—ã¶ã																			
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//ä½ç½®
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//å¤§ãã•
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//ç§»å‹•åŠ›
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//è‰²
+#define SPLASH_LIFE			(200)													//ä½“åŠ›
+#define DAMAGE		(25)								// ãƒ€ãƒ¡ãƒ¼ã‚¸
+
 //=============================================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer_Bullet::CPlayer_Bullet(PRIORITY Priority) : CBullet (Priority)
 {
 }
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer_Bullet::~CPlayer_Bullet()
 {
 }
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer_Bullet * CPlayer_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CPlayer_Bullet‚Ìƒ|ƒCƒ“ƒ^
+	// CPlayer_Bulletã®ãƒã‚¤ãƒ³ã‚¿
 	CPlayer_Bullet *pPlayer_Bullet = nullptr;
 
 	// nullcheck
 	if (pPlayer_Bullet == nullptr)
 	{
-		// ƒƒ‚ƒŠŠm•Û
+		// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 		pPlayer_Bullet = new CPlayer_Bullet;
 
 		// !nullcheck
 		if (pPlayer_Bullet != nullptr)
 		{
-			// ‰Šú‰»ˆ—
+			// åˆæœŸåŒ–å‡¦ç†
 			pPlayer_Bullet->Init(pos, rot);
 		}
 	}
-	// ƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
+	// ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
 	return pPlayer_Bullet;
 }
 //=============================================================================
-// ‰Šú‰»ˆ—ŠÖ”
+// åˆæœŸåŒ–å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// XFile–¼İ’è
+	// XFileåè¨­å®š
 	SetXFileNum(CXfile::XFILE_NUM_BULLET);
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	CBullet::Init(pos, ZeroVector3);
 
-	// ˆÚ“®
+	// ç§»å‹•
 	D3DXVECTOR3 move = ZeroVector3;
 
-	// ’e‚ÌˆÚ“®
+	// å¼¾ã®ç§»å‹•
 	move.x = -sinf(rot.y) *MOVE_VALUE;
 	move.z = -cosf(rot.y) *MOVE_VALUE;
 
-	// ˆÚ“®—Êİ’è
+	// ç§»å‹•é‡è¨­å®š
 	SetMove(move);
 
 	return S_OK;
 }
 //=============================================================================
-// I—¹ˆ—ŠÖ”
+// çµ‚äº†å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer_Bullet::Uninit(void)
 {
-	// I—¹ˆ—
+	// çµ‚äº†å‡¦ç†
 	CBullet::Uninit();
 }
 //=============================================================================
-// XVˆ—ŠÖ”
+// æ›´æ–°å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer_Bullet::Update(void)
 {
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	CBullet::Update();
 
-	// “–‚½‚è”»’è
+	// å½“ãŸã‚Šåˆ¤å®š
 	Collision();
 }
 //=============================================================================
-// •`‰æˆ—ŠÖ”
+// æç”»å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer_Bullet::Draw(void)
 {
-	// •`‰æˆ—
+	// æç”»å‡¦ç†
 	CBullet::Draw();
 }
 //=============================================================================
-// “–‚½‚è”»’èˆ—
+// å½“ãŸã‚Šåˆ¤å®šå‡¦ç†
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer_Bullet::Collision(void)
 {
-	// CScene‚Ìƒ|ƒCƒ“ƒ^
+	// CSceneã®ãƒã‚¤ãƒ³ã‚¿
 	CScene *pScene = nullptr;
 
-	// ‘D‚ÌˆÊ’uæ“¾
+	// èˆ¹ã®ä½ç½®å–å¾—
 	D3DXVECTOR3 pos = GetPos();
 
-	// ƒTƒCƒYæ“¾
+	// ã‚µã‚¤ã‚ºå–å¾—
 	D3DXVECTOR3 size = GetSize();
 
 	// nullcheck
 	if (pScene == nullptr)
 	{
-		// æ“ª‚Ìƒ|ƒCƒ“ƒ^æ“¾
+		// å…ˆé ­ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
 		pScene = GetTop(PRIORITY_ENEMY);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter‚Æ‚Ì“–‚½‚è”»’è
-			while (pScene != nullptr) 	// nullptr‚É‚È‚é‚Ü‚Å‰ñ‚·
+			// Charcterã¨ã®å½“ãŸã‚Šåˆ¤å®š
+			while (pScene != nullptr) 	// nullptrã«ãªã‚‹ã¾ã§å›ã™
 			{
-				// ƒgƒbƒv‘ã“ü
+				// ãƒˆãƒƒãƒ—ä»£å…¥
 				CScene *pSceneCur = pScene->GetNext();
 
-				// ˆÊ’u
+				// ä½ç½®
 				D3DXVECTOR3 CharacterPos = ZeroVector3;
 
-				// ˆÊ’uæ“¾
+				// ä½ç½®å–å¾—
 				CharacterPos.x = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
 				CharacterPos.y = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
 				CharacterPos.z = ((CEnemy*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
 
-				// ƒTƒCƒYæ“¾
+				// ã‚µã‚¤ã‚ºå–å¾—
 				D3DXVECTOR3 CharacterSize = ((CEnemy*)pScene)->GetSize();
 
-				// ”»’è
+				//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
+				for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
+				{
+					// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
+					CEffect::Create(CharacterPos,
+						SPLASH_SIZE, SPLASH_MOVE, SPLASH_COLOR,
+						CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
+				}
+
+				// åˆ¤å®š
 				if (CCollision::CollisionRectangleAndRectangle(pos, CharacterPos, size, CharacterSize) == true)
 				{
-					// ƒ‰ƒCƒtİ’è
+					// ãƒ©ã‚¤ãƒ•è¨­å®š
 					((CEnemy*)pScene)->Hit(DAMAGE);
 
-					// I—¹
+					// çµ‚äº†
 					Uninit();
 
 					return;
 				}
 
-				// Ÿ‚É‘ã“ü
+				// æ¬¡ã«ä»£å…¥
 				pScene = pSceneCur;
 			}
 		}
