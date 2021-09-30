@@ -339,11 +339,11 @@
     <ClCompile Include="player_bullet.cpp">
       <Filter>07_Model\Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>04_Character\Player</Filter>
-    </ClCompile>
     <ClCompile Include="boss_map_transition.cpp">
       <Filter>07_Model\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>04_Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
