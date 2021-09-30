@@ -333,14 +333,14 @@
     <ClCompile Include="game.cpp">
       <Filter>03_Mode\Game</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>04_Character\Player</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>01_Resource</Filter>
     </ClCompile>
     <ClCompile Include="player_bullet.cpp">
       <Filter>07_Model\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>04_Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
