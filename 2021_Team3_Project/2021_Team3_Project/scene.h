@@ -31,11 +31,11 @@ public:
 		PRIORITY_0 = 0,
 		PRIORITY_1,
 		PRIORITY_OBSTACLE,	// 障害物
+		PRIORITY_MAP,		// マップ
 		PRIORITY_MODEL,		// モデル
 		PRIORITY_CHARACTER,	// キャラクター
-		PRIORITY_ENEMY,		// 敵
 		PRIORITY_TORPEDO,	// 魚雷
-		PRIORITY_MAP,		// マップ
+		PRIORITY_ENEMY,		// 敵
 		PRIORITY_EFFECT,	// エフェクト
 		PRIORITY_PARTICLE,	// エフェクト
 		PRIORITY_SHADOW,	// 影

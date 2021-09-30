@@ -166,7 +166,7 @@ void CScene2D::SetCol(D3DXCOLOR col)
 	VERTEX_2D *pVtx = nullptr;	//頂点情報へのポインタ
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();		// バッファ
 
-															// 色の設定
+	// 色の設定
 	SetColor(col);
 
 	//頂点データ範囲をロックし、頂点バッファへのポインタを所得

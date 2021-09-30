@@ -61,7 +61,7 @@ public:
 	void ShadowDraw(D3DXVECTOR3 rot);							// 影の描画
 	void HasPtrDelete(void);									// 保持ポインタの開放処理
 	void SetShadowInfo(CXfile::MODEL model);					// 影の情報設定
-
+	bool RayCollision(void);									// レイの当たり判定
 	// Set関数
 	void SetPos(const D3DXVECTOR3 pos)				{ m_pos = pos; }					// 座標の設定
 	void SetMove(const D3DXVECTOR3 move)			{ m_move = move; }					// 移動量の設定
@@ -74,7 +74,7 @@ public:
 	void SetScale(D3DXVECTOR3 scale)				{ m_scale = scale; }				// 拡大率
 	void SetState(STATE state)						{ m_State = state; }				// 状態設定
 	void BindTexture(LPDIRECT3DTEXTURE9 *pTexture)	{ m_apTexture = pTexture; }			// テクスチャの設定
-	void SetRay_Data(RAY_DATA Ray_Info)				{ m_RayData = Ray_Info; }			// レイの情報設定
+	void SetRay_Data(RAY_DATA Ray_Data)				{ m_RayData = Ray_Data; }			// レイの情報設定
 
 	// Get関数
 	D3DXVECTOR3 &GetPos(void)			{ return m_pos; }				// 座標の情報

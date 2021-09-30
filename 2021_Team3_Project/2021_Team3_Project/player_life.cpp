@@ -132,7 +132,7 @@ void CPlayer_Life::Update(void)
 	if (pPlayer != nullptr)
 	{
 		// ダメージを食らっていたら
-		if (pPlayer->GetHitFlag())
+		if (pPlayer->GetHitFlag() == true)
 		{
 			// ライフ取得
 			int nLife = pPlayer->GetLife();

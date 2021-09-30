@@ -25,7 +25,7 @@
 #define POS_Y_MAX			(4000.0f)							// Y最大値
 #define PARENT_NUM			(0)									// 親のナンバー
 #define DAMAGE				(10)								// ダメージ
-#define GRAVITY				(-1.0f)								// 重力
+#define GRAVITY				(-0.98f)							// 重力
 #define DIVIDE_2F			(2.0f)								// ÷2
 #define ANGLE				(D3DXToRadian(60.0f))				// 角度
 #define POW_VALUE			(2.0f)								// 累乗値
@@ -88,7 +88,7 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_StartPos = pos;
 
 	// 箱生成
-	CModel_Box::Create(pos, rot, this);
+	//CModel_Box::Create(pos, rot, this);
 
 	// 攻撃地点生成
 	AttackPoint_Crate(this);
@@ -237,6 +237,7 @@ void CEnemy_Bullet::Projectile_motion(void)
 	Dist.y = m_StartPos.y - m_TargetPos.y;
 	Dist.z = m_StartPos.z - m_TargetPos.z;
 
+	
 	// 水平方向の距離
 	float fX = sqrtf((Dist.x * Dist.x) + (Dist.z * Dist.z));
 
@@ -244,7 +245,7 @@ void CEnemy_Bullet::Projectile_motion(void)
 	float fY = Dist.y;
 
 	// 斜方投射の公式を初速度について解く
-	float fSpeed = sqrtf(-GRAVITY * powf(fX, POW_VALUE) / (2.0f * powf(cosf(ANGLE), POW_VALUE) * (fX * tanf(ANGLE) + fY)));
+	float fSpeed = sqrtf(-GRAVITY * powf(fX, POW_VALUE) / (2 * powf(cosf(ANGLE), POW_VALUE) * (fX * tanf(ANGLE) + fY)));
 
 	// ベクトル
 	D3DXVECTOR3 Vec = ZeroVector3;
@@ -273,12 +274,8 @@ void CEnemy_Bullet::Projectile_motion(void)
 		// 発射時重力を/2
 		move.y += GRAVITY / DIVIDE_2F;
 
-		// trueなら
-		if (m_bInitVelocity == true)
-		{
-			// false1に
-			m_bInitVelocity = false;
-		}
+		// false1に
+		m_bInitVelocity = false;
 	}
 	// 移動量
 	SetMove(move);

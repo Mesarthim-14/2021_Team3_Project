@@ -37,21 +37,28 @@
 #include "collision.h"
 #include "player_life.h"
 #include "fade.h"
-
+#include "boss_fade.h"
+#include "rotate_ui.h"
+#include "attack_ui.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
 #define ENEMY_OBSTACLE_CREATE_TEXT	("data/Text/Enemy/Enemy_Obstacle_Create.txt")	// 敵生成テキスト
+#define BOSS_ENEMY_CREATE_TEXT		("data/Text/Enemy/boss_enemy.txt")				// 敵生成テキスト
 #define ENEMY_POS					(D3DXVECTOR3(0.0f,800.0f,-3000.0f))				// 敵の位置
+#define BOSS_POS					(D3DXVECTOR3(500.0f,0.0f,-17000.0f))			// ボスの位置
+#define BOSS_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// ボスの位置
 #define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// 敵の位置
 #define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
-#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
+#define PLAYER_POS					(D3DXVECTOR3(1500.0f,0.0f,-500.0f))				// プレイヤーの位置
+#define BOSS_PLAYER_POS				(D3DXVECTOR3(0.0f,0.0f,0.0f))					// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
-#define PALYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
+#define PLAYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
+#define BOSS_PLAYER_ROT				(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// プレイヤーの向き
 #define LIFE_POS					(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
-
-#define BOSS_TRANSITION_POS			(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス戦遷移判定位置
-#define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(0.0f,0.0f,0.0f))					// ボス遷移判定サイズ
+#define BOSS_TRANSITION_POS			(D3DXVECTOR3(78000.0f,0.0f,-32000.0f))				// ボス戦遷移判定位置
+#define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(10000.0f,0.0f,10000.0f))				// ボス遷移判定サイズ
+#define BOSS_TRT_POS				(D3DXVECTOR3(78000.0f,0.0f,-32000.0f))
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -63,12 +70,13 @@ CGame::CGame()
 	m_pBg = nullptr;
 	m_pPlayer = nullptr;
 	m_pMap = nullptr;
+	m_pBoss_Shark = nullptr;
 	m_bGameEnd = false;
 	m_nEnemyNum = ZERO_INT;
 	m_pEnemyFileData = nullptr;
 	m_pFont = nullptr;
 	m_bBossTransition = false;
-	m_bBoss = true;
+	m_bBoss = false;
 }
 
 //=======================================================================================
@@ -108,9 +116,11 @@ HRESULT CGame::Init(void)
 	// マップの生成
 	CreateMap();
 
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_BGM_GAME);
+
 	return S_OK;
 }
-
 //=======================================================================================
 // 終了処理
 //=======================================================================================
@@ -162,7 +172,8 @@ void CGame::Uninit(void)
 //=======================================================================================
 void CGame::Update(void)
 {
-	//DrawPlayerPos();
+	// プレイヤーの位置描画
+	DrawPlayerPos();
 
 	if (m_pCamera != nullptr)
 	{
@@ -170,9 +181,9 @@ void CGame::Update(void)
 		m_pCamera->Update();
 	}
 	// ボス戦遷移判定
-	if (m_bBossTransition == false)
+	if (m_bBoss == false)
 	{
-		// 戦遷移判定
+		// ボス遷移判定
 		BossTransition();
 	}
 
@@ -207,8 +218,14 @@ void CGame::CreatePlayer(void)
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
 	{
-		m_pPlayer = CPlayer::Create(PLAYER_POS, PALYER_ROT);
+		//m_pPlayer = CPlayer::Create(BOSS_TRT_POS, BOSS_PLAYER_ROT);
+		m_pPlayer = CPlayer::Create(PLAYER_POS, PLAYER_ROT);
 		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
+
+																// 操作方法
+		CRotateUi::Create(m_pPlayer->GetRightPaddle());
+		CRotateUi::Create(m_pPlayer->GetLeftPaddle());
+		CAttackUi::Create(m_pPlayer->GetShip());
 	}
 }
 
@@ -426,13 +443,13 @@ void CGame::CreateBossMap(void)
 		m_pMap = CMap::Create(ZeroVector3, ZeroVector3, CMap::TYPE_BOSS);
 
 		// ボス生成
-		CBoss_Shark::Create(ENEMY_POS, ENEMY_ROT);
+		m_pBoss_Shark = CBoss_Shark::Create(BOSS_POS, BOSS_ROT);
 
 		// 位置変更
-		m_pPlayer->SetPos(ZeroVector3);
+		m_pPlayer->SetPos(BOSS_PLAYER_POS);
 
-		// trueに
-		m_bBoss = true;
+		// 向き変更
+		m_pPlayer->SetRot(BOSS_PLAYER_ROT);
 	}
 }
 //=======================================================================================
@@ -453,11 +470,15 @@ void CGame::BossTransition(void)
 		// 位置
 		if (CCollision::CollisionRectangleAndRectangle(PlayerPos, BOSS_TRANSITION_POS, PlayerSize, BOSS_TARNSITION_SIZE) == true)
 		{
-			// ボス生成
-			CreateBossMap();
-
-			// trueに
+			// ボス遷移状態に
 			m_bBossTransition = true;
+
+			// ボス戦状態に
+			m_bBoss = true;
+
+			// フェード生成
+			CBoss_Fade::Create(ZeroVector3, ZeroVector3);
+
 		}
 	}
 }
@@ -478,4 +499,28 @@ void CGame::ModeTransition(void)
 			pFade->SetFade(CManager::MODE_TYPE_RESULT_FAILED);
 		}
 	}
+	// !nullcheck
+	if (m_pBoss_Shark != nullptr)
+	{
+		// 終了判定がtrueの場合
+		if (m_pBoss_Shark->GetEnd() == true)
+		{
+			CFade::FADE_MODE mode = CManager::GetFade()->GetFade();
+
+			if (mode == CFade::FADE_MODE_NONE)
+			{
+				CFade *pFade = CManager::GetFade();
+				pFade->SetFade(CManager::MODE_TYPE_RESULT_CLEAR);
+			}
+		}
+	}
+}
+//=======================================================================================
+// ボス戦敵生成
+// Author : Konishi Yuuto
+//=======================================================================================
+void CGame::Boss_Enemy_Create(void)
+{
+	// 敵生成
+	CreateEnemy_Obstacle(BOSS_ENEMY_CREATE_TEXT);
 }

@@ -21,18 +21,19 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define SIZE			(D3DXVECTOR3(500.0f,800.0f,1000.0f))		// サイズ
-#define ROT				(D3DXVECTOR3(rot.x,rot.y + m_fAngle,rot.z))	// 向き
-#define MOVE_VALUE		(10.0f)										// 移動量
-#define FAN_LENGTH		(5000.0f)									// 扇の長さ
-#define FAN_DIR			(D3DXVECTOR3(1.0f, 0.0f, 0.0f))				// 弧線方向
-#define ANGLE_90		(D3DXToRadian(90.0f))						// 90度
-#define ANGLE_270		(D3DXToRadian(270.0f))						// 270度
-#define ANGLE_0			(D3DXToRadian(0.0f))						// 0度
-#define ANGLE_360		(D3DXToRadian(360.0f))						// 360度
-#define FAN_COS			(cosf(D3DXToRadian(180.0f / 2.0f)))			// cosfに
-#define RAY_HIT_RANGE	(250.0f)									// レイの範囲
-#define RAY_NUM			(1)											// レイの本数
+#define SIZE			(D3DXVECTOR3(1000.0f,2000.0f,1000.0f))					// サイズ
+#define ANGLE_180		(D3DXToRadian(180.0f))									// 180度
+#define MOVE_VALUE		(50.0f)													// 移動量
+#define DECISION_LENGTH	(8000.0f)												// 扇の長さ
+#define FAN_DIR			(D3DXVECTOR3(1.0f, 0.0f, 0.0f))							// 弧線方向
+#define ANGLE_90		(D3DXToRadian(90.0f))									// 90度
+#define ANGLE_270		(D3DXToRadian(270.0f))									// 270度
+#define ANGLE_0			(D3DXToRadian(0.0f))									// 0度
+#define ANGLE_360		(D3DXToRadian(360.0f))									// 360度
+#define FAN_COS			(cosf(D3DXToRadian(180.0f / 2.0f)))						// cosfに
+#define RAY_HIT_RANGE	(250.0f)												// レイの範囲
+#define RAY_NUM			(1)														// レイの本数
+#define DAMAGE			(10)													// ダメージ
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -70,9 +71,6 @@ CTorpedo * CTorpedo::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pTorpedo->Init(pos, rot);
-
-			// 箱生成
-			//CModel_Box::Create(pos, rot, pTorpedo);
 		}
 	}
 	// ポインタを返す
@@ -100,8 +98,11 @@ HRESULT CTorpedo::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// サイズ設定
 	SetSize(SIZE);
 
+	// 箱生成
+	//CModel_Box::Create(pos, rot, this);
+
 	// 初期化処理
-	CModel::Init(pos, ZeroVector3);
+	CModel::Init(pos, rot);
 
 	return S_OK;
 }
@@ -148,17 +149,36 @@ void CTorpedo::Update(void)
 				D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
 
 				// 角度
-				m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
+				m_fAngle = atan2f((PlayerPos.x - pos.x), (PlayerPos.z - pos.z));
+
+				// 角度
+				//m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
 			}
 			
 			// レイの情報
-			CModel::RAY_DATA Ray_Data = { ROT.y, RAY_HIT_RANGE,RAY_NUM };
+			CModel::RAY_DATA Ray_Data = { m_fAngle, RAY_HIT_RANGE,RAY_NUM };
 
 			// レイの情報設定
 			SetRay_Data(Ray_Data);
 
+			// 90度以下の場合
+			if (rot.y <= ANGLE_90)
+			{
+				// 向き
+				rot.y = m_fAngle;
+
+				// 向き加算
+				rot.y += ANGLE_180;
+			}
+			// 90度以上の場合
+			if (rot.y > ANGLE_90)
+			{
+				// 向き
+				rot.y = m_fAngle;
+			}
+
 			// 向き
-			SetRot(ROT);
+			SetRot(rot);
 
 			// 移動判定をtrueに
 			m_bMove = true;
@@ -170,8 +190,33 @@ void CTorpedo::Update(void)
 	// 当たり判定
 	Collision();
 
-	// レイの当たり判定
-	//RayCollision();
+	// ゲーム取得
+	CGame *pGame = (CGame*)CManager::GetModePtr();
+
+	// !nullchrck
+	if (pGame != nullptr)
+	{
+		// ボス戦に遷移したか
+		bool bBossTransition = pGame->GetbBossTransition();
+
+		// ボス戦に遷移した場合
+		if (bBossTransition == true)
+		{
+			// 終了
+			Uninit();
+
+			return;
+		}
+	}
+	RayCollision();
+	//// レイの当たり判定
+	//if == true);
+	//{
+	//	// 終了
+	//	Uninit();
+
+	//	return;
+	//}
 }
 //=============================================================================
 // 描画処理関数
@@ -192,8 +237,8 @@ void CTorpedo::Move(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// 弾の移動
-	move.x = -sinf(m_fAngle) *MOVE_VALUE;
-	move.z = -cosf(m_fAngle) *MOVE_VALUE;
+	move.x = sinf(m_fAngle) *MOVE_VALUE;
+	move.z = cosf(m_fAngle) *MOVE_VALUE;
 
 	// 移動設定
 	SetMove(move);
@@ -222,6 +267,9 @@ void CTorpedo::Collision(void)
 	// 判定
 	if (CCollision::CollisionRectangleAndRectangle(pos, PlayerPos, size, PlayerSize) == true)
 	{
+		// ヒット
+		pPlayer->Hit(DAMAGE);
+
 		// 終了処理
 		Uninit();
 
@@ -257,7 +305,7 @@ void CTorpedo::FanDecision(void)
 		float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
 		// 長さの比較
-		if (fVec_Length > FAN_LENGTH)
+		if (fVec_Length > DECISION_LENGTH)
 		{
 			// 攻撃判定をtrueに
 			m_bAttackDecision = false;
@@ -275,13 +323,13 @@ void CTorpedo::FanDecision(void)
 		if (Rot.y > ANGLE_90 && Rot.y < ANGLE_270 || Rot.y < ANGLE_90 && Rot.y > -ANGLE_90)
 		{
 			// 向き
-			fRot = Rot.y - ANGLE_90;
+			fRot = Rot.y + ANGLE_90;
 		}
 		//右を向いてるか左を向いてるか
 		if (Rot.y > ANGLE_0 && Rot.y < ANGLE_360 || Rot.y < ANGLE_0 && Rot.y > -ANGLE_0)
 		{
 			// 向き
-			fRot = Rot.y + ANGLE_90;
+			fRot = Rot.y - ANGLE_90;
 		}
 
 		// 向き
@@ -314,37 +362,4 @@ void CTorpedo::FanDecision(void)
 			m_bAttackDecision = true;
 		}
 	}
-}
-//=============================================================================
-// レイの当たり判定処理関数
-// Author : Sugawara Tsukasa
-//=============================================================================
-void CTorpedo::RayCollision(void)
-{
-	//// 位置取得
-	//D3DXVECTOR3 pos = GetPos();
-
-	//// 向き取得
-	//D3DXVECTOR3 rot = GetRot();
-
-	//// マップのポインタ取得
-	//CMap *pMap = GET_MAP_PTR;
-
-	//// レイの情報
-	//CCollision::RAY_INFO Ray_Info;
-
-	//// レイの当たり判定
-	//Ray_Info = CCollision::RayCollision(pos, GET_MAP_PTR, rot.y, RAY_HIT_RANGE, RAY_NUM);
-
-	//// trueの場合
-	//if (Ray_Info.bHit == true)
-	//{
-	//	// 戻す
-	//	pos -= (D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y)));
-
-	//	// 位置設定
-	//	SetPos(pos);
-
-	//	return;
-	//}
 }

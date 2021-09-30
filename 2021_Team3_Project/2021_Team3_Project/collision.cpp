@@ -173,7 +173,7 @@ CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, f
 	BOOL bHit = false;
 
 	// 距離
-	float fDistancePlayer = ZERO_FLOAT;
+	float fDistance = ZERO_FLOAT;
 
 	// 位置
 	D3DXVECTOR3 vecDirection;
@@ -196,13 +196,13 @@ CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, f
 
 			// レイがヒットしたか
 			D3DXIntersect(pModel->GetMesh(), &Pos, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
-				&bHit, NULL, NULL, NULL, &fDistancePlayer, NULL, NULL);
+				&bHit, NULL, NULL, NULL, &fDistance, NULL, NULL);
 
 			// trueの場合
 			if (bHit == TRUE)
 			{
 				// 範囲より小さかったら
-				if (fDistancePlayer < fHitRange)
+				if (fDistance < fHitRange)
 				{
 					// trueに
 					Ray_Info.bHit = true;

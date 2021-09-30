@@ -118,8 +118,8 @@ void CMap::Update(void)
 	// 更新処理
 	CModel::Update();
 
-	// レイの当たり判定
-	RayCollision();
+
+	//RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -160,23 +160,26 @@ void CMap::RayCollision(void)
 				// 位置
 				D3DXVECTOR3 Pos = ZeroVector3;
 
-				// 位置取得
-				Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
-				Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
-				Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
-
 				// レイの情報取得
 				CCharacter::RAY_DATA RayData = ((CCharacter*)pScene)->GetRay_Data();
 
 				// レイの数が0より多い場合
 				if (RayData.nNum > ZERO_INT)
 				{
+					// 位置取得
+					Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+					Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+					Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
 					// レイの情報
 					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, this, RayData.fAngle, RayData.fRange, RayData.nNum);
 
 					// trueの場合
 					if (Ray_Info.bHit == true)
 					{
+						// ヒットマップ
+						((CCharacter*)pScene)->SetHitMap(true);
+
 						// 移動を0に
 						((CCharacter*)pScene)->SetMove(ZeroVector3);
 
@@ -209,23 +212,24 @@ void CMap::RayCollision(void)
 				// 位置
 				D3DXVECTOR3 Pos = ZeroVector3;
 
-				// 位置取得
-				Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
-				Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
-				Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
-
 				// レイの情報取得
 				CCharacter::RAY_DATA RayData = ((CCharacter*)pScene)->GetRay_Data();
 
 				// レイの数が0より多い場合
 				if (RayData.nNum > ZERO_INT)
 				{
+					// 位置取得
+					Pos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+					Pos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+					Pos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
 					// レイの情報
 					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, this, RayData.fAngle, RayData.fRange, RayData.nNum);
 
 					// trueの場合
 					if (Ray_Info.bHit == true)
 					{
+						
 						// 移動を0に
 						((CCharacter*)pScene)->SetMove(ZeroVector3);
 
@@ -279,6 +283,11 @@ void CMap::RayCollision(void)
 
 						// 位置設定
 						((CModel*)pScene)->SetPos(Pos);
+
+						// 位置設定
+						((CModel*)pScene)->Uninit();
+
+						return;
 					}
 				}
 				// 次のポインタ取得

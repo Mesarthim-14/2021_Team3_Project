@@ -15,6 +15,8 @@
 #include "game.h"
 #include "xfile.h"
 #include "shadow.h"
+#include "collision.h"
+#include "map.h"
 
 //=============================================================================
 // マクロ定義
@@ -233,6 +235,57 @@ void CModel::SetShadowInfo(CXfile::MODEL model)
 		// 影の生成
 		m_pShadow = CShadow::Create(model.pMesh);
 	}
+}
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+bool CModel::RayCollision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_MAP);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// レイの数が0より多い場合
+				if (m_RayData.nNum > ZERO_INT)
+				{
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(m_pos, ((CMap*)pScene), m_RayData.fAngle, m_RayData.fRange, m_RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						SetMove(ZeroVector3);
+
+						// 位置
+						//m_pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						Uninit();
+
+						return true;
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+	}
+	return false;
 }
 
 //=============================================================================

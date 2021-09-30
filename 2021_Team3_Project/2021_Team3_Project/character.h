@@ -66,8 +66,9 @@ public:
 	void ModelAnimeUpdate(void);									// モデルアニメーション
 	void Gravity(void);												// 重力
 	void Landing(float fHeight);									// 着地
+	void RayCollision(void);										// レイ当たり判定
 
-																	// 純粋仮想関数
+	// 純粋仮想関数
 	virtual void UpdateState(void) = 0;								// キャラクター状態
 	virtual void Attack(void) = 0;									// 攻撃の処理
 	virtual void Move(void) = 0;									// 移動関数
@@ -88,8 +89,8 @@ public:
 	void SetShadowRotCalculation(void);
 	void SetRay_Data(RAY_DATA Ray_Info) { m_RayData = Ray_Info; }	// レイの情報設定
 	void SetGravityFlag(bool bFlag) { m_bGravity = bFlag; }			// 重力のフラグ
-
-																	// Get関数
+	void SetHitMap(bool bHit) { m_bHitMap = bHit; }					// ヒット
+	// Get関数
 	D3DXVECTOR3 &GetPos(void) { return m_pos; }										// 現在の座標情報
 	D3DXVECTOR3 &GetOldPos(void) { return m_posOld; }								// 古い座標情報
 	D3DXVECTOR3 &GetRot(void) { return m_rot; }										// 角度情報
@@ -104,7 +105,7 @@ public:
 	bool GetArmor(void) { return m_bArmor; }										// 無敵時間
 	STATE GetState(void) { return m_State; }										// 状態取得
 	RAY_DATA GetRay_Data(void) { return m_RayData; }								// レイの情報取得
-
+	bool GetHitMap(void) { return m_bHitMap; }										// ヒットマップ
 private:
 	vector<CModelAnime*> m_apModelAnime;	// モデルパーツ用ポインタ
 	CMotion *m_pMotion;						// モーションクラスのポインタ
@@ -124,5 +125,6 @@ private:
 	bool m_bUseShadow;						// 影をつけるフラグ
 	RAY_DATA m_RayData;						// レイの情報
 	bool m_bGravity;						// 重力をかけるフラグ
+	bool m_bHitMap;							// ヒットマップ
 };
 #endif

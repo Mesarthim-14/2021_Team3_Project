@@ -15,6 +15,8 @@
 #include "texture.h"
 #include "renderer.h"
 #include "player.h"
+#include "sound.h"
+#include "resource_manager.h"
 
 //=============================================================================
 //マクロ定義
@@ -69,7 +71,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3
 {
 	CEffect *m_pEffect = NULL;	//メモリ確保
 
-	//NULLチェック
+								//NULLチェック
 	if (m_pEffect == NULL)
 	{
 		//メモリ確保
@@ -126,7 +128,7 @@ void CEffect::Smoke(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOL
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	// Rendererクラスからデバイスを取得
+																									// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	// テクスチャの設定
@@ -169,7 +171,7 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	// Rendererクラスからデバイスを取得
+																									// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	// テクスチャの設定
@@ -198,13 +200,17 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	m_bLoop = true;
 	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WOOD));//テクスチャ情報を格納
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
+
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_BREAK);
+
 }
 
 //=============================================================================
 //爆発エフェクト関数
 //=============================================================================
 void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT_TYPE type, int Life)
-{	
+{
 	// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
@@ -212,7 +218,10 @@ void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT
 	CTexture *pTexture = CManager::GetResourceManager()->GetTextureClass();
 
 	Init(pos, size, ZeroVector3, type, col, Life);
+
 	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_EXPLOSION));//テクスチャ情報を格納
+	CSound *pSound = GET_SOUND_PTR;
+	pSound->Play(CSound::SOUND_SE_EXPLOSION);
 }
 
 //=============================================================================
@@ -222,12 +231,12 @@ void CEffect::Wave(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCOLO
 {
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
-	//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	// Rendererクラスからデバイスを取得
+																									// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	// テクスチャの設定
@@ -260,11 +269,11 @@ void CEffect::Splash(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, D3DXCO
 	//パーティクルの移動角度
 	D3DXVECTOR3 ActualMove = ZeroVector3;									//移動量
 	D3DXVECTOR3 CreatePos = ZeroVector3;									//生成位置
-	//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
+																			//D3DXVECTOR3 RandomSize = ZeroVector3;									//画像のランダムサイズ
 	D3DXVECTOR3 MaxSize = D3DXVECTOR3(size.x * MAX_TEXTURE_SIZE, size.y * MAX_TEXTURE_SIZE, NULL);	//最大サイズ
 	D3DXVECTOR3 MinSize = D3DXVECTOR3(size.x * MIN_TEXTURE_SIZE, size.y * MIN_TEXTURE_SIZE, NULL);	//最小サイズ
 
-	// Rendererクラスからデバイスを取得
+																									// Rendererクラスからデバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	// テクスチャの設定
@@ -305,7 +314,7 @@ HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFEC
 	m_nType = type;					//タイプ
 	CBillboard::Init(pos, size);	//ビルボード
 
-	//エフェクトのタイプ
+									//エフェクトのタイプ
 	switch (type)
 	{
 		//煙

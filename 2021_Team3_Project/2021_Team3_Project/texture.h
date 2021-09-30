@@ -50,6 +50,8 @@ public:
 		TEXTURE_NUM_EFFECT_EXPLOSION,	// 爆発
 		TEXTURE_NUM_EFFECT_WAVE,		// 波
 		TEXTURE_NUM_EFFECT_WOOD,		// 木材
+		TEXTURE_NUM_L1,					// L1のUI
+		TEXTURE_NUM_RED,				// 赤
 		TEXTURE_NUM_MAX
 	};
 
@@ -57,7 +59,7 @@ public:
 	enum SEPARATE_TEX_TYPE
 	{
 		SEPARATE_TEX_NONE = -1,			// 初期値
-		SEPARATE_TEX_SHARP,				// 鋭いエフェクト
+		SEPARATE_TEX_MOVE_UI,			// 移動のUI
 		SEPARATE_TEX_MAX				// 最大値
 	};
 
@@ -120,7 +122,7 @@ private:
 	LPDIRECT3DTEXTURE9 m_apTexture[TEXTURE_NUM_MAX];						// テクスチャのポインタ
 	SEPARATE_TEX_INFO m_apSeparateTexture[SEPARATE_TEX_MAX] =
 	{
-		nullptr, CTexture::SEPARATE_TEX_SHARP, D3DXVECTOR2(5, 5), false,
+		nullptr, CTexture::SEPARATE_TEX_MOVE_UI, D3DXVECTOR2(8, 5), true,
 	};
 
 	LPDIRECT3DVOLUMETEXTURE9 m_pVolumeTexture[VOLUME_TEX_MAX];				// ボリュームテクスチャ

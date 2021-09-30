@@ -12,6 +12,7 @@
 #include "collision.h"
 #include "model_box.h"
 #include "enemy.h"
+#include "torpedo.h"
 #include "player_bullet.h"
 #include "effect.h"
 
@@ -19,10 +20,12 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MOVE_VALUE	(40.0f)								// 移動量
-#define PARENT_NUM	(0)									// 親のナンバー
-#define DAMAGE		(100)								// ダメージ
-
+#define MOVE_VALUE	(50.0f)	 // 移動量
+#define PARENT_NUM	(0)		 // 親ナンバー
+#define DAMAGE		(25)	 // ダメージ
+#define RAY_RANGE	(100.0f) // レンジ
+#define RAY_NUM		(1)		 // レイの数
+#define PARENT_NUM	(0)		// 親のナンバー
 //水しぶき																			
 #define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//位置
 #define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//大きさ
@@ -34,7 +37,7 @@
 // コンストラクタ
 // Author : Sugawara Tsukasa
 //=============================================================================
-CPlayer_Bullet::CPlayer_Bullet(PRIORITY Priority) : CBullet (Priority)
+CPlayer_Bullet::CPlayer_Bullet(PRIORITY Priority) : CBullet(Priority)
 {
 }
 //=============================================================================
@@ -64,9 +67,6 @@ CPlayer_Bullet * CPlayer_Bullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		{
 			// 初期化処理
 			pPlayer_Bullet->Init(pos, rot);
-
-			// 箱生成
-			//CModel_Box::Create(pos, rot, pPlayer_Bullet);
 		}
 	}
 	// ポインタを返す
@@ -94,8 +94,11 @@ HRESULT CPlayer_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 移動量設定
 	SetMove(move);
 
-	// 箱生成
-	//CModel_Box::Create(pos, rot, this);
+	// レイのデータ
+	RAY_DATA Ray_Data = { rot.y , RAY_RANGE , RAY_NUM };
+
+	// レイのデータ設定
+	SetRay_Data(Ray_Data);
 	return S_OK;
 }
 //=============================================================================
@@ -118,6 +121,9 @@ void CPlayer_Bullet::Update(void)
 
 	// 当たり判定
 	Collision();
+
+	// trueの場合
+	RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -169,15 +175,6 @@ void CPlayer_Bullet::Collision(void)
 				// サイズ取得
 				D3DXVECTOR3 CharacterSize = ((CEnemy*)pScene)->GetSize();
 
-				//エフェクト発生
-				for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
-				{
-					// パーティクル生成
-					CEffect::Create(CharacterPos,
-						SPLASH_SIZE, SPLASH_MOVE, SPLASH_COLOR,
-						CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
-				}
-
 				// 判定
 				if (CCollision::CollisionRectangleAndRectangle(pos, CharacterPos, size, CharacterSize) == true)
 				{
@@ -191,6 +188,44 @@ void CPlayer_Bullet::Collision(void)
 				}
 
 				// 次に代入
+				pScene = pSceneCur;
+			}
+		}
+	}
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ
+		pScene = GetTop(PRIORITY_TORPEDO);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// nullptrになるまで繰り返す
+			while (pScene != nullptr)
+			{
+				// 次のポインタ取得
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置取得
+				D3DXVECTOR3 TorpedoPos = ((CTorpedo*)pScene)->GetPos();
+
+				// サイズ取得
+				D3DXVECTOR3 TorpedoSize = ((CTorpedo*)pScene)->GetSize();
+
+				// 矩形
+				if (CCollision::CollisionRectangleAndRectangle(pos, TorpedoPos, size, TorpedoSize) == true)
+				{
+					// 終了
+					((CTorpedo*)pScene)->Uninit();
+
+					// 終了
+					Uninit();
+
+					return;
+				}
+
+				// 現在のポインタに
 				pScene = pSceneCur;
 			}
 		}

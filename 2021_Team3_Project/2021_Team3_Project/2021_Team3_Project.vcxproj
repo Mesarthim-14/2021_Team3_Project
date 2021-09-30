@@ -148,11 +148,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="attack_ui.cpp" />
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="boss_bullet.cpp" />
     <ClCompile Include="boss_fade.cpp" />
     <ClCompile Include="boss_life.cpp" />
     <ClCompile Include="boss_life_back.cpp" />
+    <ClCompile Include="control_ui.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy_normal_bullet.cpp" />
     <ClCompile Include="boss_shark.cpp" />
     <ClCompile Include="byte_attack_range.cpp" />
@@ -165,7 +168,6 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_proc.cpp" />
-    <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_attack_arrow_polygon.cpp" />
     <ClCompile Include="enemy_attack_point_polygon.cpp" />
@@ -203,6 +205,7 @@
     <ClCompile Include="result_failed.cpp" />
     <ClCompile Include="result_story.cpp" />
     <ClCompile Include="rock.cpp" />
+    <ClCompile Include="rotate_ui.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3D.cpp" />
@@ -223,6 +226,7 @@
     <ClCompile Include="xfile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="attack_ui.h" />
     <ClInclude Include="billboard.h" />
     <ClInclude Include="boss_bullet.h" />
     <ClInclude Include="boss_fade.h" />
@@ -238,6 +242,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="control_ui.h" />
     <ClInclude Include="debug_proc.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
@@ -278,6 +283,7 @@
     <ClInclude Include="result_failed.h" />
     <ClInclude Include="result_story.h" />
     <ClInclude Include="rock.h" />
+    <ClInclude Include="rotate_ui.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3D.h" />

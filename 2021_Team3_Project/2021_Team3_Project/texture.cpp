@@ -1,19 +1,19 @@
-ï»¿//=============================================================================
+//=============================================================================
 //
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç®¡ç†ã‚¯ãƒ©ã‚¹ [texture.cpp]
+// ƒeƒNƒXƒ`ƒƒ‚ÌŠÇ—ƒNƒ‰ƒX [texture.cpp]
 // Author : Konishi Yuuto
 //
 //=============================================================================
 
 //=============================================================================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+// ƒCƒ“ƒNƒ‹[ƒh
 //=============================================================================
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CTexture::CTexture()
 {
@@ -21,29 +21,29 @@ CTexture::CTexture()
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 //=============================================================================
 CTexture::~CTexture()
 {
 	for (int nCount = 0; nCount < TEXTURE_TYPE_NUM_MAX; nCount++)
 	{
-		// åå‰ãƒ‡ãƒ¼ã‚¿ã®ã‚¯ãƒªã‚¢
+		// –¼‘Oƒf[ƒ^‚ÌƒNƒŠƒA
 		m_aTexFileName[nCount].clear();
 	}
 }
 
 //=============================================================================
-// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
+// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
 //=============================================================================
 CTexture * CTexture::Create(void)
 {
-	// ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	// ƒƒ‚ƒŠŠm•Û
 	CTexture *pTexture = new CTexture;
 
 	// nullcheck
 	if (pTexture)
 	{
-		// åˆæœŸå€¤
+		// ‰Šú’l
 		pTexture->SetTextureName();
 		return pTexture;
 	}
@@ -51,45 +51,47 @@ CTexture * CTexture::Create(void)
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åå‰ã‚’è¨­å®š
+// ƒeƒNƒXƒ`ƒƒ‚Ì–¼‘O‚ğİ’è
 //=============================================================================
 HRESULT CTexture::SetTextureName(void)
 {
-	// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ’ÊíƒeƒNƒXƒ`ƒƒ
 	m_aTexFileName[TEXTURE_TYPE_NUM_NORMAL] =
 	{
-		{ "data/Texture/floor.jpg" },					// åºŠ
-		{ "data/Texture/target.png" },					// çš„
-		{ "data/Texture/arrow.png" },					// çŸ¢å°
-		{ "data/Texture/byte.png" },					// åš™ã¿ã¤ã	
-		{ "data/Texture/TitleLogo.png" },				// ã‚¿ã‚¤ãƒˆãƒ«
-		{ "data/Texture/game_explanation_paper.png" },	// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®èƒŒæ™¯
-		{ "data/Texture/game_explanation1.png" },		// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		{ "data/Texture/game_explanation2.png" },		// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		{ "data/Texture/game_explanation3.png" },		// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		{ "data/Texture/game_explanation4.png" },		// ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ã®æ–‡ç« 
-		{ "data/Texture/ResultBg.png" },				// ãƒªã‚¶ãƒ«ãƒˆ
-		{ "data/Texture/gameclear_story.png" },			// ãƒªã‚¶ãƒ«ãƒˆã‚¹ãƒˆãƒ¼ãƒªãƒ¼
-		{ "data/Texture/blackback.png" },				// ãƒªã‚¶ãƒ«ãƒˆã‚¹ãƒˆãƒ¼ãƒªãƒ¼
-		{ "data/Texture/Smoke.png" },					// ã‚¹ãƒ¢ãƒ¼ã‚¯
-		{ "data/Texture/Explosion_Animation.png" },		// çˆ†ç™º
-		{ "data/Texture/Wave_Effect.png" },				// æ³¢
-		{ "data/Texture/Wood_Animation.png" },			// æœ¨æ
+		{ "data/Texture/floor.jpg" },					// °
+		{ "data/Texture/target.png" },					// “I
+		{ "data/Texture/arrow.png" },					// –îˆó
+		{ "data/Texture/byte.png" },					// ™V‚İ‚Â‚«	
+		{ "data/Texture/TitleLogo.png" },				// ƒ^ƒCƒgƒ‹
+		{ "data/Texture/game_explanation_paper.png" },	// ƒXƒg[ƒŠ[‚Ì”wŒi
+		{ "data/Texture/game_explanation1.png" },		// ƒXƒg[ƒŠ[‚Ì•¶Í
+		{ "data/Texture/game_explanation2.png" },		// ƒXƒg[ƒŠ[‚Ì•¶Í
+		{ "data/Texture/game_explanation3.png" },		// ƒXƒg[ƒŠ[‚Ì•¶Í
+		{ "data/Texture/game_explanation4.png" },		// ƒXƒg[ƒŠ[‚Ì•¶Í
+		{ "data/Texture/ResultBg.png" },				// ƒŠƒUƒ‹ƒg
+		{ "data/Texture/gameclear_story.png" },			// ƒŠƒUƒ‹ƒgƒXƒg[ƒŠ[
+		{ "data/Texture/blackback.png" },				// ƒŠƒUƒ‹ƒgƒXƒg[ƒŠ[
+		{ "data/Texture/Smoke.png" },					// ƒXƒ‚[ƒN
+		{ "data/Texture/Explosion_Animation.png" },		// ”š”­
+		{ "data/Texture/Wave_Effect.png" },				// ”g
+		{ "data/Texture/Wood_Animation.png" },			// –ØŞ
+		{ "data/Texture/L1.png" },						// L1
+		{ "data/Texture/Red.png" },						// Ô
 	};
 
-	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// •ªŠ„ƒeƒNƒXƒ`ƒƒ
 	m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE] =
 	{
-		{ "data/Texture/sharp_effect.png" }
+		{ "data/Texture/Move_Ui.png" },					// ˆÚ“®‚ÌUi
 	};
 
-	// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
 	m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME] =
 	{
 		{ "data/Texture/NoiseVolume.dds" }
 	};
 
-	// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
 	m_aTexFileName[TEXTURE_TYPE_NUM_CUBE] =
 	{
 		{ "data/Texture/suimen8.dds" }
@@ -99,52 +101,52 @@ HRESULT CTexture::SetTextureName(void)
 }
 
 //=============================================================================
-// å…¨ã¦ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
+// ‘S‚Ä‚ÌƒeƒNƒXƒ`ƒƒƒ[ƒh
 //=============================================================================
 void CTexture::LoadAll(void)
 {
-	// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ’ÊíƒeƒNƒXƒ`ƒƒ
 	NormalTexLoad();
 
-	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// •ªŠ„ƒeƒNƒXƒ`ƒƒ
 	SeparateTexLoad();
 
-	// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
 	VolumeTexLoad();
 
-	// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
 	CubeTexLoad();
 }
 
 //=============================================================================
-// å…¨ã¦ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+// ‘S‚Ä‚ÌƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
 //=============================================================================
 void CTexture::UnLoadAll(void)
 {
-	// é€šå¸¸ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ’ÊíƒeƒNƒXƒ`ƒƒ
 	NormalTexUnLoad();
 
-	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// •ªŠ„ƒeƒNƒXƒ`ƒƒ
 	SeparateTexUnLoad();
 
-	// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ
 	VolumeTexUnLoad();
 
-	// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ
 	CubeTexUnLoad();
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
+// ƒeƒNƒXƒ`ƒƒƒ[ƒh
 //=============================================================================
 HRESULT CTexture::NormalTexLoad(void)
 {
-	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+	//ƒfƒoƒCƒX‚Ìæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	size_t size = m_aTexFileName[TEXTURE_TYPE_NUM_NORMAL].size();
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	for (size_t nCount = 0; nCount < size; nCount++)
 	{
 		D3DXCreateTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_NORMAL][nCount].data(), &m_apTexture[nCount]);
@@ -154,7 +156,7 @@ HRESULT CTexture::NormalTexLoad(void)
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+// ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
 //=============================================================================
 void CTexture::NormalTexUnLoad(void)
 {
@@ -169,16 +171,16 @@ void CTexture::NormalTexUnLoad(void)
 }
 
 //=============================================================================
-// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ­ãƒ¼ãƒ‰
+// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
 //=============================================================================
 HRESULT CTexture::SeparateTexLoad(void)
 {
-	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+	//ƒfƒoƒCƒX‚Ìæ“¾
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	size_t size = m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE].size();
 
-	// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE].size(); nCount++)
 	{
 		D3DXCreateTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE][nCount].data(), &m_apSeparateTexture[nCount].pSeparateTexture);
@@ -187,11 +189,11 @@ HRESULT CTexture::SeparateTexLoad(void)
 }
 
 //=============================================================================
-// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚ÌƒAƒ“ƒ[ƒh
 //=============================================================================
 void CTexture::SeparateTexUnLoad(void)
 {
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
+	// ƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
 	for (int nCount = 0; nCount < SEPARATE_TEX_MAX; nCount++)
 	{
 
@@ -204,7 +206,7 @@ void CTexture::SeparateTexUnLoad(void)
 }
 
 //=============================================================================
-// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
+// ƒeƒNƒXƒ`ƒƒî•ñ
 //=============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEXTURE_TYPE Tex_Num)
 {
@@ -220,17 +222,17 @@ LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEXTURE_TYPE Tex_Num)
 }
 
 //=============================================================================
-// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
+// •ªŠ„ƒeƒNƒXƒ`ƒƒî•ñ
 //=============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
+	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
 		// NULLcheck
 		if (m_apSeparateTexture[SepaTex_Type].pSeparateTexture != nullptr)
 		{
-			// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
+			// ƒeƒNƒXƒ`ƒƒî•ñ
 			return m_apSeparateTexture[SepaTex_Type].pSeparateTexture;
 		}
 	}
@@ -239,14 +241,14 @@ LPDIRECT3DTEXTURE9 CTexture::GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type)
 }
 
 //=============================================================================
-// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 //=============================================================================
 D3DXVECTOR2 CTexture::GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
+	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
-		// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
+		// ƒeƒNƒXƒ`ƒƒî•ñ
 		return m_apSeparateTexture[SepaTex_Type].m_TexInfo;
 	}
 
@@ -254,14 +256,14 @@ D3DXVECTOR2 CTexture::GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type)
 }
 
 //=============================================================================
-// åˆ†å‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ«ãƒ¼ãƒ—ãƒ•ãƒ©ã‚°
+// •ªŠ„ƒeƒNƒXƒ`ƒƒ‚Ìƒ‹[ƒvƒtƒ‰ƒO
 //=============================================================================
 bool CTexture::GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type)
 {
-	// é…åˆ—ã‚ˆã‚Šå°ã•ã‹ã£ãŸã‚‰
+	// ”z—ñ‚æ‚è¬‚³‚©‚Á‚½‚ç
 	if (SepaTex_Type < SEPARATE_TEX_MAX)
 	{
-		// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
+		// ƒeƒNƒXƒ`ƒƒî•ñ
 		return m_apSeparateTexture[SepaTex_Type].bLoop;
 	}
 
@@ -270,14 +272,14 @@ bool CTexture::GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type)
 
 
 //=============================================================================
-// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
+// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒƒ[ƒh
 //=============================================================================
 HRESULT CTexture::VolumeTexLoad(void)
 {
-	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+	//ƒfƒoƒCƒX‚Ìæ“¾
 	LPDIRECT3DDEVICE9 pDevice = GET_RENDERER_DEVICE;
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME].size(); nCount++)
 	{
 		D3DXCreateVolumeTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME][nCount].data(), &m_pVolumeTexture[nCount]);
@@ -287,7 +289,7 @@ HRESULT CTexture::VolumeTexLoad(void)
 }
 
 //=============================================================================
-// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
 //=============================================================================
 void CTexture::VolumeTexUnLoad(void)
 {
@@ -302,7 +304,7 @@ void CTexture::VolumeTexUnLoad(void)
 }
 
 //=============================================================================
-// ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+// ƒ{ƒŠƒ…[ƒ€ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 //=============================================================================
 LPDIRECT3DVOLUMETEXTURE9 CTexture::GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type)
 {
@@ -318,14 +320,14 @@ LPDIRECT3DVOLUMETEXTURE9 CTexture::GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type)
 }
 
 //=============================================================================
-// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ­ãƒ¼ãƒ‰
+// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒƒ[ƒh
 //=============================================================================
 HRESULT CTexture::CubeTexLoad(void)
 {
-	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+	//ƒfƒoƒCƒX‚Ìæ“¾
 	LPDIRECT3DDEVICE9 pDevice = GET_RENDERER_DEVICE;
 
-	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_CUBE].size(); nCount++)
 	{
 		D3DXCreateCubeTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_CUBE][nCount].data(), &m_pCubeTexture[nCount]);
@@ -335,7 +337,7 @@ HRESULT CTexture::CubeTexLoad(void)
 }
 
 //=============================================================================
-// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
+// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒƒAƒ“ƒ[ƒh
 //=============================================================================
 void CTexture::CubeTexUnLoad(void)
 {
@@ -350,7 +352,7 @@ void CTexture::CubeTexUnLoad(void)
 }
 
 //=============================================================================
-// ã‚­ãƒ¥ãƒ¼ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±
+// ƒLƒ…[ƒuƒeƒNƒXƒ`ƒƒ‚Ìî•ñ
 //=============================================================================
 LPDIRECT3DCUBETEXTURE9 CTexture::GetCubeTexture(CUBE_TEX_TYPE Tex_Type)
 {
