@@ -232,7 +232,7 @@ void CEnemy::FanDecision(void)
 		if (Rot.y > ANGLE_90 && Rot.y < ANGLE_270 || Rot.y < ANGLE_90 && Rot.y > -ANGLE_90)
 		{
 			// Œü‚«
- 			fRot = Rot.y + ANGLE_90;
+ 			fRot = Rot.y - ANGLE_90;
 		}
 		//‰E‚ðŒü‚¢‚Ä‚é‚©¶‚ðŒü‚¢‚Ä‚é‚©
 		if (Rot.y > ANGLE_0 && Rot.y < ANGLE_360 || Rot.y < ANGLE_0 && Rot.y > -ANGLE_0)
