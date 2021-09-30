@@ -149,10 +149,10 @@ void CTorpedo::Update(void)
 				D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
 
 				// 角度
-				m_fAngle = atan2f((PlayerPos.x - pos.x), (PlayerPos.z - pos.z));
+				//m_fAngle = atan2f((PlayerPos.x - pos.x), (PlayerPos.z - pos.z));
 
 				// 角度
-				//m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
+				m_fAngle = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
 			}
 			
 			// レイの情報
@@ -161,21 +161,8 @@ void CTorpedo::Update(void)
 			// レイの情報設定
 			SetRay_Data(Ray_Data);
 
-			// 90度以下の場合
-			if (rot.y <= ANGLE_90)
-			{
-				// 向き
-				rot.y = m_fAngle;
 
-				// 向き加算
-				rot.y += ANGLE_180;
-			}
-			// 90度以上の場合
-			if (rot.y > ANGLE_90)
-			{
-				// 向き
-				rot.y = m_fAngle;
-			}
+			rot.y = m_fAngle;
 
 			// 向き
 			SetRot(rot);
@@ -208,15 +195,8 @@ void CTorpedo::Update(void)
 			return;
 		}
 	}
+	// レイの当たり判定
 	RayCollision();
-	//// レイの当たり判定
-	//if == true);
-	//{
-	//	// 終了
-	//	Uninit();
-
-	//	return;
-	//}
 }
 //=============================================================================
 // 描画処理関数
@@ -237,8 +217,8 @@ void CTorpedo::Move(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// 弾の移動
-	move.x = sinf(m_fAngle) *MOVE_VALUE;
-	move.z = cosf(m_fAngle) *MOVE_VALUE;
+	move.x = -sinf(m_fAngle) *MOVE_VALUE;
+	move.z = -cosf(m_fAngle) *MOVE_VALUE;
 
 	// 移動設定
 	SetMove(move);
@@ -323,7 +303,7 @@ void CTorpedo::FanDecision(void)
 		if (Rot.y > ANGLE_90 && Rot.y < ANGLE_270 || Rot.y < ANGLE_90 && Rot.y > -ANGLE_90)
 		{
 			// 向き
-			fRot = Rot.y + ANGLE_90;
+			fRot = Rot.y - ANGLE_90;
 		}
 		//右を向いてるか左を向いてるか
 		if (Rot.y > ANGLE_0 && Rot.y < ANGLE_360 || Rot.y < ANGLE_0 && Rot.y > -ANGLE_0)

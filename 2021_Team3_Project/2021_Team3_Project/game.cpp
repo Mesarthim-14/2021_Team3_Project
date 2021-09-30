@@ -173,7 +173,7 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	// プレイヤーの位置描画
-	DrawPlayerPos();
+	//DrawPlayerPos();
 
 	if (m_pCamera != nullptr)
 	{
