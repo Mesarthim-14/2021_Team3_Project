@@ -154,6 +154,7 @@
     <ClCompile Include="boss_fade.cpp" />
     <ClCompile Include="boss_life.cpp" />
     <ClCompile Include="boss_life_back.cpp" />
+    <ClCompile Include="boss_map_transition.cpp" />
     <ClCompile Include="control_ui.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="enemy_normal_bullet.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="boss_fade.h" />
     <ClInclude Include="boss_life.h" />
     <ClInclude Include="boss_life_back.h" />
+    <ClInclude Include="boss_map_transition.h" />
     <ClInclude Include="boss_shark.h" />
     <ClInclude Include="byte_attack_range.h" />
     <ClInclude Include="byte_effect.h" />

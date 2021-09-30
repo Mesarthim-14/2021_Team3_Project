@@ -54,6 +54,7 @@ public:
 		XFILE_NUM_TITLE_MAP,			// タイトルマップ
 		XFILE_NUM_TITLE_SKY,			// スカイ
 		XFILE_NUM_BOSS_MAP,				// ボスマップ
+		XFILE_NUM_BOSS_MAP_TRANSITION,	// ボスマップに遷移用
 		XFILE_NUM_MAX
 	};
 
