@@ -46,7 +46,6 @@
 //=============================================================================
 //静的メンバ変数宣言
 //===================================w==========================================
-LPDIRECT3DTEXTURE9	CEffect::m_apTexture[EFFECT_TEXTURE_MAX] = {};
 
 //=============================================================================
 //コンストラクタ
@@ -197,13 +196,16 @@ void CEffect::WoodExplosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move,
 	RandomSize.x = (MinSize.x) + (int)(rand()*((MaxSize.x) - MinSize.x + 1.0) / (1.0 + RAND_MAX));
 	RandomSize.y = (MinSize.y) + (int)(rand()*((MaxSize.y) - MinSize.y + 1.0) / (1.0 + RAND_MAX));
 
-	m_bLoop = true;
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_WOOD));//テクスチャ情報を格納
 	Init(CreatePos, RandomSize, ActualMove, type, col, Life);
+
+	// アニメーション情報設定
+	BindTexture(pTexture->GetSeparateTexture(CTexture::SEPARATE_TEX_EFFECT_WOOD));
+	D3DXVECTOR2 TexInfo = pTexture->GetSparateTexInfo(CTexture::SEPARATE_TEX_EFFECT_WOOD);
+	bool bLoop = pTexture->GetSparateTexLoop(CTexture::SEPARATE_TEX_EFFECT_WOOD);
+	InitAnimation(TexInfo, bLoop);
 
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_BREAK);
-
 }
 
 //=============================================================================
@@ -219,7 +221,11 @@ void CEffect::Explosion(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR col, EFFECT
 
 	Init(pos, size, ZeroVector3, type, col, Life);
 
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_EFFECT_EXPLOSION));//テクスチャ情報を格納
+	// アニメーション情報設定
+	BindTexture(pTexture->GetSeparateTexture(CTexture::SEPARATE_TEX_EFFECT_EXPLOSION));
+	D3DXVECTOR2 TexInfo = pTexture->GetSparateTexInfo(CTexture::SEPARATE_TEX_EFFECT_EXPLOSION);
+	InitAnimation(TexInfo, 0);	
+	
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_EXPLOSION);
 }
@@ -314,37 +320,6 @@ HRESULT CEffect::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 move, EFFEC
 	m_nType = type;					//タイプ
 	CBillboard::Init(pos, size);	//ビルボード
 
-									//エフェクトのタイプ
-	switch (type)
-	{
-		//煙
-	case EFFECT_TYPE::EFFECT_TYPE_1:
-		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
-		break;
-
-		//爆発
-	case EFFECT_TYPE::EFFECT_TYPE_2:
-		CBillboard::InitAnimation(ANIMETION_EXPLOSION, 0);
-		break;
-
-		//波
-	case EFFECT_TYPE::EFFECT_TYPE_3:
-		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
-		break;
-
-		//水しぶき
-	case EFFECT_TYPE::EFFECT_TYPE_4:
-		CBillboard::InitAnimation(ANIMETION_DEFAULT, m_bLoop);
-		break;
-
-		//木材
-	case EFFECT_TYPE::EFFECT_TYPE_5:
-		CBillboard::InitAnimation(ANIMETION_WOOD, m_bLoop);
-		break;
-
-	default:
-		break;
-	}
 	return S_OK;
 }
 
