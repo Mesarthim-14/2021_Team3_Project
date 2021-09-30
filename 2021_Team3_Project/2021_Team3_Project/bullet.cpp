@@ -23,11 +23,11 @@
 #define POS_Y_MIN	(0.0f)								// Y座標最小値
 //水しぶき
 #define SPLASH_POS			(D3DXVECTOR3(GetPos().x, 1,GetPos().z))			
-#define SPLASH_SIZE			(D3DXVECTOR3(500.0f, 500.0f, 0.0f))		
+#define SPLASH_SIZE			(D3DXVECTOR3(10.0f, 10.0f, 0.0f))		
 #define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))		
 #define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))		
 #define SPLASH_LIFE			(1000)									
-#define SPLASH_MAX			(10)
+#define SPLASH_MAX			(20)
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
