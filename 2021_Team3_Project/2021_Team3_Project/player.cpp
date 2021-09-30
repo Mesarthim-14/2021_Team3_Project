@@ -1,10 +1,10 @@
 //=============================================================================
-// ƒvƒŒƒCƒ„[ [player.cpp]
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ [player.cpp]
 // Author : Sugawara Tsukasa
 //=============================================================================
 
 //=============================================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //=============================================================================
 #include "player.h"
 #include "manager.h"
@@ -30,96 +30,96 @@
 #include "effect.h"
 
 //=============================================================================
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(20.0f)									// ƒvƒŒƒCƒ„[‚ÌˆÚ“®—Ê
-#define STICK_SENSITIVITY		(50.0f)									// ƒXƒeƒBƒbƒNŠ´“x
-#define PLAYER_ROT_SPEED		(0.1f)									// ƒLƒƒƒ‰ƒNƒ^[‚Ì‰ñ“]‚·‚é‘¬“x
-#define SHIP_NUM				(0)										// ‘D‚Ìƒiƒ“ƒo[
-#define GEAR_R_NUM				(1)										// …‚©‚«‚Ì‰Eƒiƒ“ƒo[
-#define GEAR_L_NUM				(2)										// …‚©‚«‚Ì¶ƒiƒ“ƒo[
-#define BATTERY_R_NUM			(3)										// –C‘ä‰E‚Ìƒiƒ“ƒo[
-#define BATTERY_L_NUM			(4)										// –C‘ä¶‚Ìƒiƒ“ƒo[
-#define MIN_MOVE				(D3DXVECTOR3(0.0f,0.0f,0.0f))			// ˆÚ“®—Ê‚ÌÅ¬’l
-#define SIZE					(D3DXVECTOR3 (1200.0f,1000.0f,1200.0f))	// ƒTƒCƒY
-#define PARENT_NUM				(0)										// e‚Ìƒiƒ“ƒo[
-#define GEAR_SPIN_ANGLE			(D3DXToRadian(2.0f))					// •Ô‚Ì‰ñ“]Šp“x
-#define SPIN_ANGLE				(D3DXToRadian(1.0f))					// ù‰ñŠp“x
-#define STICK_INPUT_ZONE		(100)									// ƒXƒeƒBƒbƒN‚Ì“ü—Í”ÍˆÍ
-#define STICK_INPUT_ZONE_2		(1000)									// ƒXƒeƒBƒbƒN‚Ì“ü—Í”ÍˆÍ
-#define STICK_INPUT_ZERO		(0)										// ƒXƒeƒBƒbƒN‚Ì“ü—Í’l0
-#define MUT_SPEED				(1.5f)									// ƒXƒs[ƒh
-#define PAD_1					(0)										// 1”Ô–Ú‚Ìƒpƒbƒh
-#define PAD_2					(1)										// 2”Ô–Ú‚Ìƒpƒbƒh
-#define ATTACK_COOLTIME			(90)									// UŒ‚‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-#define RAY_NUM					(4)										// ƒŒƒC‚Ì”
-#define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// ƒŒƒC‚ğo‚·•ûŒü
-#define RAY_HIT_RANGE			(800.0f)								// ”ÍˆÍ
-#define MIN_LIFE				(0)										// ƒ‰ƒCƒt‚ÌÅ¬
-#define LIFE					(100)									// ƒ‰ƒCƒt
-#define ANGLE_MAX				(D3DXToRadian(360.0f))					// Šp“x‚ÌÅ‘å
-#define ANGLE_MIN				(D3DXToRadian(-360.0f))					// Šp“x‚ÌÅ¬
-#define ANGLE_0					(D3DXToRadian(0.0f))					// Šp“x0
-#define ANGLE_90				(D3DXToRadian(90.0f))					// Šp“x90
-#define ANGLE_180				(D3DXToRadian(180.0f))					// Šp“x180
-#define ANGLE_270				(D3DXToRadian(270.0f))					// Šp“x270
-#define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// ƒfƒtƒHƒ‹ƒg‚ÌŠp“x
-#define DEAD_ZONE				(0.0f)									// ƒRƒ“ƒgƒ[ƒ‰[‚Ì”½‰‚µ‚È‚¢”ÍˆÍ
-#define PAD_P1					(0)										// ƒpƒbƒhƒvƒŒƒCƒ„[1
-#define PAD_P2					(1)										// ƒpƒbƒhƒvƒŒƒCƒ„[2
-#define KNOCK_BACK_SPEED		(100.0f)								// ƒmƒbƒNƒoƒbƒN‚Ì‘¬‚³
-#define KNOCK_BACK_COUNT		(10)									// ƒmƒbƒNƒoƒbƒNƒJƒEƒ“ƒg
-#define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// •ûŒü
-#define STICK_ANGLERANGE		(1.0f)									//ƒXƒeƒBƒbƒN‚ÌŠp“x”ÍˆÍ
-#define SINK_TIME				(120)									// ’¾‚ŞŠÔ
-#define SINK_MOVE				(3.0f)									// ’¾‚Ş—Ê
-#define SINK_ROTATE				(3.0f)									// ’¾‚ŞŠp“x
-#define SOUND_INTER_TIME		(10)									// ˆÚ“®‚Ì‰¹‚ÌŠÔŠu
-// ‘D‘Ì‚ÌˆÊ’u
+#define PLAYER_SPEED			(20.0f)									// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•é‡
+#define STICK_SENSITIVITY		(50.0f)									// ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ„Ÿåº¦
+#define PLAYER_ROT_SPEED		(0.1f)									// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å›è»¢ã™ã‚‹é€Ÿåº¦
+#define SHIP_NUM				(0)										// èˆ¹ã®ãƒŠãƒ³ãƒãƒ¼
+#define GEAR_R_NUM				(1)										// æ°´ã‹ãã®å³ãƒŠãƒ³ãƒãƒ¼
+#define GEAR_L_NUM				(2)										// æ°´ã‹ãã®å·¦ãƒŠãƒ³ãƒãƒ¼
+#define BATTERY_R_NUM			(3)										// ç ²å°å³ã®ãƒŠãƒ³ãƒãƒ¼
+#define BATTERY_L_NUM			(4)										// ç ²å°å·¦ã®ãƒŠãƒ³ãƒãƒ¼
+#define MIN_MOVE				(D3DXVECTOR3(0.0f,0.0f,0.0f))			// ç§»å‹•é‡ã®æœ€å°å€¤
+#define SIZE					(D3DXVECTOR3 (1200.0f,1000.0f,1200.0f))	// ã‚µã‚¤ã‚º
+#define PARENT_NUM				(0)										// è¦ªã®ãƒŠãƒ³ãƒãƒ¼
+#define GEAR_SPIN_ANGLE			(D3DXToRadian(2.0f))					// æ­¯è»Šã®å›è»¢è§’åº¦
+#define SPIN_ANGLE				(D3DXToRadian(1.0f))					// æ—‹å›è§’åº¦
+#define STICK_INPUT_ZONE		(100)									// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ç¯„å›²
+#define STICK_INPUT_ZONE_2		(1000)									// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ç¯„å›²
+#define STICK_INPUT_ZERO		(0)										// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›å€¤0
+#define MUT_SPEED				(1.5f)									// ã‚¹ãƒ”ãƒ¼ãƒ‰
+#define PAD_1					(0)										// 1ç•ªç›®ã®ãƒ‘ãƒƒãƒ‰
+#define PAD_2					(1)										// 2ç•ªç›®ã®ãƒ‘ãƒƒãƒ‰
+#define ATTACK_COOLTIME			(90)									// æ”»æ’ƒã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+#define RAY_NUM					(4)										// ãƒ¬ã‚¤ã®æ•°
+#define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// ãƒ¬ã‚¤ã‚’å‡ºã™æ–¹å‘
+#define RAY_HIT_RANGE			(800.0f)								// ç¯„å›²
+#define MIN_LIFE				(0)										// ãƒ©ã‚¤ãƒ•ã®æœ€å°
+#define LIFE					(100)									// ãƒ©ã‚¤ãƒ•
+#define ANGLE_MAX				(D3DXToRadian(360.0f))					// è§’åº¦ã®æœ€å¤§
+#define ANGLE_MIN				(D3DXToRadian(-360.0f))					// è§’åº¦ã®æœ€å°
+#define ANGLE_0					(D3DXToRadian(0.0f))					// è§’åº¦0
+#define ANGLE_90				(D3DXToRadian(90.0f))					// è§’åº¦90
+#define ANGLE_180				(D3DXToRadian(180.0f))					// è§’åº¦180
+#define ANGLE_270				(D3DXToRadian(270.0f))					// è§’åº¦270
+#define GEAR_DEF_ROT			(D3DXToRadian(0.0f))					// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®è§’åº¦
+#define DEAD_ZONE				(0.0f)									// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®åå¿œã—ãªã„ç¯„å›²
+#define PAD_P1					(0)										// ãƒ‘ãƒƒãƒ‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼1
+#define PAD_P2					(1)										// ãƒ‘ãƒƒãƒ‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼2
+#define KNOCK_BACK_SPEED		(100.0f)								// ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã®é€Ÿã•
+#define KNOCK_BACK_COUNT		(10)									// ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã‚«ã‚¦ãƒ³ãƒˆ
+#define ARCDIR					(D3DXVECTOR3(1.0f,0.0f,0.0f))			// æ–¹å‘
+#define STICK_ANGLERANGE		(1.0f)									//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®è§’åº¦ç¯„å›²
+#define SINK_TIME				(120)									// æ²ˆã‚€æ™‚é–“
+#define SINK_MOVE				(3.0f)									// æ²ˆã‚€é‡
+#define SINK_ROTATE				(3.0f)									// æ²ˆã‚€è§’åº¦
+#define SOUND_INTER_TIME		(10)									// ç§»å‹•ã®éŸ³ã®é–“éš”
+// èˆ¹ä½“ã®ä½ç½®
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
-// –C‘ä‚ÌˆÊ’u
+// ç ²å°ã®ä½ç½®
 #define BATTERY_R_POS			(D3DXVECTOR3(pBattery_R->GetMtxWorld()._41, pBattery_R->GetMtxWorld()._42, pBattery_R->GetMtxWorld()._43))
 #define BATTERY_L_POS			(D3DXVECTOR3(pBattery_L->GetMtxWorld()._41, pBattery_L->GetMtxWorld()._42, pBattery_L->GetMtxWorld()._43))
 
-//ƒGƒtƒFƒNƒgƒf[ƒ^
-//”š”­
-#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//ˆÊ’u
-#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//ƒTƒCƒY
-#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//F
-#define EXPLOSION_LIFE		(70)													//ƒ‰ƒCƒt
+//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿
+//çˆ†ç™º
+#define EXPLOSION_POS		(D3DXVECTOR3(500.0f, 500.0f, 1.0f))						//ä½ç½®
+#define EXPLOSION_SIZE		(D3DXVECTOR3(500, 500, 500))							//ã‚µã‚¤ã‚º
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//è‰²
+#define EXPLOSION_LIFE		(70)													//ãƒ©ã‚¤ãƒ•
 
-//‰Œ																				
-#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//ˆÊ’u
-#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//ƒTƒCƒY
-#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//ˆÚ“®—Ê
-#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//F
-#define SMOKE_LIFE			(500)													//ƒ‰ƒCƒt
+//ç…™																				
+#define SMOKE_POS			(D3DXVECTOR3(0, 1, 0))									//ä½ç½®
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//ã‚µã‚¤ã‚º
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//ç§»å‹•é‡
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//è‰²
+#define SMOKE_LIFE			(500)													//ãƒ©ã‚¤ãƒ•
 
-//‚µ‚Ô‚«																		
-#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//ˆÊ’u
-#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//ƒTƒCƒY
-#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//ˆÚ“®—Ê
-#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//F
-#define SPLASH_LIFE			(200)													//ƒ‰ƒCƒt
+//ã—ã¶ã																		
+#define SPLASH_POS			(D3DXVECTOR3(0, 1, 0))									//ä½ç½®
+#define SPLASH_SIZE			(D3DXVECTOR3(80.0f, 80.0f, 80.0f))						//ã‚µã‚¤ã‚º
+#define SPLASH_MOVE			(D3DXVECTOR3(10.0f, 20.0f, 10.0f))						//ç§»å‹•é‡
+#define SPLASH_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//è‰²
+#define SPLASH_LIFE			(200)													//ãƒ©ã‚¤ãƒ•
 
-//–Ø																		
-#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//ˆÊ’u
-#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//ƒTƒCƒY
-#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//ˆÚ“®—Ê
-#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//F
-#define WOOD_LIFE			(500)													//ƒ‰ƒCƒt
+//æœ¨																		
+#define WOOD_POS			(D3DXVECTOR3(0, 1, 0))									//ä½ç½®
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//ã‚µã‚¤ã‚º
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//ç§»å‹•é‡
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//è‰²
+#define WOOD_LIFE			(500)													//ãƒ©ã‚¤ãƒ•
 
-//”g																				
-#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//ˆÊ’u
-#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//ƒTƒCƒY
-#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//ˆÚ“®—Ê
-#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//F
-#define WAVE_LIFE			(70)													//ƒ‰ƒCƒt
-#define WAVE_MAX_PARTICLE	(10)													//—Ê
+//æ³¢																				
+#define WAVE_POS			(D3DXVECTOR3(GetPos().x-10.0f, 1, GetPos().z-10.0f))	//ä½ç½®
+#define WAVE_SIZE			(D3DXVECTOR3(20, 20, 20))								//ã‚µã‚¤ã‚º
+#define WAVE_MOVE			(D3DXVECTOR3(50.0, 8.0, 50.0))							//ç§»å‹•é‡
+#define WAVE_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//è‰²
+#define WAVE_LIFE			(70)													//ãƒ©ã‚¤ãƒ•
+#define WAVE_MAX_PARTICLE	(10)													//é‡
 
 //=============================================================================
-// ¶¬ˆ—ŠÖ”
+// ç”Ÿæˆå‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
@@ -129,16 +129,16 @@ CPlayer * CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// !nullcheck
 	if (pPlayer != nullptr)
 	{
-		// ‰Šú‰»ˆ—
+		// åˆæœŸåŒ–å‡¦ç†
 		pPlayer->Init(pos, rot);
 	}
 
-	// CPlayer‚ğ•Ô‚·
+	// CPlayerã‚’è¿”ã™
 	return pPlayer;
 }
 
 //=============================================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
@@ -161,7 +161,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 }
 
 //=============================================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 // Author : Sugawara Tsukasa
 //=============================================================================
 CPlayer::~CPlayer()
@@ -169,66 +169,66 @@ CPlayer::~CPlayer()
 }
 
 //=============================================================================
-// ‰Šú‰»ˆ—ŠÖ”
+// åˆæœŸåŒ–å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	// CXfileæ“¾
+	// CXfileå–å¾—
 	CXfile *pXfile = CManager::GetResourceManager()->GetXfileClass();
 
 	// !nullcheck
 	if (pXfile != nullptr)
 	{
-		// ƒ‚ƒfƒ‹¶¬
+		// ãƒ¢ãƒ‡ãƒ«ç”Ÿæˆ
 		ModelCreate(CXfile::HIERARCHY_XFILE_NUM_PLAYER);
 	}
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	CCharacter::Init(pos, rot);
 
-	// Œü‚«
+	// å‘ã
 	m_rotDest = rot;
 
-	// ƒTƒCƒYİ’è
+	// ã‚µã‚¤ã‚ºè¨­å®š
 	SetSize(SIZE);
 
-	// ƒ‰ƒCƒtİ’è
+	// ãƒ©ã‚¤ãƒ•è¨­å®š
 	SetLife(LIFE);
 
-	// ƒXƒs[ƒhİ’è
+	// ã‚¹ãƒ”ãƒ¼ãƒ‰è¨­å®š
 	SetSpeed(PLAYER_SPEED);
 
-	// ƒpƒbƒhæ“¾
+	// ãƒ‘ãƒƒãƒ‰å–å¾—
 	LPDIRECTINPUTDEVICE8 P1_PAD = CInputJoypad::GetController(PAD_P1);
 	LPDIRECTINPUTDEVICE8 P2_PAD = CInputJoypad::GetController(PAD_P2);
 
-	// 2PadÚ‘±‚³‚ê‚Ä‚¢‚é‚È‚ç
+	// 2Padæ¥ç¶šã•ã‚Œã¦ã„ã‚‹ãªã‚‰
 	if (P1_PAD != nullptr && P2_PAD != nullptr)
 	{
 		m_PadType = PAD_TYPE_2P;
 	}
 
-	// ‰e
+	// å½±
 	SetUseShadow();
 
-	// ‰e‚ÌŒü‚«
+	// å½±ã®å‘ã
 	SetShadowRotCalculation();
 
-	// ƒŒƒC‚Ìƒf[ƒ^
+	// ãƒ¬ã‚¤ã®ãƒ‡ãƒ¼ã‚¿
 	CCharacter::RAY_DATA Ray_Data = { RAY_RADIUS ,RAY_HIT_RANGE ,RAY_NUM };
 
-	// ƒŒƒC‚Ìƒf[ƒ^İ’è
+	// ãƒ¬ã‚¤ã®ãƒ‡ãƒ¼ã‚¿è¨­å®š
 	SetRay_Data(Ray_Data);
 
-	// ” ¶¬
+	// ç®±ç”Ÿæˆ
 	//CCharacter_Box::Create(pos, rot, this);
 
 	return S_OK;
 }
 
 //=============================================================================
-// I—¹ˆ—ŠÖ”
+// çµ‚äº†å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Uninit(void)
@@ -237,54 +237,54 @@ void CPlayer::Uninit(void)
 }
 
 //=============================================================================
-// XVŠÖ”ˆ—ŠÖ”
+// æ›´æ–°é–¢æ•°å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Update(void)
 {
-	// XV
+	// æ›´æ–°
 	CCharacter::Update();
 
-	// ˆÊ’uæ“¾
+	// ä½ç½®å–å¾—
 	D3DXVECTOR3 pos = GetPos();
 
-	// ŒÃ‚¢ˆÊ’uİ’è
+	// å¤ã„ä½ç½®è¨­å®š
 	SetPosOld(pos);
 
-	// ó‘ÔXV
+	// çŠ¶æ…‹æ›´æ–°
 	UpdateState();
 
-	// false1‚Ìê‡
+	// false1ã®å ´åˆ
 	if (!m_bDeath)
 	{
-		// ƒvƒŒƒCƒ„[ˆ—
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‡¦ç†
 		PlayerControl();
 	}
 	else
 	{
-		// €–Sˆ—
+		// æ­»äº¡å‡¦ç†
 		SinkEnd();
 	}
 
-	// ˆÚ“®‚ÌƒTƒEƒ“ƒh
+	// ç§»å‹•ã®ã‚µã‚¦ãƒ³ãƒ‰
 	MoveSound();
 
-	// Šp“x‚ÌXVˆ—
+	// è§’åº¦ã®æ›´æ–°å‡¦ç†
 	UpdateRot();
 }
 
 //=============================================================================
-// •`‰æˆ—ŠÖ”
+// æç”»å‡¦ç†é–¢æ•°
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	// •`‰æ
+	// æç”»
 	CCharacter::Draw();
 }
 
 //=============================================================================
-// ó‘ÔXV
+// çŠ¶æ…‹æ›´æ–°
 // Author: Sugawara Tsukasa
 //=============================================================================
 void CPlayer::UpdateState(void)
@@ -293,64 +293,64 @@ void CPlayer::UpdateState(void)
 }
 
 //=============================================================================
-// ƒvƒŒƒCƒ„[‚Ìˆ—
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::PlayerControl()
 {
-	// ƒ‚[ƒhæ“¾
+	// ãƒ¢ãƒ¼ãƒ‰å–å¾—
 	CManager::MODE_TYPE mode = CManager::GetMode();
 
-	// GAME‚Ìê‡
+	// GAMEã®å ´åˆ
 	if (mode == CManager::MODE_TYPE_GAME)
 	{
-		// CGameæ“¾
+		// CGameå–å¾—
 		CGame *pGame = (CGame*)CManager::GetModePtr();
 
 		// !nullcheck
 		if (pGame != nullptr)
 		{
-			// ƒ{ƒX‘JˆÚ‚µ‚Ä‚¢‚é‚©æ“¾
+			// ãƒœã‚¹é·ç§»ã—ã¦ã„ã‚‹ã‹å–å¾—
 			bool bBossTransition = pGame->GetbBossTransition();
 
-			// false‚Ìê‡
+			// falseã®å ´åˆ
 			if (bBossTransition == false)
 			{
-				// false‚Ìê‡
+				// falseã®å ´åˆ
 				if (m_bKnock_Back == false)
 				{
 					if (m_PadType == PAD_TYPE_1P)
 					{
-						// ˆÚ“®ˆ—
+						// ç§»å‹•å‡¦ç†
 						Move();
 
-						// UŒ‚ˆ—
+						// æ”»æ’ƒå‡¦ç†
 						Attack();
 					}
-					// 2P‚Ìê‡
+					// 2Pã®å ´åˆ
 					if (m_PadType == PAD_TYPE_2P)
 					{
-						// ˆÚ“®ˆ—
+						// ç§»å‹•å‡¦ç†
 						Pad2Move();
 
-						// UŒ‚ˆ—
+						// æ”»æ’ƒå‡¦ç†
 						Pad2Attack();
 					}
 
-					// ƒL[ƒ{[ƒhˆÚ“®ˆ—
+					// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ç§»å‹•å‡¦ç†
 					KeyboardMove();
 				}
-				// true‚Ìê‡
+				// trueã®å ´åˆ
 				if (m_bKnock_Back == true)
 				{
-					// ƒmƒbƒNƒoƒbƒNˆ—
+					// ãƒãƒƒã‚¯ãƒãƒƒã‚¯å‡¦ç†
 					Knock_Back();
 				}
 
-				// “–‚½‚è”»’è
+				// å½“ãŸã‚Šåˆ¤å®š
 				Collision();
 
-				// ƒŒƒC‚Ì“–‚½‚è”»’è
+				// ãƒ¬ã‚¤ã®å½“ãŸã‚Šåˆ¤å®š
 				RayCollision();
 			}
 		}
@@ -358,12 +358,12 @@ void CPlayer::PlayerControl()
 }
 
 //=============================================================================
-// Œü‚«XVˆ—
+// å‘ãæ›´æ–°å‡¦ç†
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::UpdateRot(void)
 {
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 rot = GetRot();
 
 	while (m_rotDest.y - rot.y > D3DXToRadian(180))
@@ -376,41 +376,41 @@ void CPlayer::UpdateRot(void)
 		m_rotDest.y += D3DXToRadian(360);
 	}
 
-	// Œü‚«
+	// å‘ã
 	rot += (m_rotDest - rot) * PLAYER_ROT_SPEED;
 
-	// Œü‚«İ’è
+	// å‘ãè¨­å®š
 	SetRot(rot);
 }
 
 //=============================================================================
-// ƒqƒbƒgˆ—ŠÖ”
+// ãƒ’ãƒƒãƒˆå‡¦ç†é–¢æ•°
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Hit(int nDamage)
 {
-	// ƒ‰ƒCƒtæ“¾
+	// ãƒ©ã‚¤ãƒ•å–å¾—
 	GetLife() -= nDamage;
 
-	// true‚É
+	// trueã«
 	m_bHitFlag = true;
 
-	// ƒGƒtƒFƒNƒg¶¬
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	CreateWoodEP();
 
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_DAMAGE);
 
-	// 0‚Ìê‡
+	// 0ã®å ´åˆ
 	if (!m_bDeath && GetLife() <= 0)
 	{
-		// æ­»ã¬
+		// è±ï½»ç¸ºï½¬
 		Death();
 	}
 }
 
 //=============================================================================
-// €–Sˆ—
+// æ­»äº¡å‡¦ç†
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::Death(void)
@@ -422,990 +422,998 @@ void CPlayer::Death(void)
 }
 
 //=============================================================================
-// ˆÚ“®ˆ—
+// ç§»å‹•å‡¦ç†
 // Author : Sugawara Tsukasa
 //=============================================================================
 void CPlayer::Move(void)
 {
-	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// ƒXƒeƒBƒbƒNæ“¾
-	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// ƒTƒEƒ“ƒhæ“¾
-	D3DXVECTOR3 pos = GetPos();												// ˆÊ’uæ“¾
-	D3DXVECTOR3 rot = GetRot();												// Œü‚«æ“¾
-	float fSpeed = GetSpeed();												// ƒXƒs[ƒhæ“¾
-	float fAngle_R = ZERO_FLOAT;											// ‰E
-	float fAngle_L = ZERO_FLOAT;											// ¶
+	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// ã‚¹ãƒ†ã‚£ãƒƒã‚¯å–å¾—
+	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// ã‚µã‚¦ãƒ³ãƒ‰å–å¾—
+	D3DXVECTOR3 pos = GetPos();												// ä½ç½®å–å¾—
+	D3DXVECTOR3 rot = GetRot();												// å‘ãå–å¾—
+	float fSpeed = GetSpeed();												// ã‚¹ãƒ”ãƒ¼ãƒ‰å–å¾—
+	float fAngle_R = ZERO_FLOAT;											// å³
+	float fAngle_L = ZERO_FLOAT;											// å·¦
 
 																			//===========================================
-																			// ‰E•Ô
+																			// å³æ­¯è»Š
 																			//===========================================
-																			// ‰EƒXƒeƒBƒbƒN‚ª“ü—Í‚³‚ê‚Ä‚¢‚éê‡
+																			// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 		RStickAngle(fAngle_R);
 
-		// ¶‚ÉˆÚ“®
+		// å·¦ã«ç§»å‹•
 		if (fAngle_R < m_fdisAngle_R)
 		{
-			// ƒpƒhƒ‹‚Ì‰ñ“]
+			// ãƒ‘ãƒ‰ãƒ«ã®å›è»¢
 			PaddleRotateR(-GEAR_SPIN_ANGLE);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//”gƒGƒtƒFƒNƒg
+			//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 		}
-		// false‚Ìê‡
+		// falseã®å ´åˆ
 		else if (m_bBack == false)
 		{
-			// ‰E‚ÉˆÚ“®
+			// å³ã«ç§»å‹•
 			if (fAngle_R > m_fdisAngle_R)
 			{
-				// ƒpƒhƒ‹‚Ì‰ñ“]
+				// ãƒ‘ãƒ‰ãƒ«ã®å›è»¢
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 
-				//”gƒGƒtƒFƒNƒg
+				//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// ¶•Ô
+	// å·¦æ­¯è»Š
 	//===========================================
-	// ¶ƒXƒeƒBƒbƒN‚ª“ü—Í‚³‚ê‚Ä‚¢‚éê‡
+	// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 	{
-		// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 
-		//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 		LStickAngle(fAngle_L);
 
-		// ‰E‚ÉˆÚ“®
+		// å³ã«ç§»å‹•
 		if (fAngle_L < m_fdisAngle_L)
 		{
-			// ƒpƒhƒ‹‚Ì‰ñ“]
+			// ãƒ‘ãƒ‰ãƒ«ã®å›è»¢
 			PaddleRotateL(-GEAR_SPIN_ANGLE);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//”gƒGƒtƒFƒNƒg
+			//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 		}
-		// false‚Ìê‡
+		// falseã®å ´åˆ
 		else if (m_bBack == false)
 		{
-			// ¶‚ÉˆÚ“®
+			// å·¦ã«ç§»å‹•
 			if (fAngle_L > m_fdisAngle_L)
 			{
-				// ƒpƒhƒ‹‚Ì‰ñ“]
+				// ãƒ‘ãƒ‰ãƒ«ã®å›è»¢
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 
-				//”gƒGƒtƒFƒNƒg
+				//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 				CreateWave();
 			}
 		}
 	}
-	// “ü—Í‚³‚ê‚Ä‚¢‚éê‡
+	// å…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 		fAngle_L = atan2f((float)js.lY, (float)js.lX);
 		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-		//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 		LStickAngle(fAngle_L);
 		RStickAngle(fAngle_R);
 
-		// ‰EƒXƒeƒBƒbƒN‚Æ¶ƒXƒeƒBƒbƒN‚ª‰º‚É“|‚³‚ê‚Ä‚¢‚éê‡
+		// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã¨å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒä¸‹ã«å€’ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
-			// true‚É
+			// trueã«
 			m_bBack = true;
-			// true‚Ìê‡
+			// trueã®å ´åˆ
 			if (m_bBack == true)
 			{
-				// ƒpƒhƒ‹‚Ì‰ñ“]
+				// ãƒ‘ãƒ‰ãƒ«ã®å›è»¢
 				PaddleRotateR(GEAR_SPIN_ANGLE);
 				PaddleRotateL(GEAR_SPIN_ANGLE);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 
 				m_bMoveSound = true;
 			}
 		}
-		// ‰EƒXƒeƒBƒbƒN‚Æ¶ƒXƒeƒBƒbƒN‚ª‰º‚É“|‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã¨å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒä¸‹ã«å€’ã•ã‚Œã¦ã„ãªã„å ´åˆ
 		else if (fAngle_L <= m_fdisAngle_L || fAngle_R <= m_fdisAngle_R)
 		{
-			// false‚É
+			// falseã«
 			m_bBack = false;
 		}
 	}
 
 
 
-	// Šp“x‚Ì•â³
+	// è§’åº¦ã®è£œæ­£
 	PaddleRotFix();
 
-	// Œü‚«
+	// å‘ã
 	SetRot(rot);
 
-	// ˆÊ’uİ’è
+	// ä½ç½®è¨­å®š
 	SetPos(pos);
 
-	//‘O‰ñ‚ÌƒXƒeƒBƒbƒNŠp“x
+	//å‰å›ã®ã‚¹ãƒ†ã‚£ãƒƒã‚¯è§’åº¦
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 //=============================================================================
-// 2PAD‚ÌˆÚ“®ˆ—ŠÖ”
+// 2PADã®ç§»å‹•å‡¦ç†é–¢æ•°
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Move(void)
 {
-	// ƒWƒ‡ƒCƒpƒbƒh‚Ìæ“¾
+	// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®å–å¾—
 	DIJOYSTATE P1_js = CInputJoypad::GetStick(PAD_P1);
 	DIJOYSTATE P2_js = CInputJoypad::GetStick(PAD_P2);
-	float fAngle_R = ZERO_FLOAT;	// ‰EŠp“x
-	float fAngle_L = ZERO_FLOAT;	// ¶Šp“x
+	float fAngle_R = ZERO_FLOAT;	// å³è§’åº¦
+	float fAngle_L = ZERO_FLOAT;	// å·¦è§’åº¦
 
-									// ƒTƒEƒ“ƒh‚Ìƒ|ƒCƒ“ƒ^
+									// ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
-	// À•W
+	// åº§æ¨™
 	D3DXVECTOR3 pos = GetPos();
 
-	// Šp“x
+	// è§’åº¦
 	D3DXVECTOR3 rot = GetRot();
 
-	// ƒXƒs[ƒh
+	// ã‚¹ãƒ”ãƒ¼ãƒ‰
 	float fSpeed = GetSpeed();
 
 
-	// ¶‚Ì•Ô‚Ìî•ñæ“¾
+	// å·¦ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// ‰E‚Ì•Ô‚Ìî•ñæ“¾
+	// å³ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
 	//===========================================
-	// ¶•Ô ¦1Player
+	// å·¦æ­¯è»Š â€»1Player
 	//===========================================
-	// ¶ƒXƒeƒBƒbƒN‚ª“ü—Í‚³‚ê‚Ä‚¢‚éê‡
+	// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE)
 	{
-		// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-		//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 		LStickAngle(fAngle_L);
-		// ‰E‚ÉˆÚ“®
+		// å³ã«ç§»å‹•
 		if (fAngle_L > m_fdisAngle_L)
 		{
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_L->SetRot(Gear_L_rot);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//”gƒGƒtƒFƒNƒg
+			//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 		}
-		// false‚Ìê‡
+		// falseã®å ´åˆ
 		if (m_bBack == false)
 		{
-			// ¶‚ÉˆÚ“®
+			// å·¦ã«ç§»å‹•
 			if (fAngle_L < m_fdisAngle_L)
 			{
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_L->SetRot(Gear_L_rot);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 
-				//”gƒGƒtƒFƒNƒg
+				//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 				CreateWave();
 			}
 		}
 	}
 	//===========================================
-	// ‰E•Ô ¦2Player
+	// å³æ­¯è»Š â€»2Player
 	//===========================================
-	// ¶ƒXƒeƒBƒbƒN‚ª“ü—Í‚³‚ê‚Ä‚¢‚éê‡
+	// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+		// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-		//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 		RStickAngle(fAngle_R);
-		// ¶‚ÉˆÚ“®
+		// å·¦ã«ç§»å‹•
 		if (fAngle_R > m_fdisAngle_R)
 		{
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_R->SetRot(Gear_R_rot);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//”gƒGƒtƒFƒNƒg
+			//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 		}
-		// false‚Ìê‡
+		// falseã®å ´åˆ
 		if (m_bBack == false)
 		{
-			// ‰E‚ÉˆÚ“®
+			// å³ã«ç§»å‹•
 			if (fAngle_R < m_fdisAngle_R)
 			{
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_R->SetRot(Gear_R_rot);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 
-				//”gƒGƒtƒFƒNƒg
+				//æ³¢ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 				CreateWave();
 			}
 		}
 
 
 	}
-	// “ü—Í‚³‚ê‚Ä‚¢‚éê‡
+	// å…¥åŠ›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// ‰EƒXƒeƒBƒbƒN‚Æ¶ƒXƒeƒBƒbƒN‚ª‰º‚É“|‚³‚ê‚Ä‚¢‚éê‡
+		// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã¨å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒä¸‹ã«å€’ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
-			// ƒRƒ“ƒgƒ[ƒ‰[‚ÌŠp“x
+			// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®è§’åº¦
 			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
 			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
 
-			//ƒXƒeƒBƒbƒN‚ÌÅ’Z‹——£
+			//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è·é›¢
 			LStickAngle(fAngle_L);
 			RStickAngle(fAngle_R);
-			// true‚É
+			// trueã«
 			m_bBack = true;
-			// true‚Ìê‡
+			// trueã®å ´åˆ
 			if (m_bBack == true)
 			{
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_L->SetRot(Gear_L_rot);
 
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_R->SetRot(Gear_R_rot);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += sinf(rot.y)*fSpeed;
 				pos.z += cosf(rot.y)*fSpeed;
 
 				m_bMoveSound = true;
 			}
 		}
-		// ‰EƒXƒeƒBƒbƒN‚Æ¶ƒXƒeƒBƒbƒN‚ª‰º‚É“|‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã¨å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒä¸‹ã«å€’ã•ã‚Œã¦ã„ãªã„å ´åˆ
 		else if (fAngle_L <= m_fdisAngle_L || fAngle_R <= m_fdisAngle_R)
 		{
-			// false‚É
+			// falseã«
 			m_bBack = false;
 		}
 	}
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// Œü‚«
+	// å‘ã
 	SetRot(rot);
 
-	// ˆÊ’uİ’è
+	// ä½ç½®è¨­å®š
 	SetPos(pos);
 
-	//Ši”[
+	//æ ¼ç´
 	m_fdisAngle_R = fAngle_R;
 	m_fdisAngle_L = fAngle_L;
 
 }
 
 //=============================================================================
-// UŒ‚ˆ—
+// æ”»æ’ƒå‡¦ç†
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Attack(void)
 {
-	// ƒL[ƒ{[ƒhæ“¾
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å–å¾—
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// ƒWƒ‡ƒCƒpƒbƒhæ“¾
+	// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰å–å¾—
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// ƒ‚ƒfƒ‹‚Ìî•ñæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±å–å¾—
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// ƒ‚ƒfƒ‹‚Ìî•ñæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±å–å¾—
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 rot = GetRot();
 
-	// SPACEƒL[‚ğ‰Ÿ‚µ‚½ê‡
+	// SPACEã‚­ãƒ¼ã‚’æŠ¼ã—ãŸå ´åˆ
 	if (pKeyboard->GetTrigger(DIK_SPACE))
 	{
-		// ‰E’e¶¬
+		// å³å¼¾ç”Ÿæˆ
 		CPlayer_Bullet::Create(BATTERY_R_POS, rot);
-		// ¶’e¶¬
+		// å·¦å¼¾ç”Ÿæˆ
 		CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 	}
 
-	// ƒJƒEƒ“ƒg‚ª0‚Ìê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã®å ´åˆ
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RTƒgƒŠƒK[‚ğ‰Ÿ‚µ‚½ê‡
+		// RTãƒˆãƒªã‚¬ãƒ¼ã‚’æŠ¼ã—ãŸå ´åˆ
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// ‰E’e¶¬
+			// å³å¼¾ç”Ÿæˆ
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// ƒCƒ“ƒNƒŠƒƒ“ƒg
+			// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			m_nAttackCount_R++;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚Ìê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã®å ´åˆ
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LTƒgƒŠƒK[‚ğ‰Ÿ‚µ‚½ê‡
+		// LTãƒˆãƒªã‚¬ãƒ¼ã‚’æŠ¼ã—ãŸå ´åˆ
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_L_TRIGGER, PAD_1))
 		{
-			// ¶’e¶¬
+			// å·¦å¼¾ç”Ÿæˆ
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// ƒCƒ“ƒNƒŠƒƒ“ƒg
+			// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			m_nAttackCount_L++;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚æ‚è‘½‚¢ê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã‚ˆã‚Šå¤šã„å ´åˆ
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// ƒCƒ“ƒNƒŠƒƒ“ƒg
+		// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 		m_nAttackCount_R++;
 
-		// ƒJƒEƒ“ƒg‚ª60‚Ìê‡
+		// ã‚«ã‚¦ãƒ³ãƒˆãŒ60ã®å ´åˆ
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0‚É
+			// 0ã«
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚æ‚è‘½‚¢ê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã‚ˆã‚Šå¤šã„å ´åˆ
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// ƒCƒ“ƒNƒŠƒƒ“ƒg
+		// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 		m_nAttackCount_L++;
 
-		// ƒJƒEƒ“ƒg‚ª60‚Ìê‡
+		// ã‚«ã‚¦ãƒ³ãƒˆãŒ60ã®å ´åˆ
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0‚É
+			// 0ã«
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// 2ƒRƒ“ƒgƒ[ƒ‰[‚ÌUŒ‚ˆ—
+// 2ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æ”»æ’ƒå‡¦ç†
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Pad2Attack(void)
 {
-	// ƒWƒ‡ƒCƒpƒbƒhæ“¾
+	// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰å–å¾—
 	CInputJoypad *pJoypad = CManager::GetJoypad();
 
-	// ƒ‚ƒfƒ‹‚Ìî•ñæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±å–å¾—
 	CModelAnime *pBattery_R = GetModelAnime(BATTERY_R_NUM);
 
-	// ƒ‚ƒfƒ‹‚Ìî•ñæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±å–å¾—
 	CModelAnime *pBattery_L = GetModelAnime(BATTERY_L_NUM);
 
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 rot = GetRot();
 
-	// ƒJƒEƒ“ƒg‚ª0‚Ìê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã®å ´åˆ
 	if (m_nAttackCount_L == ZERO_INT)
 	{
-		// LTƒgƒŠƒK[‚ğ‰Ÿ‚µ‚½ê‡
+		// LTãƒˆãƒªã‚¬ãƒ¼ã‚’æŠ¼ã—ãŸå ´åˆ
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_1) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_1))
 		{
-			// ¶’e¶¬
+			// å·¦å¼¾ç”Ÿæˆ
 			CPlayer_Bullet::Create(BATTERY_L_POS, rot);
 
-			// ƒCƒ“ƒNƒŠƒƒ“ƒg
+			// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
+			CEffect::Create(BATTERY_L_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
+				CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+
+			// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			m_nAttackCount_L++;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚æ‚è‘½‚¢ê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã‚ˆã‚Šå¤šã„å ´åˆ
 	if (m_nAttackCount_L > ZERO_INT)
 	{
-		// ƒCƒ“ƒNƒŠƒƒ“ƒg
+		// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 		m_nAttackCount_L++;
 
-		// ƒJƒEƒ“ƒg‚ª60‚Ìê‡
+		// ã‚«ã‚¦ãƒ³ãƒˆãŒ60ã®å ´åˆ
 		if (m_nAttackCount_L >= ATTACK_COOLTIME)
 		{
-			// 0‚É
+			// 0ã«
 			m_nAttackCount_L = ZERO_INT;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚Ìê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã®å ´åˆ
 	if (m_nAttackCount_R == ZERO_INT)
 	{
-		// RTƒgƒŠƒK[‚ğ‰Ÿ‚µ‚½ê‡
+		// RTãƒˆãƒªã‚¬ãƒ¼ã‚’æŠ¼ã—ãŸå ´åˆ
 		if (pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R2_TRIGGER, PAD_2) ||
 			pJoypad->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_R_TRIGGER, PAD_2))
 		{
-			// ‰E’e¶¬
+			// å³å¼¾ç”Ÿæˆ
 			CPlayer_Bullet::Create(BATTERY_R_POS, rot);
 
-			// ƒCƒ“ƒNƒŠƒƒ“ƒg
+			// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
+			CEffect::Create(BATTERY_R_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
+				CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+
+			// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			m_nAttackCount_R++;
 		}
 	}
-	// ƒJƒEƒ“ƒg‚ª0‚æ‚è‘½‚¢ê‡
+	// ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã‚ˆã‚Šå¤šã„å ´åˆ
 	if (m_nAttackCount_R > ZERO_INT)
 	{
-		// ƒCƒ“ƒNƒŠƒƒ“ƒg
+		// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 		m_nAttackCount_R++;
 
-		// ƒJƒEƒ“ƒg‚ª60‚Ìê‡
+		// ã‚«ã‚¦ãƒ³ãƒˆãŒ60ã®å ´åˆ
 		if (m_nAttackCount_R >= ATTACK_COOLTIME)
 		{
-			// 0‚É
+			// 0ã«
 			m_nAttackCount_R = ZERO_INT;
 		}
 	}
 }
 //=============================================================================
-// ƒL[ƒ{[ƒhˆÚ“®ˆ—
+// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ç§»å‹•å‡¦ç†
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::KeyboardMove(void)
 {
-	// ƒL[ƒ{[ƒhXV
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æ›´æ–°
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 
-	// ¶‚Ì•Ô‚Ìî•ñæ“¾
+	// å·¦ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// ‰E‚Ì•Ô‚Ìî•ñæ“¾
+	// å³ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	// À•W
+	// åº§æ¨™
 	D3DXVECTOR3 pos = GetPos();
 
-	// Šp“x
+	// è§’åº¦
 	D3DXVECTOR3 rot = GetRot();
 
-	// ƒXƒs[ƒh
+	// ã‚¹ãƒ”ãƒ¼ãƒ‰
 	float fSpeed = GetSpeed();
 
-	// ‰EŠp“x
+	// å³è§’åº¦
 	float fAngle_R = ZERO_FLOAT;
 
-	// ¶Šp“x
+	// å·¦è§’åº¦
 	float fAngle_L = ZERO_FLOAT;
 
-	// S‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Èê‡
+	// SãŒæŠ¼ã•ã‚Œã¦ã„ãªå ´åˆ
 	if (!pKeyboard->GetPress(DIK_S))
 	{
-		// ‰E‚ÉˆÚ“®
+		// å³ã«ç§»å‹•
 		if (pKeyboard->GetPress(DIK_W))
 		{
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_L->SetRot(Gear_L_rot);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y + SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//ƒGƒtƒFƒNƒg
+			//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 
-			// false‚É
+			// falseã«
 			m_bBack = false;
 		}
 	}
-	// false‚Ìê‡
+	// falseã®å ´åˆ
 	if (m_bBack == false)
 	{
-		// W‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		// WãŒæŠ¼ã•ã‚Œã¦ã„ãªã„å ´åˆ
 		if (!pKeyboard->GetPress(DIK_W))
 		{
-			// ¶‚ÉˆÚ“®
+			// å·¦ã«ç§»å‹•
 			if (pKeyboard->GetPress(DIK_S))
 			{
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_L->SetRot(Gear_L_rot);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y - SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 			}
 		}
 	}
-	// «‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ê‡
+	// â†“ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„å ´åˆ
 	if (!pKeyboard->GetPress(DIK_DOWN))
 	{
-		// ‰E‚ÉˆÚ“®
+		// å³ã«ç§»å‹•
 		if (pKeyboard->GetPress(DIK_UP))
 		{
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_R->SetRot(Gear_R_rot);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += -sinf(rot.y)*fSpeed;
 			pos.z += -cosf(rot.y)*fSpeed;
 
-			// Œü‚«
+			// å‘ã
 			rot.y = rot.y - SPIN_ANGLE;
 
-			// –Ú“I‚ÌŒü‚«
+			// ç›®çš„ã®å‘ã
 			m_rotDest.y = rot.y;
 
-			//ƒGƒtƒFƒNƒg
+			//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			CreateWave();
 
-			// false‚É
+			// falseã«
 			m_bBack = false;
 		}
 	}
-	// false‚Ìê‡
+	// falseã®å ´åˆ
 	if (m_bBack == false)
 	{
-		// ª‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		// â†‘ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„å ´åˆ
 		if (!pKeyboard->GetPress(DIK_UP))
 		{
-			// ¶‚ÉˆÚ“®
+			// å·¦ã«ç§»å‹•
 			if (pKeyboard->GetPress(DIK_DOWN))
 			{
-				// Œü‚«‰ÁZ
+				// å‘ãåŠ ç®—
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
-				// Œü‚«İ’è
+				// å‘ãè¨­å®š
 				pGear_R->SetRot(Gear_R_rot);
 
-				// ˆÚ“®
+				// ç§»å‹•
 				pos.x += -sinf(rot.y)*fSpeed;
 				pos.z += -cosf(rot.y)*fSpeed;
 
-				// Œü‚«
+				// å‘ã
 				rot.y = rot.y + SPIN_ANGLE;
 
-				// –Ú“I‚ÌŒü‚«
+				// ç›®çš„ã®å‘ã
 				m_rotDest.y = rot.y;
 			}
 		}
 	}
-	// Œã‚ëˆÚ“®
+	// å¾Œã‚ç§»å‹•
 	if (pKeyboard->GetPress(DIK_DOWN) && pKeyboard->GetPress(DIK_S))
 	{
-		// true‚É
+		// trueã«
 		m_bBack = true;
 
-		// true‚Ìê‡
+		// trueã®å ´åˆ
 		if (m_bBack == true)
 		{
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_L_rot.x += GEAR_SPIN_ANGLE;
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_L->SetRot(Gear_L_rot);
 
-			// Œü‚«‰ÁZ
+			// å‘ãåŠ ç®—
 			Gear_R_rot.x += GEAR_SPIN_ANGLE;
-			// Œü‚«İ’è
+			// å‘ãè¨­å®š
 			pGear_R->SetRot(Gear_R_rot);
 
-			// ˆÚ“®
+			// ç§»å‹•
 			pos.x += sinf(rot.y)*fSpeed;
 			pos.z += cosf(rot.y)*fSpeed;
 		}
 	}
-	// Œã‚ëˆÚ“®
+	// å¾Œã‚ç§»å‹•
 	if (pKeyboard->GetRelease(DIK_DOWN) || pKeyboard->GetRelease(DIK_S))
 	{
-		// true‚Ìê‡
+		// trueã®å ´åˆ
 		if (m_bBack == true)
 		{
-			// false‚É
+			// falseã«
 			m_bBack = false;
 		}
 	}
 
 	if (pKeyboard->GetPress(DIK_P))
 	{
-		//ƒp[ƒeƒBƒNƒ‹¶¬
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
 		CreateSmoke();
 		CreateWoodEP();
 		CreateExplosion();
 	}
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_R->SetRot(Gear_R_rot);
 	}
-	// Œü‚«
+	// å‘ã
 	SetRot(rot);
 
-	// ˆÊ’uİ’è
+	// ä½ç½®è¨­å®š
 	SetPos(pos);
 }
 //=============================================================================
-// “–‚½‚è”»’èˆ—
+// å½“ãŸã‚Šåˆ¤å®šå‡¦ç†
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Collision(void)
 {
-	// CScene‚Ìƒ|ƒCƒ“ƒ^
+	// CSceneã®ãƒã‚¤ãƒ³ã‚¿
 	CScene *pScene = nullptr;
 
-	// ƒ‚ƒfƒ‹‚Ìî•ñæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ã®æƒ…å ±å–å¾—
 	CModelAnime *pAnime = GetModelAnime(SHIP_NUM);
 
-	// ˆÊ’uæ“¾
+	// ä½ç½®å–å¾—
 	D3DXVECTOR3 pos = D3DXVECTOR3(pAnime->GetMtxWorld()._41, pAnime->GetMtxWorld()._42, pAnime->GetMtxWorld()._43);
 
-	// ˆÊ’uæ“¾
+	// ä½ç½®å–å¾—
 	D3DXVECTOR3 posOld = D3DXVECTOR3(pAnime->GetOldMtxWorld()._41, pAnime->GetOldMtxWorld()._42, pAnime->GetOldMtxWorld()._43);
 
-	// ƒTƒCƒYæ“¾
+	// ã‚µã‚¤ã‚ºå–å¾—
 	D3DXVECTOR3 size = GetSize();
 
-	// ˆÚ“®—Êæ“¾
+	// ç§»å‹•é‡å–å¾—
 	D3DXVECTOR3 move = GetMove();
 
 	// nullcheck
 	if (pScene == nullptr)
 	{
-		// æ“ª‚Ìƒ|ƒCƒ“ƒ^æ“¾
+		// å…ˆé ­ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
 		pScene = GetTop(PRIORITY_ENEMY);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter‚Æ‚Ì“–‚½‚è”»’è
-			while (pScene != nullptr) // nullptr‚É‚È‚é‚Ü‚Å‰ñ‚·
+			// Charcterã¨ã®å½“ãŸã‚Šåˆ¤å®š
+			while (pScene != nullptr) // nullptrã«ãªã‚‹ã¾ã§å›ã™
 			{
-				// Œ»İ‚Ìƒ|ƒCƒ“ƒ^
+				// ç¾åœ¨ã®ãƒã‚¤ãƒ³ã‚¿
 				CScene *pSceneCur = pScene->GetNext();
 
-				// ˆÊ’u
+				// ä½ç½®
 				D3DXVECTOR3 CharacterPos = ZeroVector3;
 
-				// ˆÊ’uæ“¾
+				// ä½ç½®å–å¾—
 				CharacterPos.x = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
 				CharacterPos.y = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
 				CharacterPos.z = ((CCharacter*)pScene)->GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
 
-				// ƒTƒCƒYæ“¾
+				// ã‚µã‚¤ã‚ºå–å¾—
 				D3DXVECTOR3 CharacterSize = ((CCharacter*)pScene)->GetSize();
 
-				//‚Ç‚±‚Ì–Ê‚É“–‚½‚Á‚½‚©æ“¾
-				//‰º
+				//ã©ã“ã®é¢ã«å½“ãŸã£ãŸã‹å–å¾—
+				//ä¸‹
 				if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_DOWN)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.y = (-CharacterSize.y / DIVIDE_2 + CharacterPos.y) - (size.y / DIVIDE_2);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// ã
+				// ä¸Š
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_UP)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.y = MIN_MOVE.y;
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.y = (CharacterSize.y / DIVIDE_2 + CharacterPos.y) + (size.y / DIVIDE_2);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// ¶
+				// å·¦
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_LEFT)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.x = (-CharacterSize.x / DIVIDE_2 + CharacterPos.x) - (size.x / DIVIDE_2);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// ‰E
+				// å³
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_RIGHT)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.x = MIN_MOVE.x;
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.x = (CharacterSize.x / DIVIDE_2 + CharacterPos.x) + (size.x / DIVIDE_2);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// è‘O
+				// æ‰‹å‰
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_PREVIOUS)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.z = (-CharacterSize.z / DIVIDE_2 + CharacterPos.z) - (size.z / DIVIDE_2);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// ‰œ
+				// å¥¥
 				else if (CCollision::ActiveCollisionRectangleAndRectangle(pos, posOld, CharacterPos, size, CharacterSize) == CCollision::SURFACE_BACK)
 				{
-					// ˆÚ“®—Êæ“¾
+					// ç§»å‹•é‡å–å¾—
 					D3DXVECTOR3 CharacterMove = ((CCharacter*)pScene)->GetMove();
 
-					// ˆÚ“®—Ê0
+					// ç§»å‹•é‡0
 					CharacterMove.z = MIN_MOVE.z;
 
-					// ˆÊ’u
+					// ä½ç½®
 					pos.z = (CharacterSize.z / DIVIDE_2 + CharacterPos.z) + (size.z / DIVIDE_2);
 
-					// ˆÚ“®—Êİ’è
+					// ç§»å‹•é‡è¨­å®š
 					((CCharacter*)pScene)->SetMove(CharacterMove);
 
-					// ˆÊ’uİ’è
+					// ä½ç½®è¨­å®š
 					SetPos(pos);
 				}
-				// Ÿ‚Ìƒ|ƒCƒ“ƒ^æ“¾
+				// æ¬¡ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
 				pScene = pSceneCur;
 			}
 		}
 
-		// æ“ª‚Ìƒ|ƒCƒ“ƒ^æ“¾
+		// å…ˆé ­ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
 		pScene = GetTop(PRIORITY_OBSTACLE);
 
 		// !nullcheck
 		if (pScene != nullptr)
 		{
-			// Charcter‚Æ‚Ì“–‚½‚è”»’è
-			while (pScene != nullptr) // nullptr‚É‚È‚é‚Ü‚Å‰ñ‚·
+			// Charcterã¨ã®å½“ãŸã‚Šåˆ¤å®š
+			while (pScene != nullptr) // nullptrã«ãªã‚‹ã¾ã§å›ã™
 			{
-				// Œ»İ‚Ìƒ|ƒCƒ“ƒ^
+				// ç¾åœ¨ã®ãƒã‚¤ãƒ³ã‚¿
 				CScene *pSceneCur = pScene->GetNext();
 
-				// ˆÊ’u
+				// ä½ç½®
 				D3DXVECTOR3 ObstaclePos = ((CModel*)pScene)->GetPos();
 
-				// ƒTƒCƒYæ“¾
+				// ã‚µã‚¤ã‚ºå–å¾—
 				D3DXVECTOR3 ObstacleSize = ((CModel*)pScene)->GetSize();
 
-				// ‹éŒ`‚Ì“–‚½‚è”»’è
+				// çŸ©å½¢ã®å½“ãŸã‚Šåˆ¤å®š
 				if (CCollision::CollisionRectangleAndRectangle(ObstaclePos, pos, ObstacleSize, size) == true)
 				{
-					// ƒxƒNƒgƒ‹
+					// ãƒ™ã‚¯ãƒˆãƒ«
 					D3DXVECTOR3 Vec = ZeroVector3;
 
-					// –@üƒxƒNƒgƒ‹
+					// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 					D3DXVECTOR3 NormalVec = ZeroVector3;
 
-					// isƒxƒNƒgƒ‹
+					// é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«
 					Vec.x = ObstaclePos.x - pos.x;
 					Vec.z = ObstaclePos.z - pos.z;
 
-					// ’·‚³Zo
+					// é•·ã•ç®—å‡º
 					float fVec_Length = sqrtf((Vec.x * Vec.x) + (Vec.z * Vec.z));
 
-					// –@üƒxƒNƒgƒ‹‚É
+					// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã«
 					NormalVec.x = Vec.x / fVec_Length;
 					NormalVec.z = Vec.z / fVec_Length;
 
-					// ”½ËƒxƒNƒgƒ‹Zo
+					// åå°„ãƒ™ã‚¯ãƒˆãƒ«ç®—å‡º
 					D3DXVec3Normalize(&m_Reflection_Vec, &(Vec - 2.0f * D3DXVec3Dot(&Vec, &NormalVec) * NormalVec));
 
-					// true‚É
+					// trueã«
 					m_bKnock_Back = true;
 				}
 
-				// Ÿ‚Ìƒ|ƒCƒ“ƒ^æ“¾
+				// æ¬¡ã®ãƒã‚¤ãƒ³ã‚¿å–å¾—
 				pScene = pSceneCur;
 			}
 		}
@@ -1413,7 +1421,7 @@ void CPlayer::Collision(void)
 }
 
 //=======================================================================================
-// ’¾‚Şˆ—
+// æ²ˆã‚€å‡¦ç†
 // Author : Konishi Yuuto
 //=======================================================================================
 void CPlayer::SinkEnd(void)
@@ -1434,37 +1442,36 @@ void CPlayer::SinkEnd(void)
 }
 
 //=======================================================================================
-// ‰Œ¶¬ŠÖ”
+// ç…™ç”Ÿæˆé–¢æ•°
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateSmoke(void)
 {
-	// ƒp[ƒeƒBƒNƒ‹¶¬
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
 	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
 }
 
 //=======================================================================================
-// –ØŞ”š”j¶¬ŠÖ”
+// æœ¨æçˆ†ç ´ç”Ÿæˆé–¢æ•°
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateWoodEP(void)
 {
-	// ƒp[ƒeƒBƒNƒ‹¶¬
-	CEffect::Create(WOOD_POS,
-		WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
+	CEffect::Create(WOOD_POS, WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
 }
 
 //=======================================================================================
-// …‚µ‚Ô‚«¶¬ŠÖ”
+// æ°´ã—ã¶ãç”Ÿæˆé–¢æ•°
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateSplash(void)
 {
 	for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
 	{
-		// ƒp[ƒeƒBƒNƒ‹¶¬
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
 		CEffect::Create(SPLASH_POS,
 			WOOD_SIZE, SPLASH_MOVE, SPLASH_COLOR,
 			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
@@ -1472,149 +1479,149 @@ void CPlayer::CreateSplash(void)
 }
 
 //=======================================================================================
-// ”š”­¶¬ŠÖ”
+// çˆ†ç™ºç”Ÿæˆé–¢æ•°
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateExplosion(void)
 {
-	// ƒp[ƒeƒBƒNƒ‹¶¬
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
 	CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
 		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
 
 }
 
 //=======================================================================================
-// ”g¶¬ŠÖ”
+// æ³¢ç”Ÿæˆé–¢æ•°
 // Author : Oguma Akira
 //=======================================================================================
 void CPlayer::CreateWave(void)
 {
 	for (int nCntEffect = 0; nCntEffect < WAVE_MAX_PARTICLE; nCntEffect++)
 	{
-		// ƒp[ƒeƒBƒNƒ‹¶¬
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”Ÿæˆ
 		CEffect::Create(WAVE_POS, WAVE_SIZE, WAVE_MOVE, WAVE_COLOR,
 			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_3), WAVE_LIFE);
 	}
 }
 
 //=============================================================================
-// ƒmƒbƒNƒoƒbƒNˆ—ŠÖ”
+// ãƒãƒƒã‚¯ãƒãƒƒã‚¯å‡¦ç†é–¢æ•°
 // Author : SugawaraTsukasa
 //=============================================================================
 void CPlayer::Knock_Back(void)
 {
-	// ƒJƒEƒ“ƒgƒCƒ“ƒNƒŠƒƒ“ƒg
+	// ã‚«ã‚¦ãƒ³ãƒˆã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 	m_nRockHitCount++;
 
-	// ˆÚ“®—Êæ“¾
+	// ç§»å‹•é‡å–å¾—
 	D3DXVECTOR3 move = GetMove();
 
-	// 0‚Ìê‡
+	// 0ã®å ´åˆ
 	if (m_nRockHitCount <= KNOCK_BACK_COUNT)
 	{
-		// ˆÚ“®—Ê
+		// ç§»å‹•é‡
 		move.x = m_Reflection_Vec.x *KNOCK_BACK_SPEED;
 		move.z = m_Reflection_Vec.z *KNOCK_BACK_SPEED;
 
-		// ˆÚ“®—Êİ’è
+		// ç§»å‹•é‡è¨­å®š
 		SetMove(move);
 	}
-	// 10‚æ‚è‘å‚«‚¢ê‡
+	// 10ã‚ˆã‚Šå¤§ãã„å ´åˆ
 	if (m_nRockHitCount > KNOCK_BACK_COUNT)
 	{
-		// ˆÚ“®—Êİ’è
+		// ç§»å‹•é‡è¨­å®š
 		SetMove(ZeroVector3);
 
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		m_nRockHitCount = ZERO_INT;
 
-		// false‚É
+		// falseã«
 		m_bKnock_Back = false;
 	}
 }
 
 //=============================================================================
-// ƒpƒhƒ‹‚Ì‰E‰ñ“]
+// ãƒ‘ãƒ‰ãƒ«ã®å³å›è»¢
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotateR(float fRotate)
 {
-	// ‰E‚Ì•Ô‚Ìî•ñæ“¾
+	// å³ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
-	// Šp“x‰ÁZ
+	// è§’åº¦åŠ ç®—
 	Gear_R_rot.x += fRotate;
 
-	// Œü‚«İ’è
+	// å‘ãè¨­å®š
 	pGear_R->SetRot(Gear_R_rot);
 }
 
 //=============================================================================
-// ƒpƒhƒ‹‚Ì¶‰ñ“]
+// ãƒ‘ãƒ‰ãƒ«ã®å·¦å›è»¢
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotateL(float fRotate)
 {
-	// ¶‚Ì•Ô‚Ìî•ñæ“¾
+	// å·¦ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// Šp“x‰ÁZ
+	// è§’åº¦åŠ ç®—
 	Gear_L_rot.x += fRotate;
 
-	// Œü‚«İ’è
+	// å‘ãè¨­å®š
 	pGear_L->SetRot(Gear_L_rot);
 }
 
 //=============================================================================
-// ƒpƒhƒ‹‚ÌŠp“xC³
+// ãƒ‘ãƒ‰ãƒ«ã®è§’åº¦ä¿®æ­£
 // Author : Konishi Yuuto
 //=============================================================================
 void CPlayer::PaddleRotFix(void)
 {
-	// ‰E‚Ì•Ô‚Ìî•ñæ“¾
+	// å³ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_R = GetModelAnime(GEAR_R_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
-	// ¶‚Ì•Ô‚Ìî•ñæ“¾
+	// å·¦ã®æ­¯è»Šã®æƒ…å ±å–å¾—
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
-	// Œü‚«æ“¾
+	// å‘ãå–å¾—
 	D3DXVECTOR3 Gear_L_rot = pGear_L->GetRot();
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_L_rot.x >= ANGLE_MAX || Gear_L_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_L_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_L->SetRot(Gear_L_rot);
 	}
 
-	// Šp“x‚ªÅ‘å‚É‚È‚Á‚½ê‡
+	// è§’åº¦ãŒæœ€å¤§ã«ãªã£ãŸå ´åˆ
 	if (Gear_R_rot.x >= ANGLE_MAX || Gear_R_rot.x <= ANGLE_MIN)
 	{
-		// 0‚É–ß‚·
+		// 0ã«æˆ»ã™
 		Gear_R_rot.x = GEAR_DEF_ROT;
-		// Œü‚«İ’è
+		// å‘ãè¨­å®š
 		pGear_R->SetRot(Gear_R_rot);
 	}
 }
 //=======================================================================================
-// ˆÚ“®‚Ì‰¹
+// ç§»å‹•ã®éŸ³
 // Author : Konishi Yuuto
 //=======================================================================================
 void CPlayer::MoveSound(void)
 {
-	// ˆÚ“®‚µ‚½‚Æ‚«
+	// ç§»å‹•ã—ãŸã¨ã
 	if (m_bMoveSound)
 	{
-		// ˆê’è‚ÌŠÔŠu‚Å
+		// ä¸€å®šã®é–“éš”ã§
 		if (m_nSoundCounter >= SOUND_INTER_TIME)
 		{
-			// ‰¹‚ğ–Â‚ç‚·
+			// éŸ³ã‚’é³´ã‚‰ã™
 			CSound *pSound = GET_SOUND_PTR;
 			pSound->Play(CSound::SOUND_SE_MOVE);
 
@@ -1626,7 +1633,7 @@ void CPlayer::MoveSound(void)
 	}
 }
 //=============================================================================
-// LƒXƒeƒBƒbƒN‚ÌÅ’ZŠp“x‹——£
+// Lã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è§’åº¦è·é›¢
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::LStickAngle(float fangle_L)
@@ -1642,7 +1649,7 @@ void CPlayer::LStickAngle(float fangle_L)
 }
 
 //=============================================================================
-// RƒXƒeƒBƒbƒN‚ÌÅ’ZŠp“x‹——£
+// Rã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æœ€çŸ­è§’åº¦è·é›¢
 // Author : Oguma Akira
 //=============================================================================
 void CPlayer::RStickAngle(float fangle_R)
@@ -1658,7 +1665,7 @@ void CPlayer::RStickAngle(float fangle_R)
 }
 
 //=============================================================================
-// –{‘Ì‚Ìƒ|ƒCƒ“ƒ^
+// æœ¬ä½“ã®ãƒã‚¤ãƒ³ã‚¿
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetShip(void)
@@ -1667,7 +1674,7 @@ CModelAnime * CPlayer::GetShip(void)
 }
 
 //=============================================================================
-// ‰E‚ÌÔ—Ö‚Ìƒ|ƒCƒ“ƒ^
+// å³ã®è»Šè¼ªã®ãƒã‚¤ãƒ³ã‚¿
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetRightPaddle(void)
@@ -1676,7 +1683,7 @@ CModelAnime * CPlayer::GetRightPaddle(void)
 }
 
 //=============================================================================
-// ¶‚ÌÔ—Ö‚Ìƒ|ƒCƒ“ƒ^
+// å·¦ã®è»Šè¼ªã®ãƒã‚¤ãƒ³ã‚¿
 // Author : Konishi Yuuto
 //=============================================================================
 CModelAnime * CPlayer::GetLeftPaddle(void)

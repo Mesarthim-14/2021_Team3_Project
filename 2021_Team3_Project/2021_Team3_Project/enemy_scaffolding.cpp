@@ -16,6 +16,7 @@
 #include "enemy_normal_bullet.h"
 #include "enemy_life.h"
 #include "enemy_scaffolding.h"
+#include "effect.h"
 //=============================================================================
 // マクロ定義
 // Author : Sugawara Tsukasa
@@ -30,6 +31,29 @@
 
 // 砲台の位置
 #define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
+
+//爆発
+#define EXPLOSION_POS		(D3DXVECTOR3(pos.x, 500.0f, pos.z))						//位置
+#define EXPLOSION_SIZE		(D3DXVECTOR3(2500, 2500, 0))							//サイズ
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define EXPLOSION_LIFE		(70)													//ライフ
+
+//煙																				
+#define SMOKE_POS			(D3DXVECTOR3(pos.x, 10.0f, pos.z))									//位置
+#define SMOKE_SIZE			(D3DXVECTOR3(200.0f, 200.0f, 200.0f))					//サイズ
+#define SMOKE_MOVE			(D3DXVECTOR3(4.0f, 5.0f, 4.0f))							//移動量
+#define SMOKE_COLOR			(D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f))						//色
+#define SMOKE_LIFE			(500)													//ライフ
+
+//木																		
+#define WOOD_POS			(D3DXVECTOR3(D3DXVECTOR3(pos.x, 10.0f, pos.z)))									//位置
+#define WOOD_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 100.0f))					//サイズ
+#define WOOD_MOVE			(D3DXVECTOR3(10.0f, 10.0f, 10.0f))						//移動量
+#define WOOD_COLOR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define WOOD_LIFE			(500)													//ライフ
+
+#define MAX_EFFECT			(10)													//最大数
+
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
@@ -128,6 +152,20 @@ void CEnemy_Scaffolding::Update(void)
 	// 死亡状態
 	if (nState == STATE_DEAD)
 	{
+		// パーティクル生成
+		CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+
+		//for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
+		//{
+		//	// パーティクル生成
+		//	CEffect::Create(WOOD_POS, WOOD_SIZE, WOOD_MOVE, WOOD_COLOR,
+		//		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_5), WOOD_LIFE);
+
+		//	// パーティクル生成
+		//	CEffect::Create(SMOKE_POS, SMOKE_SIZE, SMOKE_MOVE, SMOKE_COLOR,
+		//		CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_1), SMOKE_LIFE);
+		//}
 		// 終了
 		Uninit();
 

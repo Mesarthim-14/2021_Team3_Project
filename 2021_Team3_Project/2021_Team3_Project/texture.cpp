@@ -72,9 +72,7 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/gameclear_story.png" },			// リザルトストーリー
 		{ "data/Texture/blackback.png" },				// リザルトストーリー
 		{ "data/Texture/Smoke.png" },					// スモーク
-		{ "data/Texture/Explosion_Animation.png" },		// 爆発
 		{ "data/Texture/Wave_Effect.png" },				// 波
-		{ "data/Texture/Wood_Animation.png" },			// 木材
 		{ "data/Texture/L1.png" },						// L1
 		{ "data/Texture/Red.png" },						// 赤
 	};
@@ -83,6 +81,8 @@ HRESULT CTexture::SetTextureName(void)
 	m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE] =
 	{
 		{ "data/Texture/Move_Ui.png" },					// 移動のUi
+		{ "data/Texture/Wood_Animation.png" },			// 木材
+		{ "data/Texture/Explosion_Animation.png" },		// 爆発
 	};
 
 	// ボリュームテクスチャ
