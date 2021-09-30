@@ -114,7 +114,7 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// 敵生成
-	//CreateEnemy_Obstacle(ENEMY_OBSTACLE_CREATE_TEXT);
+	CreateEnemy_Obstacle(ENEMY_OBSTACLE_CREATE_TEXT);
 
 	// マップの生成
 	CreateMap();
@@ -176,7 +176,7 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	// プレイヤーの位置描画
-	DrawPlayerPos();
+	//DrawPlayerPos();
 
 	if (m_pCamera != nullptr)
 	{
