@@ -582,9 +582,6 @@ void CPlayer::Move(void)
 			m_bBack = false;
 		}
 	}
-
-
-
 	// 角度の補正
 	PaddleRotFix();
 
