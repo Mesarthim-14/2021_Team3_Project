@@ -21,7 +21,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE			(1000)														// 体力
+#define MAX_LIFE			(500)														// 体力
 #define ROT_SPEED			(0.04f)														// 旋回速度
 #define ANGLE_180			(D3DXToRadian(180))											// 180度
 #define ANGLE_90			(D3DXToRadian(90))											// 90度

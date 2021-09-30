@@ -88,7 +88,7 @@ HRESULT CEnemy_Bullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	m_StartPos = pos;
 
 	// î†ê∂ê¨
-	CModel_Box::Create(pos, rot, this);
+	//CModel_Box::Create(pos, rot, this);
 
 	// çUåÇínì_ê∂ê¨
 	AttackPoint_Crate(this);

@@ -21,12 +21,12 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE		(100)									// 体力
+#define MAX_LIFE		(75)									// 体力
 #define MOVE_VALUE		(10.0f)									// 移動量
 #define ROT_SPEED		(0.01f)									// 旋回速度
 #define ANGLE_180		(180)									// 180度
 #define ANGLE_360		(360)									// 360度
-#define SIZE			(D3DXVECTOR3 (1000.0f,1200.0f,1000.0f))	// サイズ
+#define SIZE			(D3DXVECTOR3 (1000.0f,1300.0f,1000.0f))	// サイズ
 #define ATTACK_COUNT	(300)									// 攻撃間隔
 #define SHIP_NUM		(0)										// 船のナンバー
 #define RAY_NUM			(1)										// レイの数

@@ -20,13 +20,13 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define MAX_LIFE		(100)									// 体力
+#define MAX_LIFE		(50)									// 体力
 #define MOVE_VALUE		(10.0f)									// 移動量
 #define ROT_SPEED		(0.01f)									// 旋回速度
 #define ANGLE_180		(180)									// 180度
 #define ANGLE_360		(360)									// 360度
-#define SIZE			(D3DXVECTOR3 (1500.0f,3000.0f,1500.0f))	// サイズ
-#define ATTACK_COUNT	(120)									// 攻撃間隔
+#define SIZE			(D3DXVECTOR3 (1500.0f,2000.0f,1500.0f))	// サイズ
+#define ATTACK_COUNT	(180)									// 攻撃間隔
 
 // 砲台の位置
 #define BATTERY_POS		(D3DXVECTOR3(pBattery->GetMtxWorld()._41, pBattery->GetMtxWorld()._42, pBattery->GetMtxWorld()._43))
