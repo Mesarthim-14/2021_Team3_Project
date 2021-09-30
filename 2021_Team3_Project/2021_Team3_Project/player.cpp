@@ -395,6 +395,9 @@ void CPlayer::Hit(int nDamage)
 	// trueに
 	m_bHitFlag = true;
 
+	// エフェクト生成
+	CreateWoodEP();
+
 	CSound *pSound = GET_SOUND_PTR;
 	pSound->Play(CSound::SOUND_SE_DAMAGE);
 
