@@ -50,7 +50,7 @@
 #define BOSS_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// ボスの位置
 #define ENEMY_POS_2					(D3DXVECTOR3(5000.0f,500.0f,0.0f))				// 敵の位置
 #define ENEMY_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(180.0f),0.0f))	// 敵の向き
-#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-500.0f))				// プレイヤーの位置
+#define PLAYER_POS					(D3DXVECTOR3(0.0f,0.0f,-1000.0f))				// プレイヤーの位置
 #define BOSS_PLAYER_POS				(D3DXVECTOR3(0.0f,0.0f,0.0f))					// プレイヤーの位置
 #define SIZE						(D3DXVECTOR3(2000.0f,1000.0f,0.0f))				// サイズ
 #define PLAYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き

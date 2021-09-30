@@ -273,7 +273,9 @@ bool CModel::RayCollision(void)
 						SetMove(ZeroVector3);
 
 						// ˆÊ’u
-						m_pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+						//m_pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						Uninit();
 
 						return true;
 					}
