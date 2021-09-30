@@ -28,7 +28,7 @@
 #define ANGLE_360			(D3DXToRadian(360))											// 90度
 #define SIZE				(D3DXVECTOR3(16000.0f,5000.0f,16000.0f))						// サイズ
 #define BYTE_SIZE			(D3DXVECTOR3(3000.0f,3000.0f,0.0f))							// 噛みつきエフェクトサイズ
-#define BYTE_RANGE_SIZE		(D3DXVECTOR3(10000.0f,0.0f,10000.0f))						// 噛みつき範囲サイズ
+#define BYTE_RANGE_SIZE		(D3DXVECTOR3(8000.0f,0.0f,8000.0f))						// 噛みつき範囲サイズ
 #define ATTACK_COUNT		(300)														// 攻撃間隔
 #define BYTE_COUNT			(500)														// 噛みつき攻撃
 #define BYTE_KEY_MAX		(1)															// 噛みつき攻撃Keyの最大
