@@ -25,7 +25,7 @@
 #define ALPHA		(100)								// 透過値
 #define SIZE		(D3DXVECTOR3(300.0f,0.0f,400.0f))	// サイズ
 #define UP_POS		(D3DXVECTOR3(pos.x,500.0f,pos.z))	// 位置
-#define DOWN_POS	(D3DXVECTOR3(pos.x,0.0f,pos.z))		// 位置
+#define DOWN_POS	(D3DXVECTOR3(pos.x,10.0f,pos.z))		// 位置
 #define PARENT_NUM	(0)									// 親のナンバー
 //=============================================================================
 // コンストラクタ

@@ -24,8 +24,8 @@
 #define MOVE		(3.0f)								// 移動量
 #define COLOR		(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f))	// 色
 #define POINT_SIZE	(D3DXVECTOR3(300.0f,0.0f,400.0f))	// サイズ
-#define UP_POS		(D3DXVECTOR3(pos.x,600.0f,pos.z))	// 位置
-#define DOWN_POS	(D3DXVECTOR3(pos.x,100.0f,pos.z))	// 位置
+#define UP_POS		(D3DXVECTOR3(pos.x,700.0f,pos.z))	// 位置
+#define DOWN_POS	(D3DXVECTOR3(pos.x,200.0f,pos.z))	// 位置
 //=============================================================================
 // コンストラクタ
 // Author : Sugawara Tsukasa
