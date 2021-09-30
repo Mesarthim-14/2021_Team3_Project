@@ -33,7 +33,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(100.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -157,7 +157,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_bKnock_Back = false;
 	m_nSoundCounter = 0;
 	m_bMoveSound = false;
-
+	m_bBack = false;
 }
 
 //=============================================================================
@@ -424,108 +424,37 @@ void CPlayer::Death(void)
 //=============================================================================
 void CPlayer::Move(void)
 {
-	DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// スティック取得
-	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// サウンド取得
-	D3DXVECTOR3 pos = GetPos();												// 位置取得
-	D3DXVECTOR3 rot = GetRot();												// 向き取得
-	float fSpeed = GetSpeed();												// スピード取得
-	float fAngle_R = ZERO_FLOAT;											// 右
-	float fAngle_L = ZERO_FLOAT;											// 左
+	// パッド取得
+	LPDIRECTINPUTDEVICE8 P1_PAD = CInputJoypad::GetController(PAD_P1);
 
-																			//===========================================
-																			// 右歯車
-																			//===========================================
-																			// 右スティックが入力されている場合
-	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
+	// !nullcheck
+	if (P1_PAD != nullptr)
 	{
-		// コントローラーの角度
-		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
+		DIJOYSTATE js = CInputJoypad::GetStick(PAD_P1);							// スティック取得
+		CSound *pSound = CManager::GetResourceManager()->GetSoundClass();		// サウンド取得
+		D3DXVECTOR3 pos = GetPos();												// 位置取得
+		D3DXVECTOR3 rot = GetRot();												// 向き取得
+		float fSpeed = GetSpeed();												// スピード取得
+		float fAngle_R = ZERO_FLOAT;											// 右
+		float fAngle_L = ZERO_FLOAT;											// 左
 
-		//スティックの最短距離
-		RStickAngle(fAngle_R);
-
-		// 左に移動
-		if (fAngle_R < m_fdisAngle_R)
-		{
-			// パドルの回転
-			PaddleRotateR(-GEAR_SPIN_ANGLE);
-
-			// 移動
-			pos.x += -sinf(rot.y)*fSpeed;
-			pos.z += -cosf(rot.y)*fSpeed;
-
-			// 向き
-			rot.y = rot.y - SPIN_ANGLE;
-
-			// 目的の向き
-			m_rotDest.y = rot.y;
-
-			//波エフェクト
-			CreateWave();
-		}
-		// falseの場合
-		else if (m_bBack == false)
-		{
-			// 右に移動
-			if (fAngle_R > m_fdisAngle_R)
-			{
-				// パドルの回転
-				PaddleRotateR(GEAR_SPIN_ANGLE);
-
-				// 移動
-				pos.x += -sinf(rot.y)*fSpeed;
-				pos.z += -cosf(rot.y)*fSpeed;
-
-				// 向き
-				rot.y = rot.y + SPIN_ANGLE;
-
-				// 目的の向き
-				m_rotDest.y = rot.y;
-
-				//波エフェクト
-				CreateWave();
-			}
-		}
-	}
 	//===========================================
-	// 左歯車
+	// 右歯車
 	//===========================================
-	// 左スティックが入力されている場合
-	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
-	{
-		// コントローラーの角度
-		fAngle_L = atan2f((float)js.lY, (float)js.lX);
-
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
-
-		// 右に移動
-		if (fAngle_L < m_fdisAngle_L)
+		// 右スティックが入力されている場合
+		if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 		{
-			// パドルの回転
-			PaddleRotateL(-GEAR_SPIN_ANGLE);
+			// コントローラーの角度
+			fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
 
-			// 移動
-			pos.x += -sinf(rot.y)*fSpeed;
-			pos.z += -cosf(rot.y)*fSpeed;
+			//スティックの最短距離
+			RStickAngle(fAngle_R);
 
-			// 向き
-			rot.y = rot.y + SPIN_ANGLE;
-
-			// 目的の向き
-			m_rotDest.y = rot.y;
-
-			//波エフェクト
-			CreateWave();
-		}
-		// falseの場合
-		else if (m_bBack == false)
-		{
 			// 左に移動
-			if (fAngle_L > m_fdisAngle_L)
+			if (fAngle_R < m_fdisAngle_R)
 			{
 				// パドルの回転
-				PaddleRotateL(GEAR_SPIN_ANGLE);
+				PaddleRotateR(-GEAR_SPIN_ANGLE);
 
 				// 移動
 				pos.x += -sinf(rot.y)*fSpeed;
@@ -540,66 +469,147 @@ void CPlayer::Move(void)
 				//波エフェクト
 				CreateWave();
 			}
+			// falseの場合
+			else if (m_bBack == false)
+			{
+				// 右に移動
+				if (fAngle_R > m_fdisAngle_R)
+				{
+					// パドルの回転
+					PaddleRotateR(GEAR_SPIN_ANGLE);
+
+					// 移動
+					pos.x += -sinf(rot.y)*fSpeed;
+					pos.z += -cosf(rot.y)*fSpeed;
+
+					// 向き
+					rot.y = rot.y + SPIN_ANGLE;
+
+					// 目的の向き
+					m_rotDest.y = rot.y;
+
+					//波エフェクト
+					CreateWave();
+				}
+			}
 		}
-	}
-	// 入力されている場合
-	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
-	{
-		// コントローラーの角度
-		fAngle_L = atan2f((float)js.lY, (float)js.lX);
-		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
-
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
-		RStickAngle(fAngle_R);
-
-		// 右スティックと左スティックが下に倒されている場合
-		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
+		//===========================================
+		// 左歯車
+		//===========================================
+		// 左スティックが入力されている場合
+		if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 		{
-			// trueに
-			m_bBack = true;
+			// コントローラーの角度
+			fAngle_L = atan2f((float)js.lY, (float)js.lX);
+
+			//スティックの最短距離
+			LStickAngle(fAngle_L);
+
+			// 右に移動
+			if (fAngle_L < m_fdisAngle_L)
+			{
+				// パドルの回転
+				PaddleRotateL(-GEAR_SPIN_ANGLE);
+
+				// 移動
+				pos.x += -sinf(rot.y)*fSpeed;
+				pos.z += -cosf(rot.y)*fSpeed;
+
+				// 向き
+				rot.y = rot.y + SPIN_ANGLE;
+
+				// 目的の向き
+				m_rotDest.y = rot.y;
+
+				//波エフェクト
+				CreateWave();
+			}
+			// falseの場合
+			else if (m_bBack == false)
+			{
+				// 左に移動
+				if (fAngle_L > m_fdisAngle_L)
+				{
+					// パドルの回転
+					PaddleRotateL(GEAR_SPIN_ANGLE);
+
+					// 移動
+					pos.x += -sinf(rot.y)*fSpeed;
+					pos.z += -cosf(rot.y)*fSpeed;
+
+					// 向き
+					rot.y = rot.y - SPIN_ANGLE;
+
+					// 目的の向き
+					m_rotDest.y = rot.y;
+
+					//波エフェクト
+					CreateWave();
+				}
+			}
+		}
+		// 入力されている場合
+		if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
+		{
+			// コントローラーの角度
+			fAngle_L = atan2f((float)js.lY, (float)js.lX);
+			fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
+
+			//スティックの最短距離
+			LStickAngle(fAngle_L);
+			RStickAngle(fAngle_R);
+
+			// 右スティックと左スティックが下に倒されている場合
+			if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
+			{
+				// trueに
+				m_bBack = true;
+				// trueの場合
+				if (m_bBack == true)
+				{
+					// パドルの回転
+					PaddleRotateR(GEAR_SPIN_ANGLE);
+					PaddleRotateL(GEAR_SPIN_ANGLE);
+
+					// 移動
+					pos.x += sinf(rot.y)*fSpeed;
+					pos.z += cosf(rot.y)*fSpeed;
+
+					m_bMoveSound = true;
+				}
+			}
+
+			else
+			{
+				// falseの場合
+				m_bBack = false;
+			}
+		}
+		// 前回の角度より小さい場合
+		if (fAngle_L <= m_fdisAngle_L || fAngle_R <= m_fdisAngle_R)
+		{
 			// trueの場合
 			if (m_bBack == true)
 			{
-				// パドルの回転
-				PaddleRotateR(GEAR_SPIN_ANGLE);
-				PaddleRotateL(GEAR_SPIN_ANGLE);
-
-				// 移動
-				pos.x += sinf(rot.y)*fSpeed;
-				pos.z += cosf(rot.y)*fSpeed;
-
-				m_bMoveSound = true;
+				// falseの場合
+				m_bBack = false;
 			}
 		}
 
-		else
-		{
-			// false縺ｫ
-			m_bBack = false;
-		}
+
+		// 角度の補正
+		PaddleRotFix();
+
+		// 向き
+		SetRot(rot);
+
+		// 位置設定
+		SetPos(pos);
+
+		//前回のスティック角度
+		m_fdisAngle_R = fAngle_R;
+		m_fdisAngle_L = fAngle_L;
 	}
-	// 前回の角度より小さい場合
-	if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
-	{
-		// false縺ｫ
-		m_bBack = false;
-	}
-
-
-	// 角度の補正
-	PaddleRotFix();
-
-	// 向き
-	SetRot(rot);
-
-	// 位置設定
-	SetPos(pos);
-
-	//前回のスティック角度
-	m_fdisAngle_R = fAngle_R;
-	m_fdisAngle_L = fAngle_L;
-
 }
 //=============================================================================
 // 2PADの移動処理関数
