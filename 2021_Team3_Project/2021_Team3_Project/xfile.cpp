@@ -43,8 +43,9 @@ CXfile::CXfile()
 		{ "data/Model/Enemy/Torpedo/Torpedo.x" },	// 魚雷
 		{ "data/Model/Map/Map.x"},					// マップ
 		{ "data/Model/Map/TitleMap.x" },			// タイトルマップ
-		{ "data/Model/Map/sky.x" },			// タイトルマップ
+		{ "data/Model/Map/sky.x" },					// タイトルマップ
 		{ "data/Model/Map/boss_map.x" },			// ボスマップ
+		{ "data/Model/Map/boss_map_transition.x" },			// ボスマップ
 	};
 
 	m_aHierarchyXfileName =

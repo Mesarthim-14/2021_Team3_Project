@@ -40,6 +40,7 @@
 #include "boss_fade.h"
 #include "rotate_ui.h"
 #include "attack_ui.h"
+#include "boss_map_transition.h"
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
@@ -56,9 +57,11 @@
 #define PLAYER_ROT					(D3DXVECTOR3(0.0f,D3DXToRadian(270.0f),0.0f))	// プレイヤーの向き
 #define BOSS_PLAYER_ROT				(D3DXVECTOR3(0.0f,D3DXToRadian(0.0f),0.0f))		// プレイヤーの向き
 #define LIFE_POS					(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 200.0f,0.0f))
-#define BOSS_TRANSITION_POS			(D3DXVECTOR3(78000.0f,0.0f,-32000.0f))				// ボス戦遷移判定位置
-#define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(10000.0f,0.0f,10000.0f))				// ボス遷移判定サイズ
-#define BOSS_TRT_POS				(D3DXVECTOR3(78000.0f,0.0f,-32000.0f))
+#define BOSS_TRANSITION_POS			(D3DXVECTOR3(78000.0f,0.0f,-52000.0f))				// ボス戦遷移判定位置
+#define BOSS_TARNSITION_SIZE		(D3DXVECTOR3(10000.0f,0.0f,5000.0f))				// ボス遷移判定サイズ
+#define BOSS_TRT_POS				(D3DXVECTOR3(78000.0f,0.0f,-52000.0f))
+#define BOSS_MAP_TRT_MAP_POS		(D3DXVECTOR3(80000.0f,0.0f,-105000.0f))
+#define BOSS_MAP_TRT_MAP_ROT		(D3DXVECTOR3(0.0f,D3DXToRadian(175.0f),0.0f))
 //=======================================================================================
 // コンストラクタ
 //=======================================================================================
@@ -111,7 +114,7 @@ HRESULT CGame::Init(void)
 	CreatePlayer();
 
 	// 敵生成
-	CreateEnemy_Obstacle(ENEMY_OBSTACLE_CREATE_TEXT);
+	//CreateEnemy_Obstacle(ENEMY_OBSTACLE_CREATE_TEXT);
 
 	// マップの生成
 	CreateMap();
@@ -173,7 +176,7 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	// プレイヤーの位置描画
-	//DrawPlayerPos();
+	DrawPlayerPos();
 
 	if (m_pCamera != nullptr)
 	{
@@ -239,6 +242,8 @@ void CGame::CreateMap(void)
 
 	// マップ生成
 	m_pMap = CMap::Create(ZeroVector3, ZeroVector3, CMap::TYPE_NORMAL);
+
+	CBoss_Map_Transition::Create(BOSS_MAP_TRT_MAP_POS, BOSS_MAP_TRT_MAP_ROT);
 }
 
 //=======================================================================================

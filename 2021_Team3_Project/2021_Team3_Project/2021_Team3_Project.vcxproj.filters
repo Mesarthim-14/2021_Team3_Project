@@ -342,6 +342,9 @@
     <ClCompile Include="player.cpp">
       <Filter>04_Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="boss_map_transition.cpp">
+      <Filter>07_Model\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h">
@@ -571,6 +574,9 @@
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>01_Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="boss_map_transition.h">
+      <Filter>07_Model\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
