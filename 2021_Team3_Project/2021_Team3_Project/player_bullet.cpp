@@ -123,12 +123,7 @@ void CPlayer_Bullet::Update(void)
 	Collision();
 
 	// trueの場合
-	if (RayCollision() == true)
-	{
-		// 終了
-		Uninit();
-		return;
-	}
+	RayCollision();
 }
 //=============================================================================
 // 描画処理関数
@@ -179,15 +174,6 @@ void CPlayer_Bullet::Collision(void)
 
 				// サイズ取得
 				D3DXVECTOR3 CharacterSize = ((CEnemy*)pScene)->GetSize();
-
-				//エフェクト発生
-				for (int nCntEffect = 0; nCntEffect < 10; nCntEffect++)
-				{
-					// パーティクル生成
-					CEffect::Create(CharacterPos,
-						SPLASH_SIZE, SPLASH_MOVE, SPLASH_COLOR,
-						CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_4), SPLASH_LIFE);
-				}
 
 				// 判定
 				if (CCollision::CollisionRectangleAndRectangle(pos, CharacterPos, size, CharacterSize) == true)

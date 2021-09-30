@@ -29,7 +29,6 @@ private:
 	void Move(void);											// ˆÚ“®
 	void Collision(void);										// “–‚½‚è”»’è
 	void FanDecision(void);										// î‚Ì”»’è
-	void RayCollision(void);									// ƒŒƒC‚Ì“–‚½‚è”»’è
 
 	float m_fAngle;			// Šp“x
 	bool m_bAttackDecision;	// UŒ‚”»’è—p

@@ -55,7 +55,7 @@
 #define ATTACK_COOLTIME			(90)									// 攻撃のクールタイム
 #define RAY_NUM					(4)										// レイの数
 #define RAY_RADIUS				(D3DXToRadian(360.0f/4.0f))				// レイを出す方向
-#define RAY_HIT_RANGE			(600.0f)								// 範囲
+#define RAY_HIT_RANGE			(800.0f)								// 範囲
 #define MIN_LIFE				(0)										// ライフの最小
 #define LIFE					(100)									// ライフ
 #define ANGLE_MAX				(D3DXToRadian(360.0f))					// 角度の最大

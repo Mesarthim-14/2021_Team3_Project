@@ -26,6 +26,7 @@
 //=============================================================================
 #define MIN_LIFE		(0)									// ライフの最小
 #define DECISION_LENGTH	(8000.0f)							// 扇の長さ
+#define CIRCLE_LENGTH	(13000.0f)							// 円の長さ
 #define FAN_DIR			(D3DXVECTOR3(1.0f, 0.0f, 0.0f))		// 弧線方向
 #define ANGLE_90		(D3DXToRadian(90.0f))				// 90度
 #define ANGLE_270		(D3DXToRadian(270.0f))				// 270度
@@ -293,7 +294,7 @@ void CEnemy::CircleDecision(void)
 		D3DXVECTOR3 PlayerPos = pPlayer->GetPos();
 
 		// 円の判定
-		if (CCollision::CollisionCircularAndCircular(Pos, PlayerPos, DECISION_LENGTH, ZERO_FLOAT) == true)
+		if (CCollision::CollisionCircularAndCircular(Pos, PlayerPos, CIRCLE_LENGTH, ZERO_FLOAT) == true)
 		{
 			// 攻撃判定がfalseの場合
 			if (m_bAttack_Decision == false)
