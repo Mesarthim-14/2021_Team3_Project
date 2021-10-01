@@ -33,7 +33,7 @@
 // マクロ定義
 // Author : Sugawara Tsukasa
 //=============================================================================
-#define PLAYER_SPEED			(20.0f)									// プレイヤーの移動量
+#define PLAYER_SPEED			(10.0f)									// プレイヤーの移動量
 #define STICK_SENSITIVITY		(50.0f)									// スティック感度
 #define PLAYER_ROT_SPEED		(0.1f)									// キャラクターの回転する速度
 #define SHIP_NUM				(0)										// 船のナンバー
@@ -76,6 +76,8 @@
 #define SINK_MOVE				(3.0f)									// 沈む量
 #define SINK_ROTATE				(3.0f)									// 沈む角度
 #define SOUND_INTER_TIME		(10)									// 移動の音の間隔
+#define RATE_MOVE				(0.4f)									// 慣性
+#define RATE_MOVE_BASE			(0.0f)									// 慣性基盤
 // 船体の位置
 #define SHIP_POS				(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -157,7 +159,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CCharacter(Priority)
 	m_bKnock_Back = false;
 	m_nSoundCounter = 0;
 	m_bMoveSound = false;
-
+	m_bRate = false;
 }
 
 //=============================================================================
@@ -435,10 +437,10 @@ void CPlayer::Move(void)
 	float fAngle_R = ZERO_FLOAT;											// 右
 	float fAngle_L = ZERO_FLOAT;											// 左
 
-																			//===========================================
-																			// 右歯車
-																			//===========================================
-																			// 右スティックが入力されている場合
+	//===========================================
+	// 右歯車
+	//===========================================
+	// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
 		// コントローラーの角度
@@ -644,6 +646,9 @@ void CPlayer::Pad2Move(void)
 		// 右に移動
 		if (fAngle_L > m_fdisAngle_L)
 		{
+			// 慣性
+			m_bRate = true;
+
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
@@ -669,6 +674,9 @@ void CPlayer::Pad2Move(void)
 			// 左に移動
 			if (fAngle_L < m_fdisAngle_L)
 			{
+				// 慣性
+				m_bRate = true;
+
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
@@ -703,6 +711,9 @@ void CPlayer::Pad2Move(void)
 		// 左に移動
 		if (fAngle_R > m_fdisAngle_R)
 		{
+			// 慣性
+			m_bRate = true;
+
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
@@ -728,6 +739,9 @@ void CPlayer::Pad2Move(void)
 			// 右に移動
 			if (fAngle_R < m_fdisAngle_R)
 			{
+				// 慣性
+				m_bRate = true;
+
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
@@ -766,6 +780,10 @@ void CPlayer::Pad2Move(void)
 			RStickAngle(fAngle_R);
 			// trueに
 			m_bBack = true;
+
+			// 慣性
+			m_bRate = true;
+
 			// trueの場合
 			if (m_bBack == true)
 			{
@@ -791,7 +809,15 @@ void CPlayer::Pad2Move(void)
 		{
 			// falseに
 			m_bBack = false;
+
+			// 慣性
+			m_bRate = false;
 		}
+	}
+	else
+	{
+		// 慣性
+		m_bRate = false;
 	}
 
 	// 角度が最大になった場合
@@ -1029,6 +1055,9 @@ void CPlayer::KeyboardMove(void)
 		// 右に移動
 		if (pKeyboard->GetPress(DIK_W))
 		{
+			// 慣性
+			m_bRate = true;
+
 			// 向き加算
 			Gear_L_rot.x -= GEAR_SPIN_ANGLE;
 
@@ -1061,6 +1090,9 @@ void CPlayer::KeyboardMove(void)
 			// 左に移動
 			if (pKeyboard->GetPress(DIK_S))
 			{
+				// 慣性
+				m_bRate = true;
+
 				// 向き加算
 				Gear_L_rot.x += GEAR_SPIN_ANGLE;
 
@@ -1085,6 +1117,9 @@ void CPlayer::KeyboardMove(void)
 		// 右に移動
 		if (pKeyboard->GetPress(DIK_UP))
 		{
+			// 慣性
+			m_bRate = true;
+
 			// 向き加算
 			Gear_R_rot.x -= GEAR_SPIN_ANGLE;
 
@@ -1117,6 +1152,9 @@ void CPlayer::KeyboardMove(void)
 			// 左に移動
 			if (pKeyboard->GetPress(DIK_DOWN))
 			{
+				// 慣性
+				m_bRate = true;
+
 				// 向き加算
 				Gear_R_rot.x += GEAR_SPIN_ANGLE;
 
@@ -1144,6 +1182,9 @@ void CPlayer::KeyboardMove(void)
 		// trueの場合
 		if (m_bBack == true)
 		{
+			// 慣性
+			m_bRate = true;
+
 			// 向き加算
 			Gear_L_rot.x += GEAR_SPIN_ANGLE;
 			// 向き設定
@@ -1162,6 +1203,8 @@ void CPlayer::KeyboardMove(void)
 	// 後ろ移動
 	if (pKeyboard->GetRelease(DIK_DOWN) || pKeyboard->GetRelease(DIK_S))
 	{
+		// 慣性
+		m_bRate = false;
 		// trueの場合
 		if (m_bBack == true)
 		{
@@ -1198,6 +1241,13 @@ void CPlayer::KeyboardMove(void)
 	// 向き
 	SetRot(rot);
 
+	// 慣性
+	if (m_bRate == true)
+	{
+		// 慣性
+		pos.x += (RATE_MOVE_BASE - sinf(rot.y)*fSpeed) * RATE_MOVE;
+		pos.z += (RATE_MOVE_BASE - cosf(rot.y)*fSpeed) * RATE_MOVE;
+	}
 	// 位置設定
 	SetPos(pos);
 }

@@ -48,7 +48,7 @@ public:
 		TEXTURE_NUM_RESULT_STORY_BACK,	// リザルトのストーリー
 		TEXTURE_NUM_EFFECT_SMOKE,		// スモーク
 		TEXTURE_NUM_EFFECT_WAVE,		// 波
-		TEXTURE_NUM_L1,					// L1のUI
+		TEXTURE_NUM_R1,					// L1のUI
 		TEXTURE_NUM_RED,				// 赤
 		TEXTURE_NUM_MAX
 	};

@@ -177,7 +177,7 @@ void CRenderer::Update(void)
 	CInputKeyboard *pKeyboard = CManager::GetKeyboard();
 	
 	// ポリゴンの表示
-	if (pKeyboard->GetPress(DIK_M))
+	if (pKeyboard->GetTrigger(DIK_M))
 	{
 		LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスへのポインタ
 

@@ -74,7 +74,7 @@ HRESULT CAttackUi::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
 	// テクスチャポインタ
 	CTexture *pTexture = GET_TEXTURE_PTR;
-	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_L1));
+	BindTexture(pTexture->GetTexture(CTexture::TEXTURE_NUM_R1));
 
 	// 高さの設定
 	SetHeight(ADD_POS_Y);

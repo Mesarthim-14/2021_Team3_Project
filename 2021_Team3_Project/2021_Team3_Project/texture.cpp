@@ -73,7 +73,7 @@ HRESULT CTexture::SetTextureName(void)
 		{ "data/Texture/blackback.png" },				// リザルトストーリー
 		{ "data/Texture/Smoke.png" },					// スモーク
 		{ "data/Texture/Wave_Effect.png" },				// 波
-		{ "data/Texture/L1.png" },						// L1
+		{ "data/Texture/R1.png" },						// L1
 		{ "data/Texture/Red.png" },						// 赤
 	};
 
@@ -181,7 +181,7 @@ HRESULT CTexture::SeparateTexLoad(void)
 	size_t size = m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE].size();
 
 	// 分割テクスチャの読み込み
-	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE].size(); nCount++)
+	for (size_t nCount = 0; nCount < size; nCount++)
 	{
 		D3DXCreateTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_SEPARATE][nCount].data(), &m_apSeparateTexture[nCount].pSeparateTexture);
 	}

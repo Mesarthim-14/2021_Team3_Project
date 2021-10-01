@@ -126,5 +126,6 @@ private:
 	bool m_bDeath;									// 死亡フラグ
 	bool m_bEnd;									// プレイヤー終了のフラグ
 	bool m_bMoveSound;								// 移動サウンドのフラグ
+	bool m_bRate;									// 慣性
 };
 #endif

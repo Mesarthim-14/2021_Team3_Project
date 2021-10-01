@@ -32,6 +32,11 @@
 #define RAY_NUM			(1)										// レイの数
 #define RAY_HIT_RANGE	(600.0f)								// 範囲
 #define RAY_ANGLE		(D3DXToRadian(360.0f / 4.0f))			// 角度
+//爆発
+#define EXPLOSION_POS		(D3DXVECTOR3(pos.x, 500.0f, pos.z))						//位置
+#define EXPLOSION_SIZE		(D3DXVECTOR3(2500, 2500, 0))							//サイズ
+#define EXPLOSION_COLOR		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))						//色
+#define EXPLOSION_LIFE		(70)													//ライフ
 // 船体の位置
 #define SHIP_POS		(D3DXVECTOR3(pShip->GetMtxWorld()._41, pShip->GetMtxWorld()._42, pShip->GetMtxWorld()._43))
 // 砲台の位置
@@ -153,6 +158,10 @@ void CEnemy_Ship::Update(void)
 	// 死亡状態
 	if (nState == STATE_DEAD)
 	{
+		// パーティクル生成
+		CEffect::Create(EXPLOSION_POS, EXPLOSION_SIZE, ZeroVector3, EXPLOSION_COLOR,
+			CEffect::EFFECT_TYPE(CEffect::EFFECT_TYPE_2), EXPLOSION_LIFE);
+
 		// 終了
 		Uninit();
 

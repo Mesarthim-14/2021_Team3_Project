@@ -484,6 +484,10 @@ void CGame::BossTransition(void)
 			// フェード生成
 			CBoss_Fade::Create(ZeroVector3, ZeroVector3);
 
+			CSound *pSound = GET_SOUND_PTR;
+			pSound->Stop(CSound::SOUND_BGM_GAME);
+
+			pSound->Play(CSound::SOUND_BGM_BOSS);
 		}
 	}
 }
