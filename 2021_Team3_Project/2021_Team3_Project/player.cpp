@@ -208,7 +208,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 2Pad接続されているなら
 	if (P1_PAD != nullptr && P2_PAD != nullptr)
 	{
-		m_PadType = PAD_TYPE_2P;
+		m_PadType = PAD_TYPE_1P;
 	}
 
 	// 影
@@ -437,18 +437,19 @@ void CPlayer::Move(void)
 	float fAngle_R = ZERO_FLOAT;											// 右
 	float fAngle_L = ZERO_FLOAT;											// 左
 
+	// コントローラーの角度
+	fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
+	fAngle_L = atan2f((float)js.lY, (float)js.lX);
+
+	//スティックの最短距離
+	RStickAngle(fAngle_R);
+	LStickAngle(fAngle_L);
 	//===========================================
 	// 右歯車
 	//===========================================
 	// 右スティックが入力されている場合
 	if (js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// コントローラーの角度
-		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
-
-		//スティックの最短距離
-		RStickAngle(fAngle_R);
-
 		// 左に移動
 		if (fAngle_R < m_fdisAngle_R)
 		{
@@ -498,12 +499,6 @@ void CPlayer::Move(void)
 	// 左スティックが入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE)
 	{
-		// コントローラーの角度
-		fAngle_L = atan2f((float)js.lY, (float)js.lX);
-
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
-
 		// 右に移動
 		if (fAngle_L < m_fdisAngle_L)
 		{
@@ -550,14 +545,6 @@ void CPlayer::Move(void)
 	// 入力されている場合
 	if (js.lX != DEAD_ZONE || js.lY != DEAD_ZONE && js.lZ != DEAD_ZONE || js.lRz != DEAD_ZONE)
 	{
-		// コントローラーの角度
-		fAngle_L = atan2f((float)js.lY, (float)js.lX);
-		fAngle_R = atan2f((float)js.lRz, (float)js.lZ);
-
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
-		RStickAngle(fAngle_R);
-
 		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L > m_fdisAngle_L && fAngle_R > m_fdisAngle_R)
 		{
@@ -577,8 +564,8 @@ void CPlayer::Move(void)
 				m_bMoveSound = true;
 			}
 		}
-		// 右スティックと左スティックが下に倒されていない場合
-		else if (fAngle_L <= m_fdisAngle_L || fAngle_R <= m_fdisAngle_R)
+		//バックしない場合
+		else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 		{
 			// falseに
 			m_bBack = false;
@@ -610,7 +597,7 @@ void CPlayer::Pad2Move(void)
 	float fAngle_R = ZERO_FLOAT;	// 右角度
 	float fAngle_L = ZERO_FLOAT;	// 左角度
 
-									// サウンドのポインタ
+	// サウンドのポインタ
 	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
 
 	// 座標
@@ -633,16 +620,20 @@ void CPlayer::Pad2Move(void)
 	// 向き取得
 	D3DXVECTOR3 Gear_R_rot = pGear_R->GetRot();
 
+	// コントローラーの角度
+	fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
+	fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
+
+	//スティックの最短距離
+	LStickAngle(fAngle_L);
+	RStickAngle(fAngle_R);
+
 	//===========================================
 	// 左歯車 ※1Player
 	//===========================================
 	// 左スティックが入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE)
 	{
-		// コントローラーの角度
-		fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-		//スティックの最短距離
-		LStickAngle(fAngle_L);
 		// 右に移動
 		if (fAngle_L > m_fdisAngle_L)
 		{
@@ -669,7 +660,7 @@ void CPlayer::Pad2Move(void)
 			CreateWave();
 		}
 		// falseの場合
-		if (m_bBack == false)
+		else if (m_bBack == false)
 		{
 			// 左に移動
 			if (fAngle_L < m_fdisAngle_L)
@@ -704,10 +695,6 @@ void CPlayer::Pad2Move(void)
 	// 左スティックが入力されている場合
 	if (P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
 	{
-		// コントローラーの角度
-		fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-		//スティックの最短距離
-		RStickAngle(fAngle_R);
 		// 左に移動
 		if (fAngle_R > m_fdisAngle_R)
 		{
@@ -734,7 +721,7 @@ void CPlayer::Pad2Move(void)
 			CreateWave();
 		}
 		// falseの場合
-		if (m_bBack == false)
+		else if (m_bBack == false)
 		{
 			// 右に移動
 			if (fAngle_R < m_fdisAngle_R)
@@ -762,8 +749,6 @@ void CPlayer::Pad2Move(void)
 				CreateWave();
 			}
 		}
-
-
 	}
 	// 入力されている場合
 	if (P1_js.lX != DEAD_ZONE || P1_js.lY != DEAD_ZONE && P2_js.lX != DEAD_ZONE || P2_js.lY != DEAD_ZONE)
@@ -771,13 +756,6 @@ void CPlayer::Pad2Move(void)
 		// 右スティックと左スティックが下に倒されている場合
 		if (fAngle_L < m_fdisAngle_L && fAngle_R < m_fdisAngle_R)
 		{
-			// コントローラーの角度
-			fAngle_L = atan2f((float)P1_js.lY, (float)P1_js.lX);
-			fAngle_R = atan2f((float)P2_js.lY, (float)P2_js.lX);
-
-			//スティックの最短距離
-			LStickAngle(fAngle_L);
-			RStickAngle(fAngle_R);
 			// trueに
 			m_bBack = true;
 
@@ -805,7 +783,7 @@ void CPlayer::Pad2Move(void)
 			}
 		}
 		// 右スティックと左スティックが下に倒されていない場合
-		else if (fAngle_L <= m_fdisAngle_L || fAngle_R <= m_fdisAngle_R)
+		else if (fAngle_L < m_fdisAngle_L || fAngle_R < m_fdisAngle_R)
 		{
 			// falseに
 			m_bBack = false;
