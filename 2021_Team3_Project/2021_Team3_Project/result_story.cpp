@@ -80,27 +80,9 @@ void CResultStory::Update(void)
 
 	if (!m_bEnd)
 	{
-		if (0.0f >= GetPos().y + SCREEN_HEIGHT/2)
+		if (0.0f >= GetPos().y + SCREEN_HEIGHT / 2)
 		{
 			m_bEnd = true;
 		}
 	}
-}
-
-//=============================================================================
-// 影の描画
-//=============================================================================
-void CResultStory::Draw(void)
-{
-	// レンダラーポインタ取得
-	CRenderer *pRenderer = CManager::GetRenderer();
-
-	// ステンシルテスト
-	pRenderer->SetStencilTest();
-
-	// ポリゴンの描画
-	CScene2D::Draw();
-
-	// ステンシルリセット
-	pRenderer->ReSetStateStencil();
 }

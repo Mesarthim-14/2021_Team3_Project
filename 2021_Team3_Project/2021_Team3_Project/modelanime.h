@@ -68,7 +68,7 @@ private:
 	D3DXMATRIX m_OldMtxWorld1[MAX_OLD_MTX_WORLD];	// 5フレームまでの古い座標
 	CXfile::MODEL m_model;							// モデル情報
 
-													// 影の生成用
+	// 影の生成用
 	CShadow *m_pShadow;		// 影のポインタ
 	bool m_bRotCalculation;	// 角度の計算フラグ
 };

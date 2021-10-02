@@ -85,23 +85,25 @@ public:
 	HRESULT HierarchyModelLoad(void);	// 階層構造のモデルロード
 	void HierarchyModelUnLoad(void);	// 階層構造のモデルアンロード
 	void SetHierarchyFileName(void);	// ファイルの名前を設定
+	void LoadAll(void);					// 全てのロード
+	void UnLoadAll(void);				// 全てのアンロード
 
 	// Get関数
-	MODEL GetXfile(XFILE_NUM Tex_Num);																			// モデルの情報
+	MODEL GetXfile(XFILE_NUM Tex_Num);																				// モデルの情報
 	MODELFILE GetModelFile(int nCount, HIERARCHY_XFILE_NUM FileNum) { return m_apModelFile[FileNum].at(nCount); }	// モデルパーツの情報
-	int GetModelParts(HIERARCHY_XFILE_NUM FileNum) { return m_nMaxParts[FileNum]; }								// モデルのパーツ数
-	string GetModelFileName(HIERARCHY_XFILE_NUM FileNum) { return m_pFileName[FileNum]; }						// モデルファイルの名前
-	vector<MODEL> GetHierarchyXfile(HIERARCHY_XFILE_NUM FileNum) { return m_apHierarchyModel[FileNum]; }
+	int GetModelParts(HIERARCHY_XFILE_NUM FileNum)					{ return m_nMaxParts[FileNum]; }				// モデルのパーツ数
+	string GetModelFileName(HIERARCHY_XFILE_NUM FileNum)			{ return m_pFileName[FileNum]; }				// モデルファイルの名前
+	vector<MODEL> GetHierarchyXfile(HIERARCHY_XFILE_NUM FileNum)	{ return m_apHierarchyModel[FileNum]; }
 	LPDIRECT3DTEXTURE9 *GetXfileTexture(XFILE_NUM TexNum);
 
 private:
-	MODEL m_aXfile[XFILE_NUM_MAX];							// Xファイル情報の構造体
-	vector<std::string> m_aXfileName;						// Xファイルの名前
+	MODEL m_aXfile[XFILE_NUM_MAX];						// Xファイル情報の構造体
+	vector<string> m_aXfileName;						// Xファイルの名前
 
 	// 階層構造のモデル用
 	vector<MODEL> m_apHierarchyModel[HIERARCHY_XFILE_NUM_MAX];			// 階層構造モデルのポインタ
 	vector<MODELFILE> m_apModelFile[HIERARCHY_XFILE_NUM_MAX];			// 階層構造モデルのポインタ
-	vector<std::string> m_aHierarchyXfileName;							// 階層構造Xファイルの名前
+	vector<string> m_aHierarchyXfileName;								// 階層構造Xファイルの名前
 	string m_pFileName[HIERARCHY_XFILE_NUM_MAX];						// ファイルの名前
 	int m_nMaxParts[HIERARCHY_XFILE_NUM_MAX];							// ファイルごとのパーツ数
 };

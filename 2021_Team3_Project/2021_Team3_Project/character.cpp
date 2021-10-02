@@ -82,8 +82,6 @@ void CCharacter::Uninit()
 		{
 			//メモリの削除
 			delete nCount;
-
-			//メモリのクリア
 			nCount = nullptr;
 		}
 	}
@@ -253,7 +251,7 @@ void CCharacter::Gravity(void)
 	m_move.y -= GRAVITY_POWAR;
 	m_pos.y += m_move.y;		// 落下
 
-								// 地面の判定
+	// 地面の判定
 	if (m_pos.y <= GROUND_RIMIT)
 	{
 		Landing(GROUND_RIMIT);

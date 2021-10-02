@@ -96,24 +96,24 @@ public:
 	void LoadAll(void);														// 全てのロード
 	void UnLoadAll(void);													// 全てのアンロード
 
-																			// 通常テクスチャ
+	// 通常テクスチャ
 	HRESULT NormalTexLoad(void);											// テクスチャロード
 	void NormalTexUnLoad(void);												// テクスチャアンロード
 	LPDIRECT3DTEXTURE9 GetTexture(TEXTURE_TYPE Tex_Type);					// テクスチャの情報
 
-																			// 分割テクスチャ
+	// 分割テクスチャ
 	HRESULT SeparateTexLoad(void);											// 分割テクスチャロード
 	void SeparateTexUnLoad(void);											// 分割テクスチャアンロード
 	LPDIRECT3DTEXTURE9 GetSeparateTexture(SEPARATE_TEX_TYPE SepaTex_Type);	// 分割テクスチャ情報
 	D3DXVECTOR2 GetSparateTexInfo(SEPARATE_TEX_TYPE SepaTex_Type);			// 分割テクスチャ　UVの枚数取得
 	bool GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type);					// ループするか
 
-																			// ボリュームテクスチャ
+	// ボリュームテクスチャ
 	HRESULT VolumeTexLoad(void);											// ボリュームテクスチャロード
 	void VolumeTexUnLoad(void);												// ボリュームテクスチャアンロード
 	LPDIRECT3DVOLUMETEXTURE9 GetVolumeTexture(VOLUME_TEX_TYPE Tex_Type);	// ボリュームテクスチャの情報
 
-																			// キューブテクスチャ
+	// キューブテクスチャ
 	HRESULT CubeTexLoad(void);												// キューブテクスチャロード
 	void CubeTexUnLoad(void);												// キューブテクスチャアンロード
 	LPDIRECT3DCUBETEXTURE9 GetCubeTexture(CUBE_TEX_TYPE Tex_Type);			// キューブテクスチャの情報

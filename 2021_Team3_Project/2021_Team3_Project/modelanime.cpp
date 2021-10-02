@@ -103,7 +103,7 @@ void CModelAnime::Draw(D3DXVECTOR3 rot)
 	D3DMATERIAL9 matDef;						//現在のマテリアル保持用
 	D3DXMATERIAL*pMat;							//マテリアルデータへのポインタ
 
-												// 剣の軌跡の古いデータ
+	// 古いワールド座標
 	m_OldMtxWorld1[4] = m_OldMtxWorld1[3];
 	m_OldMtxWorld1[3] = m_OldMtxWorld1[2];
 	m_OldMtxWorld1[2] = m_OldMtxWorld1[1];

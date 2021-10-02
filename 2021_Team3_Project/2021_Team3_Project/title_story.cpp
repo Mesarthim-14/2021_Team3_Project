@@ -29,23 +29,19 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define BG_POS						(HALF_SCREEN_POS)
-#define BG_SIZE						(SCREEN_SIZE)
-#define SENTENCE_0_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 160.0f, 0.0f))
-#define SENTENCE_0_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))
-#define SENTENCE_1_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 280.0f, 0.0f))
-#define SENTENCE_1_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))
-#define SENTENCE_2_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 400.0f, 0.0f))
-#define SENTENCE_2_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))
-#define SENTENCE_3_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 530.0f, 0.0f))
-#define SENTENCE_3_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))
+#define BG_POS						(HALF_SCREEN_POS)									// 背景の座標
+#define BG_SIZE						(SCREEN_SIZE)										// 背景のサイズ
+#define SENTENCE_0_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 160.0f, 0.0f))	// 1行目の座標
+#define SENTENCE_0_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))					// 1行目のサイズ
+#define SENTENCE_1_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 280.0f, 0.0f))	// 2行目の座標
+#define SENTENCE_1_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))					// 2行目のサイズ
+#define SENTENCE_2_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 400.0f, 0.0f))	// 3行目の座標
+#define SENTENCE_2_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))					// 3行目のサイズ
+#define SENTENCE_3_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 530.0f, 0.0f))	// 4行目の座標
+#define SENTENCE_3_SIZE				(D3DXVECTOR3(750.0f, 100.0f, 0.0f))					// 4行目のサイズ
 
-#define CREATE_SENTENCE_INTER		(120)
-#define SENTENCE_FADE_OUT_NUM		(0.05f)
-
-//=============================================================================
-// static宣言
-//=============================================================================
+#define CREATE_SENTENCE_INTER		(120)												// 文字の間隔
+#define SENTENCE_FADE_OUT_NUM		(0.05f)												// フェードの速度
 
 //=============================================================================
 // コンストラクタ

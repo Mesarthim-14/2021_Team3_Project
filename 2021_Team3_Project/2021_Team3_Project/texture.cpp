@@ -196,7 +196,6 @@ void CTexture::SeparateTexUnLoad(void)
 	// テクスチャの解放
 	for (int nCount = 0; nCount < SEPARATE_TEX_MAX; nCount++)
 	{
-
 		if (m_apSeparateTexture[nCount].pSeparateTexture != nullptr)
 		{
 			m_apSeparateTexture[nCount].pSeparateTexture->Release();
@@ -270,7 +269,6 @@ bool CTexture::GetSparateTexLoop(SEPARATE_TEX_TYPE SepaTex_Type)
 	return false;
 }
 
-
 //=============================================================================
 // ボリュームテクスチャロード
 //=============================================================================
@@ -279,8 +277,9 @@ HRESULT CTexture::VolumeTexLoad(void)
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GET_RENDERER_DEVICE;
 
+	size_t size = m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME].size();
 	// テクスチャの読み込み
-	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME].size(); nCount++)
+	for (size_t nCount = 0; nCount < size; nCount++)
 	{
 		D3DXCreateVolumeTextureFromFile(pDevice, m_aTexFileName[TEXTURE_TYPE_NUM_VOLUME][nCount].data(), &m_pVolumeTexture[nCount]);
 	}
@@ -327,6 +326,7 @@ HRESULT CTexture::CubeTexLoad(void)
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GET_RENDERER_DEVICE;
 
+	size_t size = m_aTexFileName[TEXTURE_TYPE_NUM_CUBE].size();
 	// テクスチャの読み込み
 	for (size_t nCount = 0; nCount < m_aTexFileName[TEXTURE_TYPE_NUM_CUBE].size(); nCount++)
 	{

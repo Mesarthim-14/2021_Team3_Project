@@ -24,7 +24,6 @@
 //=======================================================================================
 CTutorial::CTutorial()
 {
-	m_pScene = nullptr;
 }
 
 //=======================================================================================
@@ -41,16 +40,6 @@ CTutorial::~CTutorial()
 //=======================================================================================
 HRESULT CTutorial::Init(void)
 {
-	// nullcheck
-	if (m_pScene == nullptr)
-	{
-		// インスタンス生成
-		m_pScene = CScene2D::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f));
-	}
-	
-	// サウンドのポインタ
-	CSound *pSound = CManager::GetResourceManager()->GetSoundClass();
-	//pSound->Play(CSound::SOUND_LABEL_BGM_TITLE);
 
 	return S_OK;
 }
@@ -60,11 +49,6 @@ HRESULT CTutorial::Init(void)
 //=======================================================================================
 void CTutorial::Uninit(void)
 {
-	if (m_pScene != nullptr)
-	{
-		m_pScene->Uninit();
-		m_pScene = nullptr;
-	}
 }
 
 //=======================================================================================
@@ -72,23 +56,6 @@ void CTutorial::Uninit(void)
 //=======================================================================================
 void CTutorial::Update(void)
 {
-	CInputKeyboard* pKey = CManager::GetKeyboard();
-	CFade::FADE_MODE mode = CManager::GetFade()->GetFade();
-
-	// コントローラのstartを押したとき
-	if (CManager::GetJoypad()->GetJoystickTrigger(CInputJoypad::JOY_BUTTON_START, 0) && mode == CFade::FADE_MODE_NONE)
-	{
-		CFade *pFade = CManager::GetFade();
-		pFade->SetFade(CManager::MODE_TYPE_GAME);
-	}
-
-	//エンターキーを押したとき
-	if (pKey->GetTrigger(DIK_RETURN) && mode == CFade::FADE_MODE_NONE)
-	{
-		CFade *pFade = CManager::GetFade();
-		pFade->SetFade(CManager::MODE_TYPE_GAME);
-	}
-
 }
 
 //=======================================================================================

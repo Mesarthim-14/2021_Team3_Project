@@ -45,9 +45,10 @@ CXfile::CXfile()
 		{ "data/Model/Map/TitleMap.x" },			// タイトルマップ
 		{ "data/Model/Map/sky.x" },					// タイトルマップ
 		{ "data/Model/Map/boss_map.x" },			// ボスマップ
-		{ "data/Model/Map/boss_map_transition.x" },			// ボスマップ
+		{ "data/Model/Map/boss_map_transition.x" },	// ボスマップ
 	};
 
+	// 階層構造モデル
 	m_aHierarchyXfileName =
 	{
 		{ "data/Text/Player/motion_Player.txt"},			// プレイヤー
@@ -109,7 +110,6 @@ HRESULT CXfile::ModelLoad(void)
 
 			// ファイルネームの取得
 			char cData[256] = {};
-
 			sprintf(cData, "data/Texture/%s", materials[nCntMat].pTextureFilename);
 
 			// テクスチャの読み込み
@@ -144,8 +144,9 @@ void CXfile::ModelUnLoad(void)
 			m_aXfile[nCount].pBuffMat = nullptr;
 		}
 
+		size_t size = m_aXfile[nCount].apTexture.size();
 		// テクスチャの破棄
-		for (size_t nCntTexture = 0; nCntTexture < m_aXfile[nCount].apTexture.size(); nCntTexture++)
+		for (size_t nCntTexture = 0; nCntTexture < size; nCntTexture++)
 		{
 			if (m_aXfile[nCount].apTexture.at(nCntTexture) != nullptr)
 			{
@@ -344,7 +345,8 @@ void CXfile::HierarchyModelUnLoad(void)
 {
 	for (int nXFileNumCnt = 0; nXFileNumCnt < HIERARCHY_XFILE_NUM_MAX; nXFileNumCnt++)
 	{
-		for (size_t nCount = 0; nCount < m_apHierarchyModel[nXFileNumCnt].size(); nCount++)
+		size_t size = m_apHierarchyModel[nXFileNumCnt].size();
+		for (size_t nCount = 0; nCount < size; nCount++)
 		{
 			//マテリアル情報の破棄
 			if (m_apHierarchyModel[nXFileNumCnt].at(nCount).pBuffMat != nullptr)
@@ -384,11 +386,36 @@ void CXfile::HierarchyModelUnLoad(void)
 //=============================================================================
 void CXfile::SetHierarchyFileName(void)
 {
-	for (size_t nCount = 0; nCount < m_aHierarchyXfileName.size(); nCount++)
+	size_t size = m_aHierarchyXfileName.size();
+	for (size_t nCount = 0; nCount < size; nCount++)
 	{
 		// 名前を入れる
 		m_pFileName[nCount] = m_aHierarchyXfileName.at(nCount);
 	}
+}
+
+//=============================================================================
+// 全てのロード
+//=============================================================================
+void CXfile::LoadAll(void)
+{
+	// モデルロード
+	ModelLoad();
+
+	// 階層構造のファイル読み込み
+	HierarchyReadFile();
+
+	// 階層構造のモデル読み込み
+	HierarchyModelLoad();
+}
+
+//=============================================================================
+// 全てのアンロード
+//=============================================================================
+void CXfile::UnLoadAll(void)
+{
+	ModelUnLoad();
+	HierarchyModelUnLoad();
 }
 
 //=============================================================================

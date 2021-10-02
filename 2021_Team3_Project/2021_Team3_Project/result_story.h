@@ -28,7 +28,6 @@ public:
 	static CResultStory *Create(void);		// インスタンス生成
 	HRESULT Init(void);						// 初期化処理
 	void Update(void);						// 更新処理
-	void Draw(void);						// 描画処理
 
 	float GetPosY(void) { return GetPos().y; }
 	bool GetEnd(void)	{ return m_bEnd; }

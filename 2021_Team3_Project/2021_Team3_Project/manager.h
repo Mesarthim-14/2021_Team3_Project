@@ -70,15 +70,14 @@ public:
 	static void SetMode(MODE_TYPE mode);							// モードの設定
 
 	// Get関数
-	static MODE_TYPE GetMode(void);																	// モードの情報
-	static CRenderer *GetRenderer(void) { return m_pRenderer.get(); }			// レンダラー情報
-	static CInputKeyboard *GetKeyboard(void) { return m_pInput.get(); }				// キーボード情報
-	static CFade *GetFade(void) { return m_pFade.get(); }				// フェード情報
-	static CInputJoypad *GetJoypad(void) { return m_pJoypad.get(); }				// ジョイパッドコントローラの情報
-	static CScene *GetScene(void) { return m_pScene.get(); }				// シーン情報
+	static MODE_TYPE GetMode(void);															// モードの情報
+	static CRenderer *GetRenderer(void) { return m_pRenderer.get(); }						// レンダラー情報
+	static CInputKeyboard *GetKeyboard(void) { return m_pInput.get(); }						// キーボード情報
+	static CFade *GetFade(void) { return m_pFade.get(); }									// フェード情報
+	static CInputJoypad *GetJoypad(void) { return m_pJoypad.get(); }						// ジョイパッドコントローラの情報
+	static CScene *GetScene(void) { return m_pScene.get(); }								// シーン情報
 	static CResourceManager *GetResourceManager(void) { return m_pResourceManager.get(); }	// リソースマネージャのポインタ
 	static CDebugProc *GetDebugProc(void) { return m_pDebugProc.get(); }
-
 
 	static CModeBase *GetModeBase(void);						// ゲームモードの情報
 	static CModeBase *GetModePtr(void);							// ゲームの情報

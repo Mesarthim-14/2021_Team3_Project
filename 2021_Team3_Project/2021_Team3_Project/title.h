@@ -42,9 +42,9 @@ public:
 	void Create3DObject(void);	// 3Dに必要な情報を生成
 
 	// Get関数
-	CCamera* GetCamera(void) override { return (CCamera*)m_pCamera; }		// カメラのポインタ
-	CLight* GetLight(void) override { return m_pLight; }				// ライトのポインタ
-	CPlayer* GetPlayer(void) override { return m_pShip; }					// プレイヤーのポインタ
+	CCamera* GetCamera(void) override	{ return (CCamera*)m_pCamera; }		// カメラのポインタ
+	CLight* GetLight(void) override		{ return m_pLight; }				// ライトのポインタ
+	CPlayer* GetPlayer(void) override	{ return m_pShip; }					// プレイヤーのポインタ
 private:
 	CPlayer *m_pShip;				// 船
 	vector<CScene2D*> m_pObject2D;	// 2Dオブジェクト

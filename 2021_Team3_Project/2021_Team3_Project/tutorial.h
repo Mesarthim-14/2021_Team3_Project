@@ -33,7 +33,6 @@ public:
 	void Draw(void);
 
 private:
-	CScene2D* m_pScene;	//ƒ|ƒCƒ“ƒ^
 };
 
 #endif // ! _TUTORIAL_H_

@@ -15,7 +15,6 @@
 //=======================================================================================
 // マクロ定義
 //=======================================================================================
-#define MAX_PLAYER (1)			// プレイヤーの数
 
 //=======================================================================================
 // 前方宣言
@@ -74,22 +73,18 @@ public:
 	void ModeTransition(void);						// モード遷移
 	void Boss_Enemy_Create(void);					// ボス戦敵生成
 													// Set関数
-	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }		// ボス戦の判定
+	void SetbBoss(bool bBoss) { m_bBoss = bBoss; }	// ボス戦の判定
 	void SetbBossTransition(bool bBossTransition) { m_bBossTransition = bBossTransition; }	// ボス戦遷移の判定
 
-																							// Get関数
-
-	CCamera *GetCamera(void) { return (CCamera*)m_pCamera; }	// カメラのポインタ情報
-
-	CLight *GetLight(void) { return m_pLight; }					// ライトのポインタ情報
-	CPlayer *GetPlayer(void) { return m_pPlayer; }				// プレイヤーのポインタ情報
-
-	CMap *GetMap(void) { return m_pMap; }						// マップのポインタ取得
-	bool GetbBoss(void) { return m_bBoss; }						// ボスのbool取得
-	bool GetbBossTransition(void) { return m_bBossTransition; }	// ボス遷移判定取得
+	// Get関数
+	CCamera *GetCamera(void)		{ return (CCamera*)m_pCamera; }	// カメラのポインタ情報
+	CLight *GetLight(void)			{ return m_pLight; }			// ライトのポインタ情報
+	CPlayer *GetPlayer(void)		{ return m_pPlayer; }			// プレイヤーのポインタ情報
+	CMap *GetMap(void)				{ return m_pMap; }				// マップのポインタ取得
+	bool GetbBoss(void)				{ return m_bBoss; }				// ボスのbool取得
+	bool GetbBossTransition(void)	{ return m_bBossTransition; }	// ボス遷移判定取得
 
 private:
-
 	// ポインタ
 	CCameraGame *m_pCamera;					// カメラのポインタ	
 	CLight *m_pLight;						// ライトのポインタ
@@ -99,8 +94,8 @@ private:
 	CMap * m_pMap;							// マップのポインタ
 	CBoss_Shark *m_pBoss_Shark;				// ボスのポインタ
 	ENEMY_FILE_DATA *m_pEnemyFileData;		// 敵のファイルデータ
-	bool m_bGameEnd;						// ゲームのエンドフラグ
 	int m_nEnemyNum;						// 敵数
+	bool m_bGameEnd;						// ゲームのエンドフラグ
 	bool m_bBossTransition;					// ボス戦に遷移したか
 	bool m_bBoss;							// ボス戦か
 

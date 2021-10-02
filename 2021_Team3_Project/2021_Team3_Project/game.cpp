@@ -225,7 +225,7 @@ void CGame::CreatePlayer(void)
 		m_pPlayer = CPlayer::Create(PLAYER_POS, PLAYER_ROT);
 		CPlayer_Life::Create(LIFE_POS, ZeroVector3);			// ライフ生成
 
-																// 操作方法
+		// 操作方法
 		CRotateUi::Create(m_pPlayer->GetRightPaddle());
 		CRotateUi::Create(m_pPlayer->GetLeftPaddle());
 		CAttackUi::Create(m_pPlayer->GetShip());
@@ -524,6 +524,7 @@ void CGame::ModeTransition(void)
 		}
 	}
 }
+
 //=======================================================================================
 // ボス戦敵生成
 // Author : Konishi Yuuto

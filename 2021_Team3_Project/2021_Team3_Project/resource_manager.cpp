@@ -82,14 +82,7 @@ void CResourceManager::LoadAll(void)
 	if (m_pXFile != nullptr)
 	{
 		// モデルロード
-	m_pXFile->ModelLoad();
-
-		// 階層構造のファイル読み込み
-	m_pXFile->HierarchyReadFile();
-
-		// 階層構造のモデル読み込み
-	m_pXFile->HierarchyModelLoad();
-
+		m_pXFile->LoadAll();
 	}
 }
 
@@ -111,8 +104,7 @@ void CResourceManager::UnLoadAll(void)
 	if (m_pXFile != nullptr)
 	{
 		// テクスチャアンロード
-		m_pXFile->ModelUnLoad();
-		m_pXFile->HierarchyModelUnLoad();
+		m_pXFile->UnLoadAll();
 		delete m_pXFile;
 		m_pXFile = nullptr;
 	}
