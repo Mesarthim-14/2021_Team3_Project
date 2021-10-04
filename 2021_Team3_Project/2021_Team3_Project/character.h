@@ -107,6 +107,7 @@ public:
 	STATE GetState(void)					{ return m_State; }						// 状態取得
 	RAY_DATA GetRay_Data(void)				{ return m_RayData; }					// レイの情報取得
 	bool GetHitMap(void)					{ return m_bHitMap; }					// ヒットマップ
+
 private:
 	vector<CModelAnime*> m_apModelAnime;	// モデルパーツ用ポインタ
 	CMotion *m_pMotion;						// モーションクラスのポインタ

@@ -609,7 +609,6 @@ void CPlayer::Pad2Move(void)
 	// スピード
 	float fSpeed = GetSpeed();
 
-
 	// 左の歯車の情報取得
 	CModelAnime *pGear_L = GetModelAnime(GEAR_L_NUM);
 	// 向き取得
