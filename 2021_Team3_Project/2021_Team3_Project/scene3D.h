@@ -25,7 +25,9 @@ public:
 	virtual void Uninit(void);									// 終了処理
 	virtual void Update(void);									// 更新処理
 	virtual void Draw(void);									// 描画処理
+	void CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size);		// 頂点の設定
 
+	// Set関数
 	void SetMove(D3DXVECTOR3 move);								// 移動量
 	void SetPosision(D3DXVECTOR3 pos);							// 座標の更新
 	void SetAlpha(bool bAlpha);									// アルファテスト
@@ -36,7 +38,7 @@ public:
 	void InitAnimation(D3DXVECTOR2 TexInfo, int nLoop);			// アニメーション情報初期化
 	void UpdateAnimation(void);									// アニメーションの更新
 	void ScaleUp(float fScale);									// 拡大処理
-	void SetColor(const D3DXCOLOR color);						// カラーの設定
+	void SetColor(D3DXCOLOR color);								// カラーの設定
 
 private:
 	D3DXMATRIX	m_mtxWorld;		// ワールドマトリクス

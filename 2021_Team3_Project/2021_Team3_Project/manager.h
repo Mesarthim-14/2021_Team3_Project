@@ -15,11 +15,13 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define GET_TEXTURE_PTR	(CManager::GetResourceManager()->GetTextureClass())	// テクスチャのポインタ
-#define GET_SOUND_PTR	(CManager::GetResourceManager()->GetSoundClass())	// サウンドのポインタ
-#define GET_XFILE_PTR	(CManager::GetResourceManager()->GetXfileClass())	// Xファイルのポインタ
-#define GET_PLAYER_PTR	(CManager::GetGame()->GetPlayer())					// プレイヤーのポインタ
-#define GET_CAMERA_PTR	(CManager::GetGame()->GetCamera())					// カメラのポインタ
+#define GET_TEXTURE_PTR		(CManager::GetResourceManager()->GetTextureClass())	// テクスチャのポインタ
+#define GET_SOUND_PTR		(CManager::GetResourceManager()->GetSoundClass())	// サウンドのポインタ
+#define GET_XFILE_PTR		(CManager::GetResourceManager()->GetXfileClass())	// Xファイルのポインタ
+#define GET_PLAYER_PTR		(CManager::GetModePtr()->GetPlayer())				// プレイヤーのポインタ
+#define GET_CAMERA_PTR		(CManager::GetModePtr()->GetCamera())				// カメラのポインタ
+#define GET_RENDERER_DEVICE	(CManager::GetRenderer()->GetDevice())				// デバイス取得
+#define GET_MAP_PTR			(CManager::GetModePtr()->GetMap())					// マップのポインタ取得
 
 //=============================================================================
 //前方宣言
@@ -32,6 +34,7 @@ class CScene;
 class CResourceManager;
 class CGame;
 class CModeBase;
+class CDebugProc;
 
 //=============================================================================
 //マネージャークラス
@@ -44,11 +47,13 @@ public:
 	//=========================================================================
 	enum MODE_TYPE
 	{
-		MODE_TYPE_NONE = 0, 
-		MODE_TYPE_TITLE,		// タイトルモード
-		MODE_TYPE_TUTORIAL,		// チュートリアル
-		MODE_TYPE_GAME,			// ゲームモード
-		MODE_TYPE_RESULT,		// リザルトモード
+		MODE_TYPE_NONE = 0,
+		MODE_TYPE_TITLE,			// タイトルモード
+		MODE_TYPE_TITLE_STORY,		// タイトルモード
+		MODE_TYPE_TUTORIAL,			// チュートリアル
+		MODE_TYPE_GAME,				// ゲームモード
+		MODE_TYPE_RESULT_FAILED,	// リザルトモード
+		MODE_TYPE_RESULT_CLEAR,		// リザルトモード
 		MODE_TYPE_MAX,
 	};
 
@@ -66,15 +71,17 @@ public:
 
 	// Get関数
 	static MODE_TYPE GetMode(void);																	// モードの情報
-	static CRenderer *GetRenderer(void)						{ return m_pRenderer.get(); }			// レンダラー情報
-	static CInputKeyboard *GetKeyboard(void)				{ return m_pInput.get(); }				// キーボード情報
-	static CFade *GetFade(void)								{ return m_pFade.get(); }				// フェード情報
-	static CInputJoypad *GetJoypad(void)					{ return m_pJoypad.get(); }				// ジョイパッドコントローラの情報
-	static CScene *GetScene(void)							{ return m_pScene.get(); }				// シーン情報
-	static CResourceManager *GetResourceManager (void)		{ return m_pResourceManager.get(); }	// リソースマネージャのポインタ
+	static CRenderer *GetRenderer(void) { return m_pRenderer.get(); }			// レンダラー情報
+	static CInputKeyboard *GetKeyboard(void) { return m_pInput.get(); }				// キーボード情報
+	static CFade *GetFade(void) { return m_pFade.get(); }				// フェード情報
+	static CInputJoypad *GetJoypad(void) { return m_pJoypad.get(); }				// ジョイパッドコントローラの情報
+	static CScene *GetScene(void) { return m_pScene.get(); }				// シーン情報
+	static CResourceManager *GetResourceManager(void) { return m_pResourceManager.get(); }	// リソースマネージャのポインタ
+	static CDebugProc *GetDebugProc(void) { return m_pDebugProc.get(); }
 
-	static CModeBase *GetModeBase(void);					// ゲームモードの情報
-	static CGame *GetGame(void);							// ゲームの情報
+
+	static CModeBase *GetModeBase(void);						// ゲームモードの情報
+	static CModeBase *GetModePtr(void);							// ゲームの情報
 
 private:
 	static unique_ptr<CRenderer> m_pRenderer;				// レンダラークラスのポインタ
@@ -85,6 +92,6 @@ private:
 	static unique_ptr<CResourceManager> m_pResourceManager;	// リソースマネージャのポインタ
 	static unique_ptr<CModeBase> m_pModeBase;				// モードのポインタ
 	static MODE_TYPE m_mode;								// モード
-
+	static unique_ptr<CDebugProc> m_pDebugProc;				// デバッグプロシージャ
 };
 #endif

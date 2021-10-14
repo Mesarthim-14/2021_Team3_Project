@@ -75,21 +75,21 @@ void CResourceManager::LoadAll(void)
 	if (m_pTexture != nullptr)
 	{
 		// テクスチャロード
-		m_pTexture->Load();
-		m_pTexture->SeparateTexLoad();
+		m_pTexture->LoadAll();
 	}
 
 	// !nullcheck
 	if (m_pXFile != nullptr)
 	{
 		// モデルロード
-	//	m_pXFile->ModelLoad();
+	m_pXFile->ModelLoad();
 
 		// 階層構造のファイル読み込み
-	//	m_pXFile->HierarchyReadFile();
+	m_pXFile->HierarchyReadFile();
 
 		// 階層構造のモデル読み込み
-	//	m_pXFile->HierarchyModelLoad();
+	m_pXFile->HierarchyModelLoad();
+
 	}
 }
 
@@ -101,9 +101,8 @@ void CResourceManager::UnLoadAll(void)
 	// !nullcheck
 	if (m_pTexture != nullptr)
 	{
-		// テクスチャアンロード
-		m_pTexture->UnLoad();
-		m_pTexture->SeparateTexUnLoad();
+		// テクスチャのアンロード
+		m_pTexture->UnLoadAll();
 		delete m_pTexture;
 		m_pTexture = nullptr;
 	}

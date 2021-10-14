@@ -18,35 +18,36 @@
 #include "sound.h"
 #include "resource_manager.h"
 #include "motion.h"
-
+#include "map.h"
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define GRAVITY_POWAR			(0.7f)						// 重力の強さ
+#define GRAVITY_POWAR			(1.0f)						// 重力の強さ
 #define GROUND_RIMIT			(0.0f)						// 地面の制限
-
-//=============================================================================
-// static初期化処理
-//=============================================================================
- int CCharacter::m_nAllNum = 0;
-
+#define PARENT_NUM				(0)							// 親のナンバー
 //=============================================================================
 // コンストラクタ
 //=============================================================================
 CCharacter::CCharacter(PRIORITY Priority) : CScene(Priority)
 {
-	 m_pos = ZeroVector3;
-	 m_posOld = ZeroVector3;
-	 m_move = ZeroVector3;
-	 m_rot = ZeroVector3;
-	 m_nLife = 0;
-	 m_fSpeed = 0.0f;
-	 m_bArmor = false;
-	 m_nStateCounter = 0;
-	 m_pMotion = nullptr;
-	 m_nParts = 0;
-	 m_apModelAnime.clear();
-	 m_bLanding = false;
+	m_pos = ZeroVector3;
+	m_posOld = ZeroVector3;
+	m_move = ZeroVector3;
+	m_rot = ZeroVector3;
+	m_size = ZeroVector3;
+	m_nLife = 0;
+	m_fSpeed = 0.0f;
+	m_bArmor = false;
+	m_nStateCounter = 0;
+	m_pMotion = nullptr;
+	m_nParts = 0;
+	m_apModelAnime.clear();
+	m_bLanding = false;
+	m_State = STATE_NORMAL;
+	m_bUseShadow = false;
+	m_RayData = { ZERO_FLOAT,ZERO_FLOAT,ZERO_INT };
+	m_bGravity = true;
+	m_bHitMap = false;
 }
 
 //=============================================================================
@@ -63,8 +64,8 @@ CCharacter::~CCharacter()
 HRESULT CCharacter::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 引数の代入
-	m_pos = pos;	// 座標の設定
-	m_rot = rot;	// 角度の設定
+	m_pos = pos;
+	m_rot = rot;
 
 	return S_OK;
 }
@@ -74,16 +75,16 @@ HRESULT CCharacter::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 void CCharacter::Uninit()
 {
-	for (size_t nCntModelNum = 0; nCntModelNum < m_apModelAnime.size(); nCntModelNum++)
+	for (auto &nCount : m_apModelAnime)
 	{
 		// !nullcheck
-		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		if (nCount != nullptr)
 		{
 			//メモリの削除
-			delete m_apModelAnime.at(nCntModelNum);
+			delete nCount;
 
 			//メモリのクリア
-			m_apModelAnime.at(nCntModelNum) = nullptr;
+			nCount = nullptr;
 		}
 	}
 
@@ -107,15 +108,15 @@ void CCharacter::Uninit()
 //=============================================================================
 void CCharacter::Update()
 {
-	//アニメーションの更新処理
-	ModelAnimeUpdate();
-
 	// 重力
 	Gravity();
 
-	// 移動量加算
-	m_pos += m_move;
-
+	// falseの場合
+	if (m_bHitMap == false)
+	{
+		// 移動量加算
+		m_pos += m_move;
+	}
 	// 無敵時間のとき
 	if (m_bArmor == true)
 	{
@@ -149,18 +150,26 @@ void CCharacter::Draw()
 	//ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);					// 裏面を（左回り）をカリング
-
-	for (int nCntModelNum = 0; nCntModelNum < m_nParts; nCntModelNum++)
+	// モデルの描画
+	for (auto &model : m_apModelAnime)
 	{
-		if (m_apModelAnime.at(nCntModelNum) != nullptr)
+		if (model != nullptr)
 		{
-			//階層モデルクラスの描画処理
-			m_apModelAnime.at(nCntModelNum)->Draw();
+			model->Draw(m_rot);
 		}
 	}
 
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);					// 裏面を（左回り）をカリング
+	if (m_bUseShadow)
+	{
+		// 影の描画
+		for (auto &shadow : m_apModelAnime)
+		{
+			if (shadow != nullptr)
+			{
+				shadow->ShadowDraw(m_rot);
+			}
+		}
+	}
 }
 
 //=============================================================================
@@ -183,13 +192,13 @@ void CCharacter::ModelCreate(CXfile::HIERARCHY_XFILE_NUM FileNum)
 			// ローカル変数取得
 			CModelAnime *pModelAnime = nullptr;
 			CXfile::MODELFILE ModelFile = pXfile->GetModelFile(nCntModel, FileNum);
-			std::vector<CXfile::MODEL> model = pXfile->GetHierarchyXfile(FileNum);
+			vector<CXfile::MODEL> model = pXfile->GetHierarchyXfile(FileNum);
 
 			// nullcheck
 			if (pModelAnime == nullptr)
 			{
 				// インスタンス生成
-				pModelAnime = CModelAnime::Create(ModelFile.offsetPos, ModelFile.offsetRot);
+				pModelAnime = CModelAnime::Create(ModelFile.offsetPos, ModelFile.offsetRot, model.at(nCntModel));
 
 				// !nullcheck
 				if (pModelAnime != nullptr)
@@ -240,20 +249,15 @@ void CCharacter::ModelAnimeUpdate(void)
 //=============================================================================
 void CCharacter::Gravity(void)
 {
-	// 着地状態じゃなかったら
-	if (!m_bLanding)
+	// 重力をかける
+	m_move.y -= GRAVITY_POWAR;
+	m_pos.y += m_move.y;		// 落下
+
+								// 地面の判定
+	if (m_pos.y <= GROUND_RIMIT)
 	{
-		// 重力をかける
-		m_move.y -= GRAVITY_POWAR;
-		m_pos.y += m_move.y;		// 落下
-
-		// 地面の判定
-		if (m_pos.y <= GROUND_RIMIT)
-		{
-			Landing(GROUND_RIMIT);
-		}
+		Landing(GROUND_RIMIT);
 	}
-
 }
 
 //=============================================================================
@@ -270,6 +274,62 @@ void CCharacter::Landing(float fHeight)
 		m_bLanding = true;
 	}
 }
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+void CCharacter::RayCollision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_MAP);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// 位置
+				D3DXVECTOR3 Pos = ZeroVector3;
+
+				// レイの数が0より多い場合
+				if (m_RayData.nNum > ZERO_INT)
+				{
+					// 位置取得
+					Pos.x = GetModelAnime(PARENT_NUM)->GetMtxWorld()._41;
+					Pos.y = GetModelAnime(PARENT_NUM)->GetMtxWorld()._42;
+					Pos.z = GetModelAnime(PARENT_NUM)->GetMtxWorld()._43;
+
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(Pos, ((CMap*)pScene), m_RayData.fAngle, m_RayData.fRange, m_RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						SetMove(ZeroVector3);
+
+						// 位置
+						Pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						SetPos(Pos);
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+	}
+}
 
 //=============================================================================
 // モーションの設定
@@ -281,5 +341,20 @@ void CCharacter::SetMotion(int nMotionState)
 	{
 		// モーションの更新
 		m_pMotion->SetMotion(nMotionState, m_nParts, m_apModelAnime);
+	}
+}
+
+//=============================================================================
+// 影の回転を反映させるか
+//=============================================================================
+void CCharacter::SetShadowRotCalculation(void)
+{
+	// モデルの描画
+	for (auto &model : m_apModelAnime)
+	{
+		if (model != nullptr)
+		{
+			model->SetRotCalculation(true);
+		}
 	}
 }

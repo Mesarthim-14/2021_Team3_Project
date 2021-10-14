@@ -15,6 +15,9 @@
 #include "camera.h"
 #include "game.h"
 #include "keyboard.h"
+#include "polygon.h"
+#include "shadow.h"
+#include "debug_proc.h"
 
 //=============================================================================
 // レンダリングクラスのコンストラクタ
@@ -63,7 +66,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	d3dpp.BackBufferFormat = d3ddm.Format;							// カラーモードの指定
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;						// 映像信号に同期してフリップする
 	d3dpp.EnableAutoDepthStencil = TRUE;							// デプスバッファ（Ｚバッファ）とステンシルバッファを作成
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;						// デプスバッファとして16bitを使う
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;					// デプスバッファとして16bitを使う
 	d3dpp.Windowed = bWindow;										// ウィンドウモード
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;		// リフレッシュレート
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;		// インターバル
@@ -129,6 +132,16 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);		// 最初のアルファ引数（初期値）
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);		// 2番目のアルファ引数（初期値）
 
+	//環境光
+	D3DMATERIAL9 material;
+	ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	material.Ambient.r = 1.0f;
+	material.Ambient.g = 1.0f;
+	material.Ambient.b = 1.0f;
+	material.Ambient.a = 1.0f;
+	m_pD3DDevice->SetMaterial(&material);
+	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x44444444);
+
 	return S_OK;
 }
 
@@ -187,7 +200,19 @@ void CRenderer::Update(void)
 //=============================================================================
 void CRenderer::Draw(void)
 {
-	m_pD3DDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 255, 255, 0), 1.0f, 0);
+	m_pD3DDevice->Clear(0, 
+		nullptr, 
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), 
+		D3DCOLOR_RGBA(0, 255, 255, 0), 
+		1.0f, 
+		0);
+
+	m_pD3DDevice->Clear(0,
+		nullptr,
+		D3DCLEAR_STENCIL,
+		D3DCOLOR_XRGB(0, 0, 0),
+		1.0f,
+		0);
 
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -196,48 +221,34 @@ void CRenderer::Draw(void)
 		D3DXMATRIX matProj, matView, matWorld;
 		D3DXMATRIX trans;
 
-		if (CManager::GetGame() != nullptr)
+		if (CManager::GetModePtr() != nullptr)
 		{
 			// カメラのポインタ取得
-			CCamera *pCamera = CManager::GetGame()->GetCamera();
+			CCamera *pCamera = CManager::GetModePtr()->GetCamera();
 
 			// カメラが使われていたら
 			if (pCamera != nullptr)
 			{
 				pCamera->SetCamera();
-
-				// バックバッファ＆Ｚバッファのクリア
-				m_pD3DDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 255, 255, 0), 1.0f, 0);
 			}
 		}
 
 		//オブジェクトクラスの全描画処理呼び出し
 		CScene::DrawAll();
-
-		//環境光（アンビエント）の設定
-		D3DMATERIAL9 material;
-
-		SecureZeroMemory(&material, sizeof(D3DMATERIAL9));
-		material.Ambient.r = 1.0f;
-		material.Ambient.g = 1.0f;
-		material.Ambient.b = 1.0f;
-		material.Ambient.a = 1.0f;
-
-		m_pD3DDevice->SetMaterial(&material);
-		m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x44444444);
-
-		//ライティングを無効にする。
-		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
+		
+		// デバッグプロシージャ
+		CDebugProc *pDebugProc = CManager::GetDebugProc();
+		if (pDebugProc != nullptr)
+		{
+			pDebugProc->Draw();
+		}
 		CFade *pFade = CManager::GetFade();
 
 		if (pFade != nullptr)
 		{
+			// 描画処理
 			pFade->Draw();
 		}
-
-		// バックバッファとフロントバッファの入れ替え
-		m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 
 		// Direct3Dによる描画の終了
 		m_pD3DDevice->EndScene();
@@ -245,6 +256,76 @@ void CRenderer::Draw(void)
 
 	// バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
+}
+
+//=============================================================================
+// ステンシルの設定
+// Author : Konishi Yuuto
+//=============================================================================
+void CRenderer::SetStateStencil(void)
+{
+	//------------------------------------------------------------
+	// パス1:影ボリュームの描画
+	//------------------------------------------------------------
+	// 深度バッファに書き込みはしない
+	m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+	// レンダリングターゲットに書き込みはしない
+	m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, FALSE);
+
+	// 両面描く
+	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	// 両面ステンシルを使用する
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+	m_pD3DDevice->SetRenderState(D3DRS_TWOSIDEDSTENCILMODE, TRUE);
+
+	// ステンシルテストは常に合格にする
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+
+	// 表面は深度テストに合格したらステンシルバッファの内容を+1する
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);
+
+	// 裏面は深度テストに合格したらステンシルバッファの内容を-1する
+	m_pD3DDevice->SetRenderState(D3DRS_CCW_STENCILPASS, D3DSTENCILOP_DECR);
+}
+
+//=============================================================================
+// ステンシルテスト設定
+// Author : Konishi Yuuto
+//=============================================================================
+void CRenderer::SetStencilTest(void)
+{
+	// 状態を元に戻す
+	m_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xf);
+
+	//--------------------------------------------------------------
+	// パス2:影の描画
+	//--------------------------------------------------------------
+	// アルファブレンディングは線型に掛ける
+	m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+	// ステンシルバッファの値が1以上の時に書き込む
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILREF, 0x01);
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_LESSEQUAL);
+
+	// 透過あり
+	m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+}
+
+//=============================================================================
+// ステンシル設定リセット
+// Author : Konishi Yuuto
+//=============================================================================
+void CRenderer::ReSetStateStencil(void)
+{
+	// 状態を元に戻す
+	m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
 }
 
 //=============================================================================

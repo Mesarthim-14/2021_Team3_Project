@@ -20,13 +20,19 @@
 #include "player.h"
 #include "renderer.h"
 #include "resource_manager.h"
-#include "result.h"
+#include "result_failed.h"
 #include "scene3D.h"
 #include "sound.h"
 #include "texture.h"
 #include "title.h"
 #include "tutorial.h"
 #include "xfile.h"
+#include "polygon.h"
+#include "shadow.h"
+#include "debug_proc.h"
+#include "water.h"
+#include "title_story.h"
+#include "result_clear.h"
 
 //=============================================================================
 //静的メンバ変数宣言
@@ -39,6 +45,7 @@ unique_ptr<CInputJoypad> CManager::m_pJoypad = nullptr;
 unique_ptr<CScene> CManager::m_pScene = nullptr;
 unique_ptr<CResourceManager> CManager::m_pResourceManager = nullptr;
 unique_ptr<CModeBase> CManager::m_pModeBase = nullptr;
+unique_ptr<CDebugProc> CManager::m_pDebugProc = nullptr;
 
 //=============================================================================
 // コンストラクタ
@@ -65,6 +72,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	m_pJoypad.reset(new CInputJoypad);
 	m_pFade.reset(new CFade);
 	m_pResourceManager.reset(CResourceManager::GetInstance());
+	m_pDebugProc.reset(new CDebugProc);
 
 	//メモリが確保できたら
 	if (m_pRenderer != nullptr)
@@ -101,6 +109,13 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 		m_pFade->Init();
 	}
 
+	// !nullcheck
+	if (m_pDebugProc != nullptr)
+	{
+		// 初期化処理
+		m_pDebugProc->Init();
+	}
+
 	//全テクスチャの読み込み
 	LoadAll();
 
@@ -112,6 +127,16 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
+	CWater::UnLoadShaderFile();
+
+	// !nullcheck
+	if (m_pDebugProc != nullptr)
+	{
+		// デバッグプロシージャの終了処理呼び出し
+		m_pDebugProc->Uninit();
+		m_pDebugProc.reset();
+		m_pDebugProc = nullptr;
+	}
 	// !nullchack
 	if (m_pFade != nullptr)
 	{
@@ -154,7 +179,7 @@ void CManager::Uninit(void)
 
 	//メモリ開放
 	if (m_pRenderer != nullptr)
-	{	
+	{
 		// 描画クラス
 		m_pRenderer.reset();
 		m_pRenderer = nullptr;
@@ -238,7 +263,9 @@ void CManager::LoadAll(void)
 	}
 
 	// ファイルの読み込み
-	CMesh3d::ReadFile();
+	//CMesh3d::ReadFile();
+
+	CWater::LoadShaderFile();
 }
 
 //=============================================================================
@@ -260,6 +287,9 @@ void CManager::SetMode(MODE_TYPE mode)
 	//サウンドストップ
 	pSound->StopAll();
 
+	// 影の終了処理
+	CShadow::PolygonUninit();
+
 	// シーン情報のリリース
 	CScene::ReleaseAll();
 
@@ -275,6 +305,12 @@ void CManager::SetMode(MODE_TYPE mode)
 		m_pModeBase.reset(new CTitle);
 		break;
 
+		// タイトル
+	case MODE_TYPE_TITLE_STORY:
+		// タイトル生成
+		m_pModeBase.reset(new CTitleStory);
+		break;
+
 		// チュートリアル
 	case MODE_TYPE_TUTORIAL:
 		// チュートリアル生成
@@ -288,10 +324,16 @@ void CManager::SetMode(MODE_TYPE mode)
 		break;
 
 		// リザルト
-	case MODE_TYPE_RESULT:
+	case MODE_TYPE_RESULT_FAILED:
 		// リザルト生成
-		m_pModeBase.reset(new CResult);
+		m_pModeBase.reset(new CResultFailed);
 		break;
+		// リザルト
+	case MODE_TYPE_RESULT_CLEAR:
+		// リザルト生成
+		m_pModeBase.reset(new CResultClear);
+		break;
+
 	default:
 		break;
 	}
@@ -330,24 +372,15 @@ CModeBase * CManager::GetModeBase(void)
 //=============================================================================
 // ゲーム情報
 //=============================================================================
-CGame * CManager::GetGame(void)
+CModeBase * CManager::GetModePtr(void)
 {
-	//ゲーム中かどうか
-	if (m_mode == MODE_TYPE_GAME)
+	//キャスト
+	CModeBase *pMode = ((CModeBase*)m_pModeBase.get());
+
+	// !nullcheck
+	if (pMode != nullptr)
 	{
-		//nullcheck
-		if (m_pModeBase)
-		{
-			//キャスト
-			CGame *pGame = ((CGame*)m_pModeBase.get());
-
-			// !nullcheck
-			if (pGame != nullptr)
-			{
-				return pGame;
-			}
-		}
+		return pMode;
 	}
-
 	return nullptr;
 }

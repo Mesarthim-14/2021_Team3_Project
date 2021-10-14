@@ -13,6 +13,11 @@
 #include "renderer.h"
 
 //=============================================================================
+// マクロ定義
+//=============================================================================
+#define LIGHT_POS		(D3DXVECTOR3(100000.0f, 100000.0f, 0.0f))		// ライトの座標
+
+//=============================================================================
 // コンストラクタ
 //=============================================================================
 CLight::CLight()
@@ -29,6 +34,25 @@ CLight::~CLight()
 }
 
 //=============================================================================
+// インスタンス生成
+//=============================================================================
+CLight * CLight::Create(void)
+{
+	// メモリ確保
+	CLight *pLight = new CLight;
+
+	if (pLight)
+	{
+		// 初期化処理
+		pLight->Init();
+
+		return pLight;
+	}
+
+	return nullptr;
+}
+
+//=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT CLight::Init(void)
@@ -39,15 +63,19 @@ HRESULT CLight::Init(void)
 	//ライトをクリアする
 	SecureZeroMemory(&m_Light, sizeof(D3DLIGHT9));
 
+	// 座標設定
+	m_Light.Position = LIGHT_POS;
+
 	//ライトタイプの指定
 	m_Light.Type = D3DLIGHT_DIRECTIONAL;
 
 	//光の拡散の指定
-	m_Light.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
-	m_Light.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_Light.Diffuse = WhiteColor;
+	m_Light.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_Light.Specular = WhiteColor;
 
 	//ライト方向の指定
-	m_vecDir = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+	m_vecDir = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
 
 	//正規化する（大きさ1のベクトルにする必要がある）
 	D3DXVec3Normalize(&m_vecDir, &m_vecDir);
@@ -76,4 +104,24 @@ void CLight::Uninit(void)
 //=============================================================================
 void CLight::Update(void)
 {
+}
+
+//=============================================================================
+// ライトの方向
+//=============================================================================
+void CLight::SetVecDir(D3DXVECTOR3 Dir)
+{
+		//デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	 m_vecDir = Dir; 
+
+	 //正規化する（大きさ1のベクトルにする必要がある）
+	 D3DXVec3Normalize(&m_vecDir, &m_vecDir);
+
+	 // ベクトルの設定
+	 m_Light.Direction = m_vecDir;
+
+	 //ライトを設定する
+	 pDevice->SetLight(0, &m_Light);
 }

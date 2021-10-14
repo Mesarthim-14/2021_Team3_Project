@@ -25,7 +25,7 @@ CMesh3d::MESH_3D CMesh3d::m_Mesh3D[MESH_TYPE_MAX] = {};
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CMesh3d::CMesh3d(PRIORITY Priority):CSceneBase(Priority)
+CMesh3d::CMesh3d(PRIORITY Priority) :CSceneBase(Priority)
 {
 	m_pIdxBuff = nullptr;
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -61,8 +61,8 @@ void CMesh3d::Draw(void)
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	D3DXVECTOR3 rot = GetRot();
 	// 回転を反映
+	D3DXVECTOR3 rot = GetRot();
 	D3DXMatrixRotationYawPitchRoll(
 		&mtxRot,
 		rot.y,
@@ -74,8 +74,8 @@ void CMesh3d::Draw(void)
 		&m_mtxWorld,
 		&mtxRot);
 
-	D3DXVECTOR3 pos = GetPos();
 	// 位置を反映
+	D3DXVECTOR3 pos = GetPos();
 	D3DXMatrixTranslation(
 		&mtxTrans,
 		pos.x,
@@ -119,7 +119,7 @@ HRESULT CMesh3d::ReadFile(void)
 	char aParticleName[1024];
 	int nParticleIndex = 0;	// モデルのインデックス
 
-	// ファイルオープン
+							// ファイルオープン
 	pFile = fopen(MESH_3D_FILENAME, "r");
 
 	if (pFile != nullptr)
@@ -187,7 +187,7 @@ HRESULT CMesh3d::ReadFile(void)
 	else
 	{
 		//失敗した場合メッセージボックスを表示
-		MessageBox(nullptr, "モーションファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(nullptr, "メッシュファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 
 		return	E_FAIL;
 	}

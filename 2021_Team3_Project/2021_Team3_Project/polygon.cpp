@@ -27,6 +27,7 @@ CPolygon::CPolygon()
 //=============================================================================
 CPolygon::~CPolygon()
 {
+
 }
 
 //=============================================================================
@@ -45,13 +46,12 @@ CPolygon * CPolygon::Create(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	{
 		//初期化処理呼び出し
 		pPolygon->Init(pos, size);
-	}
-	else
-	{
-		return nullptr;
+
+		return pPolygon;
+
 	}
 
-	return pPolygon;
+	return nullptr;
 }
 
 //=============================================================================
@@ -90,7 +90,6 @@ HRESULT CPolygon::Init(const D3DXVECTOR3 pos, const D3DXVECTOR3 size)
 	pVtx[2].rhw = 1.0f;
 	pVtx[3].rhw = 1.0f;
 
-	//頂点カラーの設定
 	pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 	pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 	pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);

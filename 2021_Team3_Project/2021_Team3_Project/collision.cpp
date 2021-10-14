@@ -8,6 +8,7 @@
 //=============================================================================
 //インクルードファイル
 //=============================================================================
+#include "model.h"
 #include "collision.h"
 
 //=============================================================================
@@ -15,15 +16,19 @@
 //=============================================================================
 bool CCollision::CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2)
 {
+	bool bCollision = false;
+
 	if (pos2.x - (size2.x / 2) < pos1.x + (size1.x / 2) &&
 		pos2.x + (size2.x / 2) > pos1.x - (size1.x / 2) &&
 		pos2.y - (size2.y / 2) < pos1.y + (size1.y / 2) &&
-		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
+		pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2)	&&
+		pos2.z - (size2.z / 2) < pos1.z + (size1.z / 2) &&
+		pos2.z + (size2.z / 2) > pos1.z - (size1.z / 2))
 	{
-		return true;
+		bCollision = true;
 	}
 
-	return false;
+	return bCollision;
 }
 
 //=============================================================================
@@ -31,14 +36,16 @@ bool CCollision::CollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 po
 //=============================================================================
 bool CCollision::CollisionCircularAndCircular(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2, float radius1, float radius2)
 {
+	bool bCollision = false;
+
 	if (pow(pos1.x - pos2.x, 2) +
 		pow(pos1.y - pos2.y, 2) +
 		pow(pos1.z - pos2.z, 2) <= pow(radius1 + radius2, 2))
 	{
-		return true;
+		bCollision = true;
 	}
 
-	return false;
+	return bCollision;
 }
 
 //=============================================================================
@@ -94,4 +101,118 @@ bool CCollision::CollisionRectangleAndCircular(D3DXVECTOR3 RectanglePos, D3DXVEC
 	}
 
 	return true;
+}
+//=============================================================================
+// 当たり判定(矩形と円形)
+// Author : SugawaraTsukasa
+//=============================================================================
+int CCollision::ActiveCollisionRectangleAndRectangle(D3DXVECTOR3 pos1, D3DXVECTOR3 posOld, D3DXVECTOR3 pos2, D3DXVECTOR3 size1, D3DXVECTOR3 size2)
+{
+	int nSurFace = ZERO_INT;
+
+	D3DXVECTOR3 box1Max = D3DXVECTOR3(size1.x / DIVIDE_2, size1.y / DIVIDE_2, size1.z / DIVIDE_2) + pos1;
+	D3DXVECTOR3 box1Min = D3DXVECTOR3(-size1.x / DIVIDE_2, -size1.y / DIVIDE_2, -size1.z / DIVIDE_2) + pos1;
+	D3DXVECTOR3 box2Max = D3DXVECTOR3(size2.x / DIVIDE_2, size2.y / DIVIDE_2, size2.z / DIVIDE_2) + pos2;
+	D3DXVECTOR3 box2Min = D3DXVECTOR3(-size2.x / DIVIDE_2, -size2.y / DIVIDE_2, -size2.z / DIVIDE_2) + pos2;
+
+	if (box1Max.y > box2Min.y &&	// 下
+		box1Min.y < box2Max.y &&	// 上
+		box1Max.x > box2Min.x &&	// 左から
+		box1Min.x < box2Max.x &&	// 右から
+		box1Max.z > box2Min.z &&	// 奥から
+		box1Min.z < box2Max.z)		// 手前
+	{
+
+		// 下
+		if (box1Max.y > box2Min.y && posOld.y <= box2Min.y)
+		{
+			// 下
+			nSurFace = SURFACE_DOWN;
+		}
+		// 上
+		else if (box1Min.y < box2Max.y && posOld.y >= box2Max.y)
+		{
+			// 上
+			nSurFace = SURFACE_UP;
+		}
+		// 左
+		else if (box1Max.x > box2Min.x && posOld.x <= box2Min.x)
+		{
+			// 左
+			nSurFace = SURFACE_LEFT;
+		}
+		// 右
+		else if (box1Min.x < box2Max.x && posOld.x >= box2Max.x)
+		{
+			// 右
+			nSurFace = SURFACE_RIGHT;
+		}
+		// 手前
+		else if (box1Max.z > box2Min.z && posOld.z <= box2Min.z)
+		{
+			// 手前
+			nSurFace = SURFACE_PREVIOUS;
+		}
+		// 奥
+		else if (box1Min.z < box2Max.z && posOld.z >= box2Max.z)
+		{
+			// 奥
+			nSurFace = SURFACE_BACK;
+		}
+	}
+	// 当たった面を返す
+	return nSurFace;
+}
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+CCollision::RAY_INFO CCollision::RayCollision(D3DXVECTOR3 Pos, CModel *pModel, float fAngle, float fHitRange, int nNum)
+{
+	// レイがヒットしたか
+	BOOL bHit = false;
+
+	// 距離
+	float fDistance = ZERO_FLOAT;
+
+	// 位置
+	D3DXVECTOR3 vecDirection;
+
+	// レイの情報
+	RAY_INFO Ray_Info;
+
+	// 初期化
+	Ray_Info.bHit = false;
+	Ray_Info.VecDirection = ZeroVector3;
+
+	// !nullcheck
+	if (pModel != nullptr)
+	{
+		// nNum回繰り返す
+		for (int nCount = ZERO_INT; nCount < nNum; nCount++)
+		{
+			// レイを出す角度
+			vecDirection = D3DXVECTOR3(ZERO_FLOAT, fAngle * nCount, ZERO_FLOAT);
+
+			// レイがヒットしたか
+			D3DXIntersect(pModel->GetMesh(), &Pos, &D3DXVECTOR3(sinf(vecDirection.y), ZERO_FLOAT, cosf(vecDirection.y)),
+				&bHit, NULL, NULL, NULL, &fDistance, NULL, NULL);
+
+			// trueの場合
+			if (bHit == TRUE)
+			{
+				// 範囲より小さかったら
+				if (fDistance < fHitRange)
+				{
+					// trueに
+					Ray_Info.bHit = true;
+
+					// ベクターの方向
+					Ray_Info.VecDirection = vecDirection;
+				}
+			}
+		}
+	}
+	// 情報を返す
+	return Ray_Info;
 }

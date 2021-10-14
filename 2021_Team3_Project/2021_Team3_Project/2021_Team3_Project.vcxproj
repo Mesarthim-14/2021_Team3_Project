@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -76,6 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,35 +89,36 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -131,8 +134,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -146,12 +148,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="attack_ui.cpp" />
     <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="boss_bullet.cpp" />
+    <ClCompile Include="boss_fade.cpp" />
+    <ClCompile Include="boss_life.cpp" />
+    <ClCompile Include="boss_life_back.cpp" />
+    <ClCompile Include="boss_map_transition.cpp" />
+    <ClCompile Include="control_ui.cpp" />
+    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="enemy_normal_bullet.cpp" />
+    <ClCompile Include="boss_shark.cpp" />
+    <ClCompile Include="byte_attack_range.cpp" />
+    <ClCompile Include="byte_effect.cpp" />
+    <ClCompile Include="camera_game.cpp" />
+    <ClCompile Include="camera_title.cpp" />
+    <ClCompile Include="character_box.cpp" />
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="debug_proc.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_attack_arrow_polygon.cpp" />
+    <ClCompile Include="enemy_attack_point_polygon.cpp" />
+    <ClCompile Include="enemy_bullet.cpp" />
+    <ClCompile Include="enemy_life.cpp" />
+    <ClCompile Include="enemy_scaffolding.cpp" />
+    <ClCompile Include="enemy_ship.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="gage_2d.cpp" />
+    <ClCompile Include="gage_3d.cpp" />
+    <ClCompile Include="gage_3d_back.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="joypad.cpp" />
@@ -160,34 +188,77 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="map.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="mesh_3d.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelanime.cpp" />
+    <ClCompile Include="model_box.cpp" />
     <ClCompile Include="mode_base.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="player_bullet.cpp" />
+    <ClCompile Include="player_life.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
-    <ClCompile Include="result.cpp" />
+    <ClCompile Include="result_clear.cpp" />
+    <ClCompile Include="result_failed.cpp" />
+    <ClCompile Include="result_story.cpp" />
+    <ClCompile Include="rock.cpp" />
+    <ClCompile Include="rotate_ui.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3D.cpp" />
     <ClCompile Include="scene_base.cpp" />
+    <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="shadow_polygon.cpp" />
+    <ClCompile Include="shadow_volume.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="title_map.cpp" />
+    <ClCompile Include="title_sky.cpp" />
+    <ClCompile Include="title_story.cpp" />
+    <ClCompile Include="torpedo.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="water.cpp" />
+    <ClCompile Include="wave.cpp" />
     <ClCompile Include="xfile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="attack_ui.h" />
     <ClInclude Include="billboard.h" />
+    <ClInclude Include="boss_bullet.h" />
+    <ClInclude Include="boss_fade.h" />
+    <ClInclude Include="boss_life.h" />
+    <ClInclude Include="boss_life_back.h" />
+    <ClInclude Include="boss_map_transition.h" />
+    <ClInclude Include="boss_shark.h" />
+    <ClInclude Include="byte_attack_range.h" />
+    <ClInclude Include="byte_effect.h" />
+    <ClInclude Include="camera_game.h" />
+    <ClInclude Include="camera_title.h" />
+    <ClInclude Include="character_box.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="control_ui.h" />
+    <ClInclude Include="debug_proc.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_attack_arrow_polygon.h" />
+    <ClInclude Include="enemy_attack_point_polygon.h" />
+    <ClInclude Include="enemy_bullet.h" />
+    <ClInclude Include="enemy_life.h" />
+    <ClInclude Include="enemy_normal_bullet.h" />
+    <ClInclude Include="enemy_scaffolding.h" />
+    <ClInclude Include="enemy_ship.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="gage_2d.h" />
+    <ClInclude Include="gage_3d.h" />
+    <ClInclude Include="gage_3d_back.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="joypad.h" />
@@ -196,25 +267,42 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="mesh_3d.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="modelanime.h" />
+    <ClInclude Include="model_box.h" />
     <ClInclude Include="mode_base.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="player_bullet.h" />
+    <ClInclude Include="player_life.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />
-    <ClInclude Include="result.h" />
+    <ClInclude Include="result_clear.h" />
+    <ClInclude Include="result_failed.h" />
+    <ClInclude Include="result_story.h" />
+    <ClInclude Include="rock.h" />
+    <ClInclude Include="rotate_ui.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3D.h" />
     <ClInclude Include="scene_base.h" />
+    <ClInclude Include="shadow.h" />
+    <ClInclude Include="shadow_polygon.h" />
+    <ClInclude Include="shadow_volume.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="title_map.h" />
+    <ClInclude Include="title_sky.h" />
+    <ClInclude Include="title_story.h" />
+    <ClInclude Include="torpedo.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="water.h" />
+    <ClInclude Include="wave.h" />
     <ClInclude Include="xfile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

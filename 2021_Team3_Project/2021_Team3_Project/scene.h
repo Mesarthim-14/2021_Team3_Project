@@ -30,10 +30,18 @@ public:
 	{
 		PRIORITY_0 = 0,
 		PRIORITY_1,
+		PRIORITY_OBSTACLE,	// 障害物
+		PRIORITY_MAP,		// マップ
+		PRIORITY_MODEL,		// モデル
 		PRIORITY_CHARACTER,	// キャラクター
+		PRIORITY_TORPEDO,	// 魚雷
+		PRIORITY_ENEMY,		// 敵
 		PRIORITY_EFFECT,	// エフェクト
 		PRIORITY_PARTICLE,	// エフェクト
+		PRIORITY_SHADOW,	// 影
+		PRIORITY_3D_UI,		// UI
 		PRIORITY_UI,		// UI
+		PRIORITY_FADE,		// FADE
 		PRIORITY_MAX		// 優先順位の最大数
 	};
 

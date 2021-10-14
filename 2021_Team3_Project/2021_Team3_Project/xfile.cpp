@@ -37,18 +37,23 @@ CXfile::CXfile()
 	// Xファイルネームを取得
 	m_aXfileName =
 	{
-		{ "data/model/bg_dome001.x" },					// 背景
-		{ "data/model/Effect/Sword__Effect003.x" },		// 背景
-		{ "data/model/Effect/guard_Effect000.x" },		// ガードのエフェクト
-		{ "data/model/Effect/stone000.x" },				// 岩000
-		{ "data/model/Effect/stone001.x" },				// 岩001
-		{ "data/model/Effect/stone002.x" },				// 岩002
+		{ "data/Model/Bullet/bullet.x" },			// 弾
+		{ "data/Model/box/box.x" },					// 箱
+		{ "data/Model/Obstacle/Rock.x"},			// 岩
+		{ "data/Model/Enemy/Torpedo/Torpedo.x" },	// 魚雷
+		{ "data/Model/Map/Map.x"},					// マップ
+		{ "data/Model/Map/TitleMap.x" },			// タイトルマップ
+		{ "data/Model/Map/sky.x" },					// タイトルマップ
+		{ "data/Model/Map/boss_map.x" },			// ボスマップ
+		{ "data/Model/Map/boss_map_transition.x" },			// ボスマップ
 	};
 
 	m_aHierarchyXfileName =
 	{
-		{ "data/Text/motion_LBX.txt" },		// プレイヤー
-		{ "data/Text/motion_Kobold.txt" },	// エネミー
+		{ "data/Text/Player/motion_Player.txt"},			// プレイヤー
+		{ "data/Text/Enemy/motion_Enemy_Ship.txt"},			// 敵船
+		{ "data/Text/Enemy/motion_Enemy_scaffolding.txt" },	// 櫓
+		{ "data/Text/Enemy/motion_Boss_Shark.txt" },		// ボスサメ
 	};
 }
 
@@ -58,7 +63,6 @@ CXfile::CXfile()
 CXfile::~CXfile()
 {
 	m_aXfileName.clear();
-
 	m_aHierarchyXfileName.clear();
 }
 
@@ -98,22 +102,22 @@ HRESULT CXfile::ModelLoad(void)
 	{
 		//マテリアル情報の解析
 		D3DXMATERIAL *materials = (D3DXMATERIAL*)m_aXfile[nCount].pBuffMat->GetBufferPointer();
-		LPDIRECT3DTEXTURE9 pTexture = nullptr;
 
 		for (int nCntMat = 0; nCntMat < (int)m_aXfile[nCount].dwNumMat; nCntMat++)
 		{
-			// ファイルネームの取得
-			char cData[128] = {};
+			LPDIRECT3DTEXTURE9 pTexture = nullptr;
 
-			sprintf(cData, "data/model/Texture/%s", materials[nCntMat].pTextureFilename);
+			// ファイルネームの取得
+			char cData[256] = {};
+
+			sprintf(cData, "data/Texture/%s", materials[nCntMat].pTextureFilename);
 
 			// テクスチャの読み込み
 			D3DXCreateTextureFromFile(pDevice, cData, &pTexture);
 
+			// テクスチャ情報取得
+			m_aXfile[nCount].apTexture.push_back(pTexture);
 		}
-
-		// テクスチャ情報取得
-		m_aXfile[nCount].apTexture.push_back(pTexture);
 
 	}
 
@@ -264,13 +268,13 @@ HRESULT CXfile::HierarchyReadFile(void)
 
 			} while (aModeName.find("END_SCRIPT") == string::npos);
 
-			//ファイルクローズ
+			// ファイルクローズ
 			::fclose(pFile);
 		}
 		else
 		{
-			//失敗した場合メッセージボックスを表示
-			MessageBox(nullptr, "モーションファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
+			// 失敗した場合メッセージボックスを表示
+			MessageBox(nullptr, "ヒエラルキーファイルを開くのに失敗しました", "警告", MB_OK | MB_ICONEXCLAMATION);
 
 			return	E_FAIL;
 		}
@@ -315,7 +319,7 @@ HRESULT CXfile::HierarchyModelLoad(void)
 					// ファイルネームの取得
 					char cData[256] = {};
 
-					sprintf(cData, "data/model/Texture/%s", materials[nCntMat].pTextureFilename);
+					sprintf(cData, "data/Texture/%s", materials[nCntMat].pTextureFilename);
 
 					// テクスチャの読み込み
 					D3DXCreateTextureFromFile(pDevice, cData, &pTexture);

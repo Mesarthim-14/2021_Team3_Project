@@ -18,21 +18,26 @@
 class CScene2D : public CSceneBase
 {
 public:
-	CScene2D(PRIORITY Priority = PRIORITY_0);							// コンストラクタ
-	~CScene2D();														// デストラクタ
+	CScene2D(PRIORITY Priority = PRIORITY_0);									// コンストラクタ
+	~CScene2D();																// デストラクタ
 
-	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// インスタンス生成
+	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// インスタンス生成
+	static CScene2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFadeNum);	// インスタンス生成
+
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 初期化処理
 	void Uninit(void);													// 終了処理
 	void Update(void);													// 更新処理
 	void Draw(void);													// 描画処理
 
+	void CreateVertex(D3DXVECTOR3 pos, D3DXVECTOR3 size);				// 頂点の生成
+	void SetVertex(void);												// 頂点の設定
 	void InitAnimation(int nCounterAnim, int nPatternAnim, int nLoop);	// アニメーション情報初期化
 	void InitScroll(int nSpeed, float fDivision);						// 画像スクロールの設定
 	void UpdateAnimation(void);											// アニメーションの更新
 	void UpdateScroll(void);											// 画像スクロールの更新
 	void ScaleUp(float fScaleUp);										// 拡大関数
 	void FlashPolygon(int nFlashFlame);									// ポリゴンの点滅
+	void FadeOut(float fSpeed);											// フェードアウト
 
 	// Set関数
 	void SetCol(D3DXCOLOR col);											// 色の設定
@@ -42,7 +47,6 @@ public:
 
 	// Get関数
 	float GetScale(void) { return m_fScaleNum; }						// 拡大の値情報
-
 private:
 	int m_nCountAnim;			// アニメーションテクスチャ
 	int m_nCountAnimPattern;	// アニメーションのパターン
@@ -56,8 +60,10 @@ private:
 	float m_fScaleNum;			// 拡大用変数
 	float m_fSubFlashNum;		// ポリゴンの点灯用
 	float m_fSubNum;			// ポリゴンの点灯用
+	float m_fFadeSpeedNum;		// フェードのスピード
 	int m_nFlashFlame;			// 点灯用のカウンター
 	bool m_bDisappearFlag;		// 点滅用のフラグ
+	bool m_bFadeOut;				// フェードのフラグ
 };
 
 #endif // !_SCENE2D_H_

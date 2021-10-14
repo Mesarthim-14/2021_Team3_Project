@@ -14,6 +14,9 @@
 #include "player.h"
 #include "game.h"
 #include "xfile.h"
+#include "shadow.h"
+#include "collision.h"
+#include "map.h"
 
 //=============================================================================
 // マクロ定義
@@ -28,12 +31,16 @@ CModel::CModel(PRIORITY Priority) : CScene(Priority)
 	m_pos = ZeroVector3;
 	m_rot = ZeroVector3;
 	m_move = ZeroVector3;
-	m_size = MODEL_DEFAULT_SIZE;
+	m_size = ZeroVector3;
+	m_scale = MODEL_DEFAULT_SIZE;
 	m_apTexture = nullptr;
 	m_nTexPattern = 0;
 	m_nLife = 0;
-	m_Color = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	m_Color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_fAlphaNum = 0.0f;
+	m_pShadow = nullptr;
+	m_State = STATE_NORMAL;
+	m_RayData = { ZERO_FLOAT,ZERO_FLOAT,ZERO_INT };
 }
 
 //=============================================================================
@@ -46,7 +53,7 @@ CModel::~CModel()
 //=============================================================================
 // クリエイト処理
 //=============================================================================
-CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	//モデルクラスのポインタ変数
 	CModel *pModel = nullptr;
@@ -58,7 +65,7 @@ CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	if (pModel != nullptr)
 	{
 		//初期化処理呼び出し
-		pModel->Init(pos, size);
+		pModel->Init(pos, rot);
 	}
 	//メモリ確保に失敗したとき
 	else
@@ -72,13 +79,13 @@ CModel * CModel::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 //モデルクラスの初期化処理
 //=============================================================================
-HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CModel::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 位置の初期化
 	m_pos = pos;
 
 	// サイズ初期化
-	m_size = size;
+	m_rot = rot;
 
 	return S_OK;
 }
@@ -90,6 +97,9 @@ void CModel::Uninit(void)
 {
 	//オブジェクトの破棄
 	Release();
+
+	// 影の終了処理
+	HasPtrDelete();
 }
 
 //=============================================================================
@@ -118,8 +128,8 @@ void CModel::Draw(void)
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	// サイズを反映
-	D3DXMatrixScaling(&mtxScale, m_size.x, m_size.y, m_size.z);
+	// 拡大率を反映
+	D3DXMatrixScaling(&mtxScale, m_scale.x, m_scale.y, m_scale.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	//向きを反映
@@ -143,9 +153,6 @@ void CModel::Draw(void)
 
 	for (int nCntMat = 0; nCntMat < (int)m_Model.dwNumMat; nCntMat++)
 	{
-		// 色の設定
-		pMat[nCntMat].MatD3D.Diffuse = D3DXCOLOR(m_Color.r, m_Color.g, m_Color.b, m_Color.a - m_fAlphaNum);
-
 		//マテリアルのアンビエントにディフューズカラーを設定
 		pMat[nCntMat].MatD3D.Ambient = pMat[nCntMat].MatD3D.Diffuse;
 
@@ -166,13 +173,44 @@ void CModel::Draw(void)
 		m_Model.pMesh->DrawSubset(nCntMat);
 
 		pDevice->SetTexture(0, nullptr);
-
-		// 透明度戻す
-		pMat[nCntMat].MatD3D.Diffuse.a = 1.0f;
 	}
 
 	//保持していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
+
+	pDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+
+	// 影の描画
+	ShadowDraw(m_rot);
+}
+
+//=============================================================================
+// 影の描画
+//=============================================================================
+void CModel::ShadowDraw(D3DXVECTOR3 rot)
+{
+	if (m_pShadow)
+	{
+		// 影の生成
+		m_pShadow->CreateShadow(m_rot, ZeroVector3, m_mtxWorld);
+
+		// 影の描画処理
+		m_pShadow->VolumeDraw();
+	}
+}
+
+//=============================================================================
+// モデル情報の設定
+//=============================================================================
+void CModel::HasPtrDelete(void)
+{
+	if (m_pShadow)
+	{
+		// 影の終了処理
+		m_pShadow->Uninit();
+		delete m_pShadow;
+		m_pShadow = nullptr;
+	}
 }
 
 //=============================================================================
@@ -187,11 +225,67 @@ void CModel::BindModel(CXfile::MODEL model)
 }
 
 //=============================================================================
-// テクスチャの設定
+// 影の設定
 //=============================================================================
-void CModel::BindTexture(LPDIRECT3DTEXTURE9 *pTexture)
+void CModel::SetShadowInfo(CXfile::MODEL model)
 {
-	m_apTexture = pTexture;
+	// nullcheck
+	if (!m_pShadow)
+	{
+		// 影の生成
+		m_pShadow = CShadow::Create(model.pMesh);
+	}
+}
+//=============================================================================
+// レイの当たり判定
+// Author : SugawaraTsukasa
+//=============================================================================
+bool CModel::RayCollision(void)
+{
+	// CSceneのポインタ
+	CScene *pScene = nullptr;
+
+	// nullcheck
+	if (pScene == nullptr)
+	{
+		// 先頭のポインタ取得
+		pScene = GetTop(PRIORITY_MAP);
+
+		// !nullcheck
+		if (pScene != nullptr)
+		{
+			// Charcterとの当たり判定
+			while (pScene != nullptr) // nullptrになるまで回す
+			{
+				// 現在のポインタ
+				CScene *pSceneCur = pScene->GetNext();
+
+				// レイの数が0より多い場合
+				if (m_RayData.nNum > ZERO_INT)
+				{
+					// レイの情報
+					CCollision::RAY_INFO Ray_Info = CCollision::RayCollision(m_pos, ((CMap*)pScene), m_RayData.fAngle, m_RayData.fRange, m_RayData.nNum);
+
+					// trueの場合
+					if (Ray_Info.bHit == true)
+					{
+						// 移動を0に
+						SetMove(ZeroVector3);
+
+						// 位置
+						//m_pos -= D3DXVECTOR3(sinf(Ray_Info.VecDirection.y), ZERO_FLOAT, cosf(Ray_Info.VecDirection.y));
+
+						Uninit();
+
+						return true;
+					}
+				}
+				// 次のポインタ取得
+				pScene = pSceneCur;
+			}
+		}
+	}
+	return false;
 }
 
 //=============================================================================
@@ -207,156 +301,4 @@ void CModel::SubAlpha(float fAlpha)
 	{
 		m_fAlphaNum = ALPHA_NUM_MAX;
 	}
-}
-
-//=============================================================================
-//モデルクラスのメッシュ情報の取得
-//=============================================================================
-LPD3DXMESH CModel::GetMesh(void) const
-{
-	return m_Model.pMesh;
-}
-
-//=============================================================================
-// マテリアルバッファ情報
-//=============================================================================
-LPD3DXBUFFER CModel::GetBuffMat(void)
-{
-	return m_Model.pBuffMat;
-}
-
-//=============================================================================
-// マテリアル数の情報
-//=============================================================================
-DWORD CModel::GetNumMat(void)
-{
-	return m_Model.dwNumMat;
-}
-
-//=============================================================================
-// テクスチャパターン
-//=============================================================================
-int CModel::GetTexPattern(void)
-{
-	return m_nTexPattern;
-}
-
-//=============================================================================
-// ライフの情報
-//=============================================================================
-int CModel::GetLife(void)
-{
-	return m_nLife;
-}
-
-//=============================================================================
-//モデルクラスの位置情報の設定
-//=============================================================================
-void CModel::SetPos(const D3DXVECTOR3 pos)
-{
-	m_pos = pos;
-}
-
-//=============================================================================
-// 移動量の設定
-//=============================================================================
-void CModel::SetMove(const D3DXVECTOR3 move)
-{
-	m_move = move;
-}
-
-//=============================================================================
-//モデルクラスの位置情報の取得
-//=============================================================================
-D3DXVECTOR3 CModel::GetPos(void) const
-{
-	return m_pos;
-}
-
-//=============================================================================
-// 移動量の情報
-//=============================================================================
-D3DXVECTOR3 CModel::GetMove(void)
-{
-	return m_move;
-}
-
-//=============================================================================
-//モデルクラスの向きの設定
-//=============================================================================
-void CModel::SetRot(const D3DXVECTOR3 rot)
-{
-	m_rot = rot;
-}
-
-//=============================================================================
-// 角度の情報
-//=============================================================================
-D3DXVECTOR3 CModel::GetRot(void)
-{
-	return m_rot;
-}
-
-//=============================================================================
-// サイズの設定
-//=============================================================================
-void CModel::SetSize(D3DXVECTOR3 size)
-{
-	m_size = size;
-}
-
-//=============================================================================
-// テクスチャのパターン設定
-//=============================================================================
-void CModel::SetTexPattern(int TexPattern)
-{
-	m_nTexPattern = TexPattern;
-}
-
-//=============================================================================
-// ライフの設定
-//=============================================================================
-void CModel::SetLife(int nLife)
-{
-	m_nLife = nLife;
-}
-
-//=============================================================================
-// 色の設定
-//=============================================================================
-void CModel::SetColor(D3DXCOLOR color)
-{
-	m_Color = color;
-}
-
-//=============================================================================
-// 透明度の設定
-//=============================================================================
-void CModel::SetAlphaNum(float fAlphaNum)
-{
-	m_fAlphaNum = fAlphaNum;
-}
-
-//=============================================================================
-// サイズの情報
-//=============================================================================
-D3DXVECTOR3 CModel::GetSize(void)
-{
-	return m_size;
-}
-
-//=============================================================================
-// カラーの情報
-//=============================================================================
-D3DXCOLOR CModel::GetColor(void)
-{
-	return m_Color;
-}
-
-//=============================================================================
-// ワールドマトリクス情報
-//=============================================================================
-D3DXMATRIX CModel::GetMtxWorld(void)
-{
-	return m_mtxWorld;
 }

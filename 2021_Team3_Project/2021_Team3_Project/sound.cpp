@@ -15,7 +15,18 @@
 //====================================================
 CSound::PARAM CSound::m_aParam[SOUND_LABEL_MAX] =
 {
-//	{ "data/BGM/title001.wav", SOUND_LOOP_ON },			// タイトルBGM
+	{ "data/Sound/BGM/title_bgm.wav", SOUND_LOOP_ON },			// タイトル
+	{ "data/Sound/BGM/game_bgm.wav", SOUND_LOOP_ON },			// ゲーム
+	{ "data/Sound/BGM/bos_bgm.wav", SOUND_LOOP_ON },			// ボス
+	{ "data/Sound/BGM/result_bgm.wav", SOUND_LOOP_ON },			// リザルト
+	{ "data/Sound/BGM/gameover.wav", SOUND_LOOP_ON },			// 失敗
+	{ "data/Sound/SE/break_se.wav", SOUND_LOOP_OFF },			// 破壊音
+	{ "data/Sound/SE/button_se.wav", SOUND_LOOP_OFF },			// ボタン
+	{ "data/Sound/SE/damage_se.wav", SOUND_LOOP_OFF },			// ダメージ
+	{ "data/Sound/SE/explosion_se.wav", SOUND_LOOP_OFF },		// 爆発
+	{ "data/Sound/SE/hit_se.wav", SOUND_LOOP_OFF },			// 当たった時
+	{ "data/Sound/SE/taihou_se.wav", SOUND_LOOP_OFF },			// 大砲の音
+	{ "data/Sound/SE/move.wav", SOUND_LOOP_OFF },				// 大砲の音
 };
 
 //================================================

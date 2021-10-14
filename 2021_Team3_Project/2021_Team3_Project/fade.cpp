@@ -39,12 +39,18 @@ HRESULT CFade::Init(void)
 {
 	m_FadeMode = FADE_MODE_OUT;
 
-	//ポリゴンクラスを生成
-	m_pPolygon = CPolygon::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f),
-		D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
+	if (!m_pPolygon)
+	{
+		//ポリゴンクラスを生成
+		m_pPolygon = CPolygon::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f),
+			D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f));
 
-	//色を設定
-	m_pPolygon->SetColor(m_colorFade);
+		if (m_pPolygon)
+		{
+			//色を設定
+			m_pPolygon->SetColor(m_colorFade);
+		}
+	}
 
 	return S_OK;
 }
@@ -119,8 +125,11 @@ void CFade::Draw(void)
 {
 	if (m_pPolygon != nullptr)
 	{
-		//ポリゴンクラスの描画処理呼び出し
-		m_pPolygon->Draw();
+		if (m_FadeMode != FADE_MODE_NONE)
+		{
+			// ポリゴンクラスの描画処理呼び出し
+			m_pPolygon->Draw();
+		}
 	}
 }
 
